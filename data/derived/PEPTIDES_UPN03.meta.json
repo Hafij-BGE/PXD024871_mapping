@@ -1,0 +1,11 @@
+{
+ "container": "UPN03_class_I.msf",
+ "unit_id": "UPN03",
+ "internal_run_refs": [
+  "121109_DK_CLL08_W_20%_Rep#1_msms5.RAW",
+  "121114_DK_CLL08_W_20%_Rep#2_msms1.RAW",
+  "121123_DK_CLL08_W_20%_Rep#3_msms12.RAW"
+ ],
+ "unique_sequences": 49373,
+ "extract_sha256": "7e03b62e0729b05a50046f74b7375e7d75bc385bfdd0622aa265df41310dbcb9"
+}
