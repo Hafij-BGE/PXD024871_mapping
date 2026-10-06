@@ -1,0 +1,22 @@
+{
+ "container": "UPN19_class_I.msf",
+ "unit_id": "UPN19",
+ "internal_run_refs": [
+  "130715_DK_CLL55_preTherapy_W_20%_Rep#1_msms1.RAW",
+  "130717_DK_CLL55_preTherapy_W_Normalized_Rep#1_msms1.RAW",
+  "130717_DK_CLL55_preTherapy_W_Normalized_Rep#2_msms4.RAW",
+  "130717_DK_CLL55_preTherapy_W_Normalized_Rep#3_msms7.RAW",
+  "130717_DK_CLL55_preTherapy_W_Normalized_Rep#4_msms10.RAW",
+  "130718_DK_CLL55_preTherapy_W_20%_Rest#1_msms1.RAW",
+  "130718_DK_CLL55_preTherapy_W_20%_Rest#2_msms2.RAW",
+  "130718_DK_CLL55_preTherapy_W_20%_Rest#3_msms3.RAW"
+ ],
+ "n_internal_runs": 8,
+ "psms_total": 184101,
+ "unique_sequences": 50015,
+ "extract_sha256": "6b42f5b15619f0d3ead6243fade8ce969ca4420b1a57b9100c1446fb897e5f1e",
+ "length_window": [
+  8,
+  12
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "container": "UPN32_class_I.msf",
+ "unit_id": "UPN32",
+ "internal_run_refs": [
+  "170329_iVAC-L-CLL01_CLL01007_W_20%_Rep2_DDA_400-650mz_msms12.raw",
+  "170329_iVAC-L-CLL01_CLL01007_W_20%_Rep3_DDA_400-650mz_msms13.raw",
+  "170330_iVAC-L-CLL01_CLL01007_W_20%_Rep1_DDA_400-650mz_msms8.raw"
+ ],
+ "n_internal_runs": 3,
+ "psms_total": 184749,
+ "unique_sequences": 88565,
+ "extract_sha256": "b5932bdfb6e518e50c8fc2dcde8b6f1bfa4f0c790738afeaaaa20a99aac4f053",
+ "length_window": [
+  8,
+  12
+ ]
+}
