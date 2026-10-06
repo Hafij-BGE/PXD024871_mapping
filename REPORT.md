@@ -181,15 +181,13 @@ record establishes content integrity and ordering within the repository; it does
 **not** provide independent third-party evidence of chronology, since it is
 created by the repository owner (D009).
 
-**The preregistration is incomplete in one respect, stated here rather than
-discovered later.** Sections 11, 12 and 13 of the experiment specification — the
-network architecture, the input representation, and the training protocol —
-remain unlocked. The configuration used for throughput benchmarking (length-12
-input, 32-dimensional embedding, two 64-filter convolutions with kernel width 3,
-64-unit dense layer) was chosen to size the compute budget, not as a
-preregistered architecture. Until those sections are frozen there is latitude in
-exactly the component whose behaviour the experiment measures, and any
-confirmatory claim must either follow their freezing or be reported as
+Sections 11, 12 and 13 — architecture, input representation and training
+protocol — were found unfrozen while this section was being written, having been
+carried past the freeze commit unlocked, and were frozen in response (D026). The
+network is two convolutional blocks over a centre-padded length-12 encoding,
+trained with a fixed 16-point hyperparameter grid selected on mean validation
+average precision across the five folds. The preregistration is now complete:
+any deviation requires a new decision entry and renders the affected claim
 exploratory.
 
 ### Software and environment

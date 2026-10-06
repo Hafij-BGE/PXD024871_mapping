@@ -161,6 +161,7 @@ blocks:
 | D021 | Peak extraction disk corrected from ~2 GB to ~12 GiB once container sizes were verified. **RESOLVED** — see entry below | G8 |
 | D022 | Compute gate resized: planning worst case 100k -> 2M positives, cap 48h -> 96h, class ratio 1:1. **RESOLVED**, but flags that the budget is not executable on this hardware. See entry below | G8 |
 | D023 | Provenance cannot depend on the downloader surviving: a completed transfer whose writer died left an unrecorded, truncated file. **RESOLVED** — reconciler added. See entry below | G1 |
+| D026 | Architecture, input representation and training protocol frozen. Closes the preregistration gap found while writing Methods: these were carried past the freeze unlocked. See entry below | before training |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -549,6 +550,52 @@ distributed only through it would need another route. **Nothing about any
 specific predictor's training contents has been checked**, and this entry
 asserts nothing about them. Establishing that is G11's work under the protocol
 above.
+
+---
+
+## D026 — Architecture, representation and training protocol frozen · RESOLVED
+
+**Resolved:** 2026-10-06 · **Status:** PERMANENT until superseded
+
+**Why this exists.** Writing the Methods section exposed that §§11–13 were never
+frozen, and had been carried silently past the preregistration commit. The
+dataset, split, endpoint and decision rule were fixed; the model was not. That
+left latitude in exactly the component whose behaviour the experiment measures —
+a frozen dataset is no protection if the network can be adjusted until the
+number comes out right.
+
+**What is now fixed.** Topology (two convolutional blocks, global max-pool,
+dense, sigmoid), the encoding, and every training parameter including a
+16-point grid and the selection rule. Detail in `SECTIONS.md` §§11–13.
+
+**Three choices worth defending rather than asserting.**
+
+*Two convolutional blocks, not more.* After two kernel-3 blocks with one pooling
+step the receptive field already spans all 12 positions. Further depth cannot
+see more of the peptide; it only adds capacity, which works against the stated
+purpose of testing whether a minimal model finds local sequence signal.
+
+*Centre-padding, not right-padding.* This is the one place domain knowledge
+enters the encoding, and it is declared. Right-padding would place the
+C-terminal residue at a different index for each of the five lengths, forcing
+the network to learn five separate C-terminal motifs from a representation that
+obscures their alignment. Centre-padding removes an artefact; it does not tell
+the model which residues matter.
+
+*Length is not a feature.* The padding makes it recoverable, and supplying it
+explicitly would let the model exploit length imbalance — which does not exist,
+since the negatives are length-matched exactly, so the feature could only
+contribute noise or a route to overfitting.
+
+**Reduction order fixed here**, as D022 required, so it cannot be chosen once a
+budget is already under pressure: configurations halve by dropping `E = 16`
+first, then `p = 0.0`.
+
+**Compute verified against the gate**: 105 runs, 24.7 h at the 100-epoch worst
+case against a 96 h cap.
+
+**Consequence.** The preregistration is now complete. Any deviation from §§11–13
+requires a new decision entry and renders the affected claim exploratory.
 
 ---
 
