@@ -411,6 +411,8 @@ Each section of the experiment has:
 100,000-positive worst case. Measurement puts the real figure near **1.9
 million**, a 19× error, so the budget is rebuilt from the measured numbers.
 
+**Resized again 2026-10-06** on the measured union (2,658,972) and the D024 cap. The uncapped grid costs 120 h at 1:1; at the cap it is **23.6 h**, comfortably inside the budget and executable on hardware that exists.
+
 Grid cost, 20 configurations × 5 folds × 100 epochs = 100 runs:
 
 | Positives | 1:1 ratio | 1:10 ratio |
@@ -425,7 +427,7 @@ grounds, and compute now points the same way. 1:1 is preferred on all three.
 
 | Limit | Value | Change |
 |---|---|---|
-| Planning worst case | **2,000,000 positives** | was 100,000 |
+| Planning worst case | **520,000 positives** (52 units × 10,000 cap, D024) | measured union is 2,658,972; capped on the precision curve, not for budget |
 | Class ratio assumed | **1:1** | was 1:10; D002 recommendation strengthened |
 | Max hyperparameter configurations | **20** | unchanged |
 | Max epochs per run | **100**, patience 10 | unchanged |
