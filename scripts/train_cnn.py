@@ -290,8 +290,18 @@ def main():
             Xva, yva = encode([s for s, _, _ in va]), np.array([l for _, _, l in va])
             for r_ in range(5):
                 sd = seed('model_init', f*5 + r_)
-                m, ap, ep = fit(cfg, (Xtr, ytr), (Xva, yva), sd, device, a.max_epochs)
                 path = RES/f'final_f{f}_s{r_}.pt'
+                if path.exists():
+                    # Resumable: each model is deterministic given its seed, so a
+                    # completed one is never refit. A dropped session costs at
+                    # most the model in flight.
+                    ck = torch.load(path, map_location='cpu', weights_only=False)
+                    models.append({'fold': f, 'replicate': r_, 'seed': sd,
+                                   'val_ap': ck['val_ap'], 'epochs': ck['epochs'],
+                                   'file': path.name})
+                    print(f"  fold {f} seed {r_}: cached (val AP {ck['val_ap']:.4f})", flush=True)
+                    continue
+                m, ap, ep = fit(cfg, (Xtr, ytr), (Xva, yva), sd, device, a.max_epochs)
                 torch.save({'state': m.state_dict(), 'cfg': cfg, 'seed': sd,
                             'fold': f, 'replicate': r_, 'val_ap': ap, 'epochs': ep}, path)
                 models.append({'fold': f, 'replicate': r_, 'seed': sd,
