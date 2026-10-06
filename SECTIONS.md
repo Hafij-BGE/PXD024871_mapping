@@ -78,7 +78,7 @@ Each section of the experiment has:
 - PROVENANCE_RECORD.json (retrieval details)
 
 **Limitations:**
-- 47.8 GB .msf files require streaming extraction
+- Identification containers total 107.53 GiB over 101 files (verified); largest single container 9.25 GiB, so streaming is required
 - SDRF has 402 rows; 504 files include non-MS-run files
 
 **Status:** OPEN (not yet started)
@@ -405,7 +405,7 @@ Each section of the experiment has:
 - Machine: 4 cores, Intel Xeon @ 2.10 GHz, 15 GiB RAM, **no GPU**
 - Measured training throughput: **122,648 peptides/sec** for the §11 architecture
 - Available writable disk: 30 GB
-- **[provisional]** identification containers described as ~47.8 GB in total
+- **Verified** 2026-10-06: identification containers total 107.53 GiB over 101 files; largest single container 9.25 GiB
 
 **Methodology:**
 Limits derived from measurement, not assumption. Worst-case sizing assumes 100,000 eligible positives at a 1:10 class ratio — 1.1M rows per epoch, 9.0 s/epoch, 14.9 min per 100-epoch run.
@@ -420,7 +420,7 @@ Limits derived from measurement, not assumption. Worst-case sizing assumes 100,0
 | Max wall-clock | **48 hours** | Worst case is ~31 h; see grid |
 | CPU allocation | **4 cores** | All that exists |
 | GPU allocation | **0** | None available, and the measurement shows none is needed |
-| Peak disk, extraction | **~2 GB** | One container plus its extract at a time |
+| Peak disk, extraction | **~12 GiB** | Largest container is 9.25 GiB (verified), plus its extract. Corrected from an earlier ~2 GB figure, which assumed a container size nothing had measured |
 
 Grid cost at the worst-case size: selection 25 h, final fit ~6 h, total ~31 h against a 48 h cap.
 
@@ -434,8 +434,8 @@ Grid cost at the worst-case size: selection 25 h, final fit ~6 h, total ~31 h ag
 
 **Metrics & QC:**
 - Worst-case grid cost < wall-clock cap ✓ (~31 h vs 48 h)
-- Peak extraction disk < available ✓ (~2 GB vs 30 GB)
-- Full container set > available disk ✓ **confirms streaming is mandatory, not an optimisation** (~47.8 GB [provisional] vs 30 GB)
+- Peak extraction disk < available ✓ (~12 GiB vs 30 GB) — comfortable, but 2.5× tighter than the uncorrected figure implied
+- Full container set > available disk ✓ **streaming is mandatory, not an optimisation** (107.53 GiB verified vs 30 GB — 3.6× over, not the 1.6× the provisional figure suggested)
 - Any reduction-ladder step taken is recorded with the measurement that triggered it
 
 **Expected Outcome:**

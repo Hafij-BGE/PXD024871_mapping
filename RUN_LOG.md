@@ -102,8 +102,13 @@ reconstructed participant counts. This run must be **re-executed with observed
 counts** once S1/S2 are retrieved. Until then its numbers bound the design;
 they do not describe it.
 
-**Status:** RESOLVED as an analysis. Supersedes nothing. To be superseded by
-run-00N after retrieval.
+**Status:** RESOLVED as an analysis, but **its inputs are now known to be
+wrong in shape.** run-003 verified the real run distribution: 29 units at 3
+runs, 17 at 5, a tail at 8/9/10/15. This run assumed 8 at 4 and 6 at 5. Same
+222 runs over 52 units, materially different unbalance. The findings that do
+not depend on the distribution (B irrelevance, the unfalsifiability of §25,
+the metric bias at extreme ratio) stand; the precision and coverage figures
+must be recomputed. **Re-run required before the preregistration freeze.**
 
 ---
 
@@ -182,3 +187,83 @@ continued availability — is forced, not chosen.
 
 **Status:** RESOLVED. Supersedes nothing. To be superseded if the hardware
 changes or D007 fixes a materially different dataset size.
+
+---
+
+## run-003 — Phase A mapping, M1 to M4
+
+| Element | Value |
+|---|---|
+| Timestamp | 2026-10-06, UTC |
+| Stage | S1–S5; gates G1, G2, G3 |
+| Purpose | Execute the provenance mapping against the retrieved sources and settle the counts every `[provisional]` figure rested on |
+| Serves | `SECTIONS.md` §5A1–§5A3; D001, D005, D011, D012, D013, D021 |
+| Code | `scripts/phase_a_mapping.py`, blob `b54d3216a0d44871059270ace089fdb8fe796ff7`; vocabulary `vocab/enrichment_class.tsv` |
+| Environment | env-001 |
+| Inputs | `data/raw/S1/files_v3_page0..5.json` (504 records), `data/raw/S2/PXD024871_community_annotated.sdrf.tsv` (402 rows); checksums in `data/raw/*/provenance.jsonl` |
+| Parameters | Exact normalized matching only (D016); two-field allele pattern; expected complement 6 loci |
+| Outputs | `data/derived/FILE_MAP.csv` (402), `FILE_MAP_REJECTS.csv` (0), `ELIGIBILITY.csv`, `UNITS.csv` (52), `UNIT_GENOTYPE.csv`, `ALLELE_FREQUENCY.csv` (46); `results/qc/QC_G1.md`–`QC_G3.md` |
+| Software versions | Python 3.11.15, stdlib only |
+| Random seed | n/a — deterministic |
+| CPU/RAM/GPU | 4 cores, 15 GiB, no GPU |
+| Runtime | <2 s |
+| Errors/warnings | None. Two G3 checks record FAIL by design; see interpretation |
+| Metrics | G1 pass; G2 pass; G3 two FAILs |
+
+### Research record
+
+**Purpose.** Replace every count in the repository that came from description
+rather than measurement, and settle the five decisions blocked on retrieval.
+
+**Reasoning.** The network policy was opened, so the sources became reachable.
+M1–M4 need only the manifest and the metadata file, so all of G1 and G2 and most
+of G3 were executable at once. M5 needs the containers and was not run.
+
+**Alternatives considered.** (a) Explore interactively and report numbers in
+conversation — rejected: the governing prompt requires outputs with generating
+code, and terminal output is not an artifact. (b) Wait and run M1–M5 together
+after retrieving containers — rejected: these gates gate the container
+retrieval, and running them first is what surfaced the instrument confound
+before any bulk transfer was spent. (c) Substring-match the enrichment
+annotation rather than use a term table — rejected by M3's own specification.
+
+**Interpretation.** Below.
+
+**Limitations.** M5 not run; container fan-out unverified. Everything here
+asserts only what the deposited annotation asserts (`METHODOLOGY.md` limitation
+9), and the metadata file is the one input with no publisher checksum.
+
+**Decision.** D001, D005, D011, D012, D013 resolved; D021 opened and resolved.
+
+**Next step.** Stream S3, then M5 and M6. Re-run run-001 on the observed run
+distribution.
+
+### Interpretation
+
+**G1 and G2 pass cleanly.** M1 is an exact 1:1 over 402 acquisitions with zero
+rejects in either direction. The class vocabulary has exactly two terms, and the
+independent check held: `characteristics[mhc protein complex]` agrees with the
+antibody annotation on 402/402 rows, zero conflicts. Genotype parsing produced
+zero nomenclature failures across all 52 typed units.
+
+**The consequential finding is a G3 FAIL that cannot be fixed.** Instrument is
+*completely* confounded with unit — 25/27, zero overlap, no unit spanning both
+platforms. `METHODOLOGY.md` had listed this as a conditional ("if platform
+correlates with participant"); it does, totally. §25 cannot be rescued by any
+split over units, and no covariate is available to adjust for it, because age
+and sex are absent and disease and tissue are uniform. Accepted as a limitation
+under D005.
+
+**Two numbers I had wrong.** Containers total 107.53 GiB, not the ~47.8 GB
+carried as provisional; peak extraction disk is ~12 GiB, not the ~2 GB I wrote
+into the §14 budget table, because the largest container is 9.25 GiB. Corrected
+under D021.
+
+**run-001 must be re-run.** Its reconstructed run distribution matched the real
+total and range but not the shape — it assumed 8 units at 4 runs and 6 at 5,
+against the real 2 and 17. Same 222 runs over 52 units, materially different
+unbalance, so the cluster-bootstrap precision figures need recomputing on the
+observed distribution.
+
+**Status:** RESOLVED. G1 and G2 pass. G3 passes except M5 (not run) and the
+accepted D005 limitation.

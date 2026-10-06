@@ -22,8 +22,10 @@ seen for what they are:
   a departure from it, and it is flagged here rather than done quietly.
 
 The experiment served is `PXD024871_CNN_Experiment_Proposal.md`, committed
-unmodified. Figures originating from external description rather than a
-retrieved file are marked **[provisional]**.
+unmodified. Figures are **verified from the retrieved sources** as of 2026-10-06 (S1 and
+S2; see `results/qc/QC_G1.md` to `QC_G3.md`). Anything still unverified is
+marked **[provisional]** and now concerns only the identification containers,
+which are not yet retrieved.
 
 **Two rules from the prompt govern everything below.** Never silently force an
 ambiguous match. Every mapping decision must be traceable to its evidence.
@@ -72,8 +74,9 @@ manifest.
 path stripping, extension retention, string comparison of identifiers.
 
 **Exact-match rules.** One manifest filename to exactly one metadata row.
-Expected cardinality 1:1 across the acquisition files; **[provisional]** the
-manifest is described as holding ~402 acquisitions against ~402 metadata rows.
+Expected cardinality 1:1 across the acquisition files. **Verified:** 402
+acquisitions against 402 metadata rows, 402 matched, zero unmatched in either
+direction, zero rejects (`QC_G1.md`).
 
 **Approximate/fuzzy matching rules.** **Prohibited.** Run filenames in this
 submission differ by one character between genuinely different acquisitions,
@@ -206,9 +209,10 @@ produced each assignment, so every class label is auditable to its source cell
 without re-reading the metadata file.
 
 **Outputs and gate.** `hla_class` and `source_evidence` in `FILE_MAP.csv`;
-`ELIGIBILITY.csv`; gate G2. **[provisional]** the annotation is described as
-partitioning acquisitions cleanly by class; checked at G2 by enumerating
-distinct values and row counts, not assumed.
+`ELIGIBILITY.csv`; gate G2. **Verified:** exactly two distinct annotations,
+partitioning cleanly into 222 class-I and 180 class-II runs. The independent
+check held — `characteristics[mhc protein complex]` agrees on 402/402 rows with
+zero conflicts (`QC_G2.md`).
 
 ---
 
@@ -297,9 +301,10 @@ files is ambiguous; recorded, and its peptides are not assigned a unit.
 is recorded; peptides from that reference get no unit assignment and are
 excluded rather than attributed to a guess.
 
-**Duplicate handling.** Expected fan-out: **[provisional]** containers are
-described as fewer in number than acquisitions, implying aggregation. The true
-fan-out is read from the files, not assumed. Several containers referencing one
+**Duplicate handling.** Expected fan-out: 101 containers against 402
+acquisitions (verified from the manifest), implying aggregation. The true
+fan-out is read from the containers' internal records, not inferred from that
+ratio, and **[provisional]** remains until they are retrieved. Several containers referencing one
 acquisition is also possible and is reported.
 
 **Confidence/status categories.** `EXACT` (internal record), `PARTIAL`
@@ -457,17 +462,20 @@ into `REPORT.md`.
 2. **Unit count versus split stability.** With few units a fixed split is
    unstable and grouped cross-validation reuses units across folds; neither
    resolves the other's weakness.
-3. **Unbalanced contribution.** **[provisional]** per-participant acquisition
-   counts are described as varying several-fold, so pooled peptide-level
-   statistics are dominated by the heaviest contributors. This is why
+3. **Unbalanced contribution.** **Verified:** acquisitions per participant
+   range 3 to 15 (29 units at 3, 17 at 5, a four-unit tail at 8/9/10/15). The
+   heaviest unit contributes 5× the lightest, so pooled peptide-level
+   statistics are dominated by a handful of units. This is why
    participant-level resampling is primary.
 4. **Shared sequences are real.** Overlap between participants is expected, not
    artifact. Any split rule either permits a form of leakage or discards real
    signal; D003 chooses which, and the choice cannot be avoided.
-5. **Platform confounding.** **[provisional]** more than one acquisition
-   platform is described. If platform correlates with participant, the two are
-   not separable by any split over participants. G5 quantifies the correlation;
-   it cannot remove it.
+5. **Platform confounding — confirmed total, not partial.** Two platforms
+   split the class-I units 25/27 with **zero overlap**: no unit spans both
+   (`QC_G3.md`). Platform and participant are therefore not separable by any
+   split over participants. Stratification keeps the split from *becoming* a
+   platform split but cannot make the effects separable. Formally accepted as
+   a limitation under D005.
 6. **Negative-class dependence.** All performance figures are statements about
    discrimination against a constructed comparison class. They do not transfer
    across constructions and are not comparable to published numbers built on
