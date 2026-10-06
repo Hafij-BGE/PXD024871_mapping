@@ -1,0 +1,19 @@
+{
+ "container": "UPN02_class_I.msf",
+ "unit_id": "UPN02",
+ "internal_run_refs": [
+  "130719_NTDK_CLL04_preTherapy_W_20%_Rep#1_msms1.RAW",
+  "130722_NTDK_CLL04_preTherapy_W_Normalized_#1_msms6.RAW",
+  "130722_NTDK_CLL04_preTherapy_W_Normalized_#2_msms8.RAW",
+  "130722_NTDK_CLL04_preTherapy_W_Normalized_#3_msms10.RAW",
+  "130722_NTDK_CLL04_preTherapy_W_Normalized_#4_msms12.RAW"
+ ],
+ "n_internal_runs": 5,
+ "psms_total": 99989,
+ "unique_sequences": 46701,
+ "extract_sha256": "2d24b1d995629e3603d1de1bb18d0ac0854ef8c0dbd57847bbabaa7e4e71b6c4",
+ "length_window": [
+  8,
+  12
+ ]
+}

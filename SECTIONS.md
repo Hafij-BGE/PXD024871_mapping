@@ -484,10 +484,20 @@ allele-disjoint secondary analysis. Those are the design, not the budget.
   four points; the 52-unit figure is an order of magnitude, not an estimate.
   Marginal novelty was still 92% at the fourth unit, so saturation is not near,
   but the exponent could move materially with more units.
-- Only **one** of the six sampled pairs shared any alleles. That pair overlapped
-  5.6%, inside the 2.9–6.2% range of the genotype-disjoint pairs, which weakens
-  but does not settle the concern that the sample was unusually novel. More
-  shared-allele pairs, ideally carrying the most common allele, would settle it.
+- ~~Only one of six sampled pairs shared alleles.~~ **Settled 2026-10-06** with a
+  fifth unit: 10 pairs, 4 of which share alleles including one HLA-A\*02:01 pair.
+  Shared-allele pairs overlap a mean 4.8% against 4.0% for disjoint pairs — a
+  factor of 1.21, so the sample was *not* unusually novel and the projection is
+  not a selection artifact. β rose slightly to 0.959, projecting 2.07M, which
+  the 2,000,000 planning figure covers.
+- **Open interpretive question raised by that result.** Overlap barely tracks
+  shared alleles, which is surprising if presentation is allele-determined. The
+  parsimonious explanation is sampling depth: each unit samples ~16,500 peptides
+  from a far larger presented repertoire, so even identical repertoires would
+  overlap little by chance. If that is right, "generalizes to an unseen unit"
+  partly tests generalization across *samples of* a repertoire rather than
+  across repertoires, which weakens the §25 reading further. Testable signature:
+  overlap should rise with per-unit depth. Not resolvable from this data.
 - Throughput is numpy over BLAS, an upper bound on time; a real framework is faster.
 - Training cost taken as 3× forward.
 - Numbers are specific to this machine and do not port.
