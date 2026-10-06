@@ -201,52 +201,150 @@ the compute budget derives and to which it does not port.
 
 ## Results
 
-### R1 — Design resolution (run-001)
+All results to date concern the dataset and the design. **No model has been fit**,
+so none bears on the primary hypothesis. Interpretation is deferred to the
+Discussion; this section reports measurements.
 
-The only result to date. Full write-up in `POWER_ANALYSIS.md`; record in
-`RUN_LOG.md` run-001; data in `results/power/power_grid.csv` (91 rows).
+### R1 — Provenance mapping
 
-| Finding | Evidence | Consequence |
+| Quantity | Value | Source |
 |---|---|---|
-| The proposal's primary hypothesis is near-unfalsifiable — power 1.00 in all 54 cells, and at a mean AUROC of 0.60 | `POWER_ANALYSIS.md` F1 | D008 must specify a lift, not a direction |
-| Resolution is set by held-out participant count, not bootstrap replicates: B from 200→50,000 moves the half-width <0.002; K 10→26 cuts it 35% | F2 | Proposal §16's B=10,000 is not a precision lever |
-| Nominal 95% intervals achieve 0.66–0.95 actual coverage; ~0.80 at K=5 | F3 | Intervals must be reported as approximate |
-| At a 1:100 class ratio the AP estimator is biased upward by ~10% of the lift, and that bias exceeds interval width as a source of miscoverage | F4 | Statistical argument against extreme ratios, independent of composition (D002) |
-| Between-participant variance is the dominant unknown; half-width swings 5× across its plausible range | F5 | Achievable precision is bounded, not yet knowable |
-| Paired predictor comparison is better powered at every K; MDE ≈ 0.05 AP at K=10 | F7 | D014 (ratified): §18 preregistered as secondary, not promoted — its weakness is an unverifiable dependency |
+| Deposited files | 504 (402 acquisitions, 101 identification containers, 1 metadata) | `QC_G1.md` |
+| Acquisition ↔ metadata join | 402 ↔ 402, matched both directions, **0 rejects** | `QC_G1.md` |
+| Class-I / class-II acquisitions | 222 / 180 | `QC_G2.md` |
+| Independent class-column agreement | 402 / 402 rows, **0 conflicts** | `QC_G2.md` |
+| Class-I participants | 52 (61 across the submission; 9 class-II only) | `QC_G3.md` |
+| Acquisitions per participant | 3–15 (29 at three, 17 at five) | `QC_G3.md` |
+| Distinct alleles | 46 across 52 participants | `UNIT_GENOTYPE.csv` |
+| Genotype parse failures | **0** | `QC_G2.md` |
+| Complete / partial typing | 38 / 14 | `QC_G2.md` |
+| Acquisition platforms | 127 acquisitions on one, 95 on the other; participants split 25 / 27 | `QC_G3.md` |
+| Participants spanning both platforms | **0** | `QC_G3.md` |
 
-Estimators were cross-validated before use: analytic average precision returns
-prevalence exactly at zero discrimination, agrees with the empirical estimator
-to three decimals, and is insensitive to integration grid resolution
-(`RUN_LOG.md` run-001, Validation performed).
+The allele-frequency distribution determines whether an allele-disjoint
+evaluation is constructible. The most common allele occurs in 29 of 52
+participants (56%), so holding out its carriers leaves 23 for training — costly
+but feasible.
 
-### R2 — Retrieval
+### R2 — The peptide universe
 
-Attempted and blocked. The execution environment's network policy denies the
-distribution host; the failed attempt is retained at
-`data/raw/S1/provenance.jsonl` with `outcome: FAILED`
-(`DATA_SOURCES.md`, Blocked retrievals).
+All 52 class-I containers retrieved and verified against publisher checksums
+(52/52), extracted, and deleted.
 
-No count describing PXD024871 anywhere in this repository has been verified.
-All such figures are marked `[provisional]` and originate from a description
-supplied in conversation, not from a retrieved file.
+| Quantity | Value |
+|---|---|
+| **Union, unique 8–12mers** | **2,658,972** |
+| Sum of per-participant counts | 3,850,275 |
+| Redundancy factor | 1.45× |
+| Per participant | 39,991 – 198,567 (median 71,784) |
+| Occurring in exactly one participant | 2,124,276 (**79.9%**) |
+| Occurring in two or more | 534,696 (20.1%) |
+| Highest confidence level | 99.29% of the union |
 
-### R3 — Compute budget (run-002)
+Length distribution: 8-mers 15.47%, 9-mers 27.80%, 10-mers 26.44%, 11-mers
+18.67%, 12-mers 11.61%.
 
-Measured throughput on the target machine: ~123,000 peptides/sec training on
-four cores with no GPU. Worst-case grid — 100,000 positives at 1:10, 20
-configurations across 5 folds plus a 5-seed final fit — comes to about 31 hours
-against a 48-hour cap. Limits and the preregistered reduction ladder are in
-`SECTIONS.md` §14; basis in `DECISION_LOG.md` D020.
+Accumulation had not saturated: Heaps' exponent over all 52 participants is
+0.977, and the last participant added was 55% novel. A projection fitted to the
+first five participants gave 1,547,364 — **41.8% below** the measured value.
 
-Two incidental findings. **No GPU is required** — the architecture is small
-enough that CPU suffices, removing a dependency the proposal left implicit.
-**Streaming the identification containers is forced rather than chosen** — 30 GB
-of writable disk against a set now verified at 107.53 GiB, so the
-stream-and-delete strategy in `DATA_SOURCES.md` is the only feasible route, and
-its reproducibility cost is a constraint rather than a trade. Peak working space
-is ~12 GiB, the largest single container being 9.25 GiB — corrected upward from
-a ~2 GB figure that predated any measurement.
+Pairwise overlap between participants is 2.9–6.2%. Pairs sharing at least one
+allele overlap a mean 4.8% against 4.0% for genotype-disjoint pairs — a ratio of
+1.21, so overlap barely tracks shared alleles.
+
+### R3 — Frozen dataset and split
+
+| Quantity | Value |
+|---|---|
+| Positives / negatives | 520,000 / 520,000 (1:1) |
+| Participants | 52 × 10,000 positives each |
+| Distinct positive sequences | 466,946 |
+| Positive rows shared with another participant | 53,054 (10.20%) |
+| Source proteins for negatives | 20,152 of 20,652 (97.6%) yielding ≥1 observed peptide |
+| Integrity checks | 6 / 6 pass |
+
+Split: 10 participants held out (5 per platform), 42 in five grouped folds
+(4 and 4–5 per platform per fold). Frozen at commit `f7550f54` with checksums in
+`PREREGISTRATION.md`.
+
+### R4 — Negative-control diagnostic
+
+Optimal linear classifier on 20-dimensional amino-acid composition, no
+positional information, held out:
+
+| Candidate negative set | Composition-only AUROC | Composition divergence |
+|---|---|---|
+| Reference-derived, length-matched | 0.6120 | 10.05 pp |
+| Shuffled positives | **0.5000** | 0.00 pp |
+| **Expressed-protein, unobserved (selected)** | **0.6085** | 10.26 pp |
+
+The selected set's composition-only separability corresponds to an average
+precision of **0.597** at 1:1, which is the floor against which all performance
+is reported.
+
+### R5 — Leakage and confound audit
+
+| Measurement | Value |
+|---|---|
+| Test positives also in training, 2,000 random splits | mean 14.59% (11.76 – 17.25%) |
+| On the realised split | **15.99%** |
+| Leakage-free test subset | 84,012 of 100,000 rows |
+| Platform separability from composition alone | **AUROC 0.6451** |
+| Control: random halves of participants | **0.5150** |
+| Excess attributable to platform | **+0.1301** |
+
+A visible mechanism in the length profile: 12-mers are 11.69% of one platform's
+positives against 9.85% of the other.
+
+### R6 — Design resolution
+
+Simulation under a binormal model at the frozen conditions (10 held-out
+participants, 1:1).
+
+**Bootstrap replicates are irrelevant; participant count is not.** Increasing
+replicates 250-fold (200 → 50,000) changes the interval half-width by less than
+0.002; increasing participants from 10 to 26 narrows it 35%.
+
+**Nominal intervals under-cover:**
+
+| Nominal | Actual coverage |
+|---|---|
+| 95% | 0.884 – 0.890 |
+| 97.5% | 0.918 – 0.928 |
+| **99%** | **0.944 – 0.962** |
+
+**Per-participant positives saturate early.** Within-participant sampling
+variance falls to 0.066 of between-participant variance at a cap of 10,000; the
+interval improves 0.16% between that cap and using all 2.66M peptides.
+
+**Power at the preregistered rule** (reject when the nominal-99% lower bound
+exceeds 0.647):
+
+| True AUROC | True AP | Power |
+|---|---|---|
+| 0.70 | 0.6875 | 0.42 |
+| 0.75 | 0.7390 | 0.98 |
+| 0.80 | 0.7913 | 1.00 |
+
+False-positive rate with the truth at the floor: 0.000.
+
+The paired predictor comparison detects differences of roughly 0.05 average
+precision at this participant count, against 0.14 for the absolute claim.
+
+### R7 — Compute
+
+Measured training throughput for the frozen architecture: **122,648
+peptides/second** on four CPU cores without a GPU. The frozen design — 16
+configurations × 5 folds plus a 25-run final fit, 105 runs — costs **24.7 hours**
+at the 100-epoch worst case against a 96-hour budget, or roughly 10 hours with
+typical early stopping.
+
+### R8 — Not obtained
+
+No model has been fit. There is therefore no value for the primary endpoint, no
+held-out performance, no per-participant distribution, no predictor comparison,
+and no result bearing on the primary or secondary hypotheses. Training requires
+hardware beyond the environment used for this work.
 
 ## Discussion
 
