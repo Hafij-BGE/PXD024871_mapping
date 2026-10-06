@@ -33,32 +33,34 @@ third-party evidence that this preceded seeing any result. The tag is
 made by the repository owner with the owner's clock. See DECISION_LOG D009.
 ```
 
-## On the tag
+## The anchor is this commit, not a tag
 
-This content is also an annotated git tag, `preregistration-v1`, created at the
-commit named above. **The tag could not be pushed from the session that made
-it** — the credential there is scoped to the branch and the remote refused
-`refs/tags` with 403. To publish it:
+**No tag was published.** One was attempted; the session's credential is scoped
+to `refs/heads` and the remote refused `refs/tags` with 403. Rather than leave
+the freeze depending on a step that had not happened, the anchor is the commit
+named above, and this file — committed at it, carrying every artifact checksum —
+is the record.
+
+Nothing is lost by that. D009 argued a tag beats a hash in prose because the
+document holding the hash is mutable; the same objection applies to a tag, since
+both are created by the repository owner with the owner's clock. A tag would
+have been a clearer marker, not stronger evidence.
+
+What carries weight is that this file is committed into history. Altering it
+later changes every subsequent commit hash, which is detectable by anyone who
+recorded the original — and the original is on the remote.
+
+A tag may still be added later without affecting anything here:
 
 ```bash
-git fetch origin claude/mapping-research-project-prompt-glsess
-git tag -a preregistration-v1 <commit> -F PREREGISTRATION.md   # or re-use the local tag
+git tag -a preregistration-v1 <commit> -F PREREGISTRATION.md
 git push origin preregistration-v1
 ```
 
-**How much this matters: little.** D009 argued a tag beats a hash in prose
-because the document containing a hash is as mutable as everything else. That
-critique applies with equal force to this file — but it applies to the tag too,
-since both are created by the repository owner with the owner's clock. The tag
-is a clearer marker, not stronger evidence. What actually carries weight is that
-this file is committed into history, so altering it later changes every
-subsequent commit hash and is detectable by anyone who recorded the old one.
-
-The honest summary is unchanged from D009: this establishes **content
-integrity** and **ordering within the repository**. It does not establish
-independent chronology. Publishing the SHA-256 of this file to an external
-timestamping service would, and discloses nothing — that step is left to the
-author.
+The limit stated in D009 is unchanged either way: this establishes **content
+integrity** and **ordering within the repository**, not independent chronology.
+Publishing this file's SHA-256 to an external timestamping service would supply
+that and would disclose nothing.
 
 ## Verifying
 

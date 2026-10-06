@@ -170,7 +170,7 @@ blocks:
 | D006 | Predictor training-set overlap. **RESOLVED as a protocol**: no predictor enters §18 without its training list obtained; handling fixed per outcome; §18 may never be promoted while any predictor is UNVERIFIABLE. See entry below | G11 |
 | D007 | Minimum-N gate. **RESOLVED — clears overwhelmingly**: 2,658,972 eligible positives. The confirmatory arm is not data-limited | G4 |
 | D008 | Decision rule for §25. **RESOLVED: reject if the lower bound of a nominal-99% cluster-bootstrap interval exceeds 0.647** (floor 0.597 + 0.05). Nominal 99% because 95% delivers only ~89% actual coverage. See entry below | closed |
-| D009 | Preregistration freeze. **RESOLVED** — annotated signed-content tag pushed to the remote, carrying every artifact checksum. Limits of what it proves stated explicitly. See entry below | G6 |
+| D009 | Preregistration freeze. **RESOLVED** — the freeze commit is the anchor; `PREREGISTRATION.md` committed at it carries every artifact checksum. Tag attempted and refused by the remote; recorded rather than pretended. See entry below | G6 |
 | D010 | Seed convention. **RESOLVED** — base 20261006 kept, per-purpose seeds derived via `scripts/seeds.py`; seed shopping prohibited. See entry below | G6 |
 | D011 | Unit definition. **RESOLVED** — participant as unit; 52 class-I units over 222 runs, verified. See entry below | G3 passed |
 | D012 | Partial typing. **RESOLVED** — 14 of 52 units partial, none imputed. See entry below | G2 passed |
@@ -416,8 +416,17 @@ willingness to open a file is not one, and nothing should be built on it.
 
 **Resolved:** 2026-10-06 · **Status:** RESOLVED
 
-**Decision: an annotated git tag at the freeze commit, carrying the SHA-256 of
-every frozen artifact, pushed to the remote.**
+**Decision: the freeze commit itself is the anchor, with `PREREGISTRATION.md`
+committed at it carrying the SHA-256 of every frozen artifact.**
+
+*Amended 2026-10-06:* this originally specified an annotated tag pushed to the
+remote. The tag could not be pushed — the session credential is scoped to
+`refs/heads` and the remote refused `refs/tags` — and rather than leave the
+mechanism depending on an unperformed step, the commit is named as the anchor.
+The change costs nothing evidentially: a tag and a commit are both created by
+the repository owner with the owner's clock, so the tag was a clearer marker
+rather than stronger proof. A tag may be added later without affecting the
+record.
 
 **What it does.** Names one commit as the preregistration boundary, records the
 checksums of the dataset and the decision log inside the tag message rather than
