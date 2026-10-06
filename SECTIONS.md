@@ -383,7 +383,7 @@ Length is **not** supplied as a separate feature. The pad tokens make it recover
 
 **Model selection:** mean validation average precision across the five folds, computed on training folds only. The test partition is not read until the selected configuration is fixed and the endpoint computed once.
 
-**Final fit:** the selected configuration, five folds × five initialisation seeds = 25 runs. All 25 are reported; selecting among seeds is prohibited (D010).
+**Final fit:** the selected configuration, five folds × five initialisation seeds = 25 runs. All 25 are reported; selecting among seeds is prohibited (D010). **Endpoint (D027):** per-unit average precision is computed under each model and averaged across the 25; the estimand is the mean of those per-unit values, bootstrapped over units. Score-ensembling is reported as a secondary figure, since an ensemble answers a more flattering question than §25 asks.
 
 **Reduction ladder priority (required by D022).** If compute is exceeded, configurations drop from 16 to 8 by removing the `E = 16` half first, then `p = 0.0`. Order fixed here so it cannot be chosen under pressure.
 
