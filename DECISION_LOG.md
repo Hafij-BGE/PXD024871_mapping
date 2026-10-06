@@ -168,7 +168,7 @@ blocks:
 | D005 | Instrument confound. **RESOLVED — accepted as a limitation**; total confound, cannot be corrected. See entry below | G3, FAIL accepted |
 | D006 | Training-set overlap between the comparison predictors and these peptides; handling rule if overlap exists | G11 |
 | D007 | Minimum-N gate. **RESOLVED — clears overwhelmingly**: 2,658,972 eligible positives. The confirmatory arm is not data-limited | G4 |
-| D008 | Decision rule for §25. Form fixed by D014: a lift tested on the interval's lower bound. **Reference corrected by D002**: the floor is the measured composition-only AP of 0.597, not the 0.5 prevalence — a model with no information does better than chance here. Magnitude still open | G6 |
+| D008 | Decision rule for §25. **RESOLVED: reject if the lower bound of a nominal-99% cluster-bootstrap interval exceeds 0.647** (floor 0.597 + 0.05). Nominal 99% because 95% delivers only ~89% actual coverage. See entry below | closed |
 | D009 | Preregistration freeze. **RESOLVED** — annotated signed-content tag pushed to the remote, carrying every artifact checksum. Limits of what it proves stated explicitly. See entry below | G6 |
 | D010 | Seed convention. **RESOLVED** — base 20261006 kept, per-purpose seeds derived via `scripts/seeds.py`; seed shopping prohibited. See entry below | G6 |
 | D011 | Unit definition. **RESOLVED** — participant as unit; 52 class-I units over 222 runs, verified. See entry below | G3 passed |
@@ -480,6 +480,69 @@ their seeds would change published numbers for no benefit. The derivation
 applies from the split onward, which is where it matters.
 
 **PERMANENT** because it governs every future stochastic step, not one choice.
+
+---
+
+## D008 — §25 decision rule · RESOLVED
+
+**Resolved:** 2026-10-06 · **Evidence:** run-012 (`results/power/decision_rule.json`),
+run-001 F3, D002
+
+**Decision: reject the null if the lower bound of a nominal-99% cluster-bootstrap
+interval on the mean per-unit average precision exceeds 0.647.**
+
+That is the measured composition floor of 0.597 (D002) plus a lift of 0.05.
+
+### Two separate things had to be fixed, and only one was a choice
+
+**The interval had to be made honest first.** run-001 F3 found nominal 95%
+intervals under-covering; measured at the frozen conditions — 10 test units,
+1:1 — they deliver **0.884–0.890** actual coverage. A rule stated at 95% would be
+stricter in name than in fact.
+
+| nominal | actual coverage (τ = 0.10 / 0.25 / 0.50) |
+|---|---|
+| 95% | 0.890 / 0.890 / 0.884 |
+| 97.5% | 0.926 / 0.928 / 0.918 |
+| **99%** | **0.962 / 0.954 / 0.944** |
+
+**Nominal 99% is adopted**, delivering ~95% actual. This applies to every
+interval reported from this design, not only the decision rule — reporting a
+nominal 95% interval anywhere would overstate precision by the same margin.
+
+**Then the threshold, which is a judgement.** Power at the adopted interval:
+
+| true AUROC | true AP | lift over floor | power at floor+0.05 | power at floor+0.10 |
+|---|---|---|---|---|
+| 0.70 | 0.6875 | +0.091 | **0.42** | 0.01 |
+| 0.75 | 0.7390 | +0.142 | **0.98** | 0.49 |
+| 0.80 | 0.7913 | +0.194 | 1.00 | 0.99 |
+
+False positive rate with the true value *at* the floor: 0.020 at a +0.00
+threshold, **0.000** at +0.05.
+
+**floor+0.05 is adopted.** floor+0.10 is underpowered — 0.49 at AUROC 0.75 means
+a real and substantial effect would be missed half the time, which is a worse
+failure than the marginal strictness it buys.
+
+### The limitation this rule carries, stated rather than buried
+
+**Power is 0.42 at AUROC 0.70.** A genuine but modest effect — a lift of 0.09
+over the floor — will be missed more often than not. The minimum reliably
+detectable effect is a lift of roughly **0.14 AP**, equivalent to AUROC ≈ 0.75.
+
+This follows from 10 held-out units, which is fixed by the data and not by any
+choice made here. Failure to reject is therefore **not** evidence of no signal;
+it is consistent with a real effect below the detectable range, and §20's
+interpretation must say so rather than reporting a null as an absence.
+
+### How far this has moved from the proposal
+
+§25 asked for "better than chance". run-001 F1 showed that passes at AUROC 0.60
+with power 1.00 — nearly unfalsifiable. The rule now tests against a measured
+composition floor rather than chance, on an interval calibrated to its actual
+coverage rather than its nominal label, at a threshold chosen for power rather
+than convenience. The hypothesis is finally capable of failing.
 
 ---
 
