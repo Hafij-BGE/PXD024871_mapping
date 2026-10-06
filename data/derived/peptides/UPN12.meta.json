@@ -1,0 +1,19 @@
+{
+ "container": "UPN12_class_I.msf",
+ "unit_id": "UPN12",
+ "internal_run_refs": [
+  "130118_DK_CLL34#2_W_20%_Rep#1_msms4.RAW",
+  "130322_DK_CLL34#2_W_20%_Rep#2_msms17.RAW",
+  "130322_DK_CLL34#2_W_20%_Rep#3_msms18.RAW",
+  "130322_DK_CLL34#2_W_20%_Rep#4_msms19.RAW",
+  "130322_DK_CLL34#2_W_20%_Rep#5_msms20.RAW"
+ ],
+ "n_internal_runs": 5,
+ "psms_total": 158239,
+ "unique_sequences": 60651,
+ "extract_sha256": "316c40227924255baa15a16b108dfdb7753b7000c0b98dc82422be6fc01d4496",
+ "length_window": [
+  8,
+  12
+ ]
+}

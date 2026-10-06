@@ -1,0 +1,19 @@
+{
+ "container": "UPN52_class_I.msf",
+ "unit_id": "UPN52",
+ "internal_run_refs": [
+  "181013_AN_CLL53_Cells_W_20%_DDA#1_400-650mz_msms8.raw",
+  "181013_AN_CLL53_Cells_W_20%_DDA#2_400-650mz_msms9.raw",
+  "181013_AN_CLL53_Cells_W_20%_DDA#3_400-650mz_msms10.raw",
+  "181013_AN_CLL53_Cells_W_20%_DDA#4_400-650mz_msms11.raw",
+  "181013_AN_CLL53_Cells_W_20%_DDA#5_400-650mz_msms12.raw"
+ ],
+ "n_internal_runs": 5,
+ "psms_total": 282043,
+ "unique_sequences": 120938,
+ "extract_sha256": "e279c7b60c2dbd2119abea57a63525b94210f12283660a39cb680b58e2b4bdcc",
+ "length_window": [
+  8,
+  12
+ ]
+}

@@ -1,0 +1,24 @@
+{
+ "container": "UPN07_class_I.msf",
+ "unit_id": "UPN07",
+ "internal_run_refs": [
+  "140102_JS_CLL18#2_W_20%_Rep#1_25cm90min3s_msms36.RAW",
+  "140102_JS_CLL18#2_W_20%_Rep#2_25cm90min3s_msms37.RAW",
+  "140108_JS_CLL18#2_W_20%_Rep#3_25cm90min3s_msms2.RAW",
+  "140108_JS_CLL18#2_W_20%_Rep#4_25cm90min3s_msms3.RAW",
+  "140108_JS_CLL18#2_W_20%_Rep#5_25cm90min3s_msms4.RAW",
+  "140811_DK_CLL18_W_20%_Rep#1_50cm195min3s_msms6.raw",
+  "140814_DK_CLL18_W_20%_Rep#2_50cm195min3s_msms1.raw",
+  "140814_DK_CLL18_W_20%_Rep#3_50cm195min3s_msms2.raw",
+  "140814_DK_CLL18_W_20%_Rep#4_50cm195min3s_msms3.raw",
+  "140814_DK_CLL18_W_20%_Rep#5_50cm195min3s_msms4.raw"
+ ],
+ "n_internal_runs": 10,
+ "psms_total": 271850,
+ "unique_sequences": 112966,
+ "extract_sha256": "2b68ef51e00c47806dc5678674fedfe4c515ac3266baa7fe54a02e984b0ee075",
+ "length_window": [
+  8,
+  12
+ ]
+}

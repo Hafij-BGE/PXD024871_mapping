@@ -1,0 +1,19 @@
+{
+ "container": "UPN05_class_I.msf",
+ "unit_id": "UPN05",
+ "internal_run_refs": [
+  "130620_JS_CLL13_W_20%_Rep#1_25cm90min3s_msms27.RAW",
+  "130620_JS_CLL13_W_20%_Rep#2_25cm90min3s_msms28.RAW",
+  "130620_JS_CLL13_W_20%_Rep#3_25cm90min3s_msms29.RAW",
+  "130620_JS_CLL13_W_20%_Rep#4_25cm90min3s_msms30.RAW",
+  "130620_JS_CLL13_W_20%_Rep#5_25cm90min3s_msms31.RAW"
+ ],
+ "n_internal_runs": 5,
+ "psms_total": 109701,
+ "unique_sequences": 41977,
+ "extract_sha256": "c3e069c4956d70a53cfd066c1709d6f1b1152753451dcbfadf97fd3b103dbbc0",
+ "length_window": [
+  8,
+  12
+ ]
+}

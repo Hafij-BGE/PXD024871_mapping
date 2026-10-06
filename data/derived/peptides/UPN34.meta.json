@@ -1,0 +1,17 @@
+{
+ "container": "UPN34_class_I.msf",
+ "unit_id": "UPN34",
+ "internal_run_refs": [
+  "170329_iVAC-L-CLL01_CLL01009_W_20%_Rep2_DDA_400-650mz_msms17.raw",
+  "170329_iVAC-L-CLL01_CLL01009_W_20%_Rep3_DDA_400-650mz_msms18.raw",
+  "170330_iVAC-L-CLL01_CLL01009_W_20%_Rep1_DDA_400-650mz_msms10.raw"
+ ],
+ "n_internal_runs": 3,
+ "psms_total": 200338,
+ "unique_sequences": 78186,
+ "extract_sha256": "e1f687c30383db3c9011f2aa4dcd456df95690b06f4694a96a48470d9906349b",
+ "length_window": [
+  8,
+  12
+ ]
+}

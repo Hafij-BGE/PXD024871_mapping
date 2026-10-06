@@ -1,0 +1,17 @@
+{
+ "container": "UPN46_class_I.msf",
+ "unit_id": "UPN46",
+ "internal_run_refs": [
+  "171209_iVAC-L-CLL01_CLL02003_W_20%_Rep1_DDA_400-650mz_msms6.raw",
+  "171209_iVAC-L-CLL01_CLL02003_W_20%_Rep2_DDA_400-650mz_msms7.raw",
+  "171209_iVAC-L-CLL01_CLL02003_W_20%_Rep3_DDA_400-650mz_msms8.raw"
+ ],
+ "n_internal_runs": 3,
+ "psms_total": 181238,
+ "unique_sequences": 66059,
+ "extract_sha256": "c4720a95be17f4c548ce1029eb70b992cd901ce477954eeeb5cfb0c5b8e9cf83",
+ "length_window": [
+  8,
+  12
+ ]
+}

@@ -1,0 +1,19 @@
+{
+ "container": "UPN24_class_I.msf",
+ "unit_id": "UPN24",
+ "internal_run_refs": [
+  "140627_TS_CLL72_W_20%_Rep#1_25cm90min3s_msms34.RAW",
+  "140627_TS_CLL72_W_20%_Rep#2_25cm90min3s_msms35.RAW",
+  "140627_TS_CLL72_W_20%_Rep#3_25cm90min3s_msms36.RAW",
+  "140627_TS_CLL72_W_20%_Rep#4_25cm90min3s_msms37.RAW",
+  "140627_TS_CLL72_W_20%_Rep#5_25cm90min3s_msms38.RAW"
+ ],
+ "n_internal_runs": 5,
+ "psms_total": 98337,
+ "unique_sequences": 43639,
+ "extract_sha256": "e8843b4bbfe4c109ce38bd9252338ec7bca4f5471202eae3dd3ffd289acd0c14",
+ "length_window": [
+  8,
+  12
+ ]
+}

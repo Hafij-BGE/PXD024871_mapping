@@ -1,0 +1,19 @@
+{
+ "container": "UPN06_class_I.msf",
+ "unit_id": "UPN06",
+ "internal_run_refs": [
+  "120330_DK_CLL17_20%of10ZipTips_msms1.RAW",
+  "120330_DK_CLL17_20%of10ZipTips_msms2.RAW",
+  "120330_DK_CLL17_20%of10ZipTips_msms3.RAW",
+  "120330_DK_CLL17_20%of10ZipTips_msms4.RAW",
+  "120330_DK_CLL17_20%of10ZipTips_msms5.RAW"
+ ],
+ "n_internal_runs": 5,
+ "psms_total": 131213,
+ "unique_sequences": 104587,
+ "extract_sha256": "6e9d4abe8083823a4ebaae9d89d055e70e25aac326fde3a75b5b6cfa76cee5a0",
+ "length_window": [
+  8,
+  12
+ ]
+}

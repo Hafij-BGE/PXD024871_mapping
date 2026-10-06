@@ -1,0 +1,23 @@
+{
+ "container": "UPN20_class_I.msf",
+ "unit_id": "UPN20",
+ "internal_run_refs": [
+  "131113_DK_CLL56_preTherapy_W_Adjusted_10%_Rep#1_25cm90min3s_msms1.RAW",
+  "131113_DK_CLL56_preTherapy_W_Adjusted_10%_Rep#2_25cm90min3s_msms8.RAW",
+  "131113_DK_CLL56_preTherapy_W_Adjusted_10%_Rep#3_25cm90min3s_msms10.RAW",
+  "131115_DK_CLL56_preTherapy_W_Adjusted_10%_Rep#4_25cm90min3s_msms17.RAW",
+  "131115_DK_CLL56_preTherapy_W_Adjusted_10%_Rep#5_25cm90min3s_msms19.RAW",
+  "131115_DK_CLL56_preTherapy_W_Adjusted_10%_Rep#6_25cm90min3s_msms21.RAW",
+  "131115_DK_CLL56_preTherapy_W_Adjusted_10%_Rep#7_25cm90min3s_msms23.RAW",
+  "131115_DK_CLL56_preTherapy_W_Adjusted_10%_Rep#9_25cm90min3s_msms27.RAW",
+  "131119_DK_CLL56_preTherapy_W_Adjusted_10%_Rep#11_25cm90min3s_msms14.RAW"
+ ],
+ "n_internal_runs": 9,
+ "psms_total": 147609,
+ "unique_sequences": 77939,
+ "extract_sha256": "b63ce15d5cd8fc15f17c49e18019b775c84e681371eed79fc560d9f855b215c1",
+ "length_window": [
+  8,
+  12
+ ]
+}

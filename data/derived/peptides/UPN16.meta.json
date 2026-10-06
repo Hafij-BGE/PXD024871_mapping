@@ -1,0 +1,19 @@
+{
+ "container": "UPN16_class_I.msf",
+ "unit_id": "UPN16",
+ "internal_run_refs": [
+  "130625_JS_CLL44_preTherapy_W_20%_Rep#1_25cm90min3s_msms4.RAW",
+  "130625_JS_CLL44_preTherapy_W_20%_Rep#2_25cm90min3s_msms7.RAW",
+  "130625_JS_CLL44_preTherapy_W_20%_Rep#3_25cm90min3s_msms10.RAW",
+  "130625_JS_CLL44_preTherapy_W_20%_Rep#4_25cm90min3s_msms13.RAW",
+  "130625_JS_CLL44_preTherapy_W_20%_Rep#5_25cm90min3s_msms16.RAW"
+ ],
+ "n_internal_runs": 5,
+ "psms_total": 104139,
+ "unique_sequences": 39991,
+ "extract_sha256": "9eada07f29ddbd91ac49a1c597b817374d24bb1c5f71a8990eaaaa7dce30804f",
+ "length_window": [
+  8,
+  12
+ ]
+}
