@@ -3,6 +3,17 @@
 Mapping methodology for PXD024871. Written before execution; this document is
 the specification, not a report of what happened.
 
+**Relationship to the governing document.** `PROJECT_PROMPT.md` is the master
+project prompt and governs this file. This file does not replace it, restate
+it, or amend it: it is the dataset-specific content that the prompt's *Mapping
+Methodology* section asks any project of this kind to supply — what is being
+mapped, source and target entities, matching criteria, normalization, exact and
+approximate match rules, ambiguity handling, unmatched and duplicate handling,
+and confidence categories. Where this file departs from the prompt rather than
+instantiating it, the departure is marked as such and argued; §4 is the only
+instance so far. The experiment this serves is
+`PXD024871_CNN_Experiment_Proposal.md`, which is committed unmodified.
+
 **Status:** OPEN — specification drafted, no mapping executed.
 **Governing rules:** no raw data is modified; no ambiguous match is silently
 forced; every mapping decision is traceable to the evidence that produced it.
