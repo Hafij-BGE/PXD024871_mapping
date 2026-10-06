@@ -59,57 +59,95 @@ then choose A or B on that evidence.
 
 ---
 
-## D002 — Select the negative-control strategy
+## D002 — Negative controls · RESOLVED
 
-**Date opened:** 2026-10-06
-**Status:** OPEN
-**Blocks:** Phase B (dataset), G4, §15 primary endpoint
-**Affects sections:** §8, §15, §16, §18, §20
+**Opened:** 2026-10-06 · **Resolved:** 2026-10-06 · **Status:** RESOLVED
+**Evidence:** run-008, `results/qc/negative_diagnostic.json`; run-001 F4/F6; run-006
 
-**Question**
-Which of the proposal's three candidate negative constructions (§8 A/B/C) is
-primary, and at what positive:negative ratio?
+**Decision: primary negatives are set C — length-matched peptides drawn from
+proteins that did yield observed peptides, excluding anything observed. Class
+ratio 1:1. Set B, shuffled positives, is preregistered as a secondary control
+reported alongside.**
 
-**Why this is a blocker**
-The negative set defines what the classifier is being asked to discriminate,
-so it sets the ceiling and the meaning of every metric downstream. It also
-interacts with §15: the AUPRC baseline is the positive prevalence, so an
-unfixed class ratio makes the primary endpoint uncomparable to any other
-number, including our own secondary analyses. §8 currently lists the three
-options and selects none.
+### The diagnostic that decided it
 
-**Risk specific to each option**
-- Set A (reference-derived, length-matched) — the easiest to generate, and
-  the most prone to inflation: background composition differs from observed
-  ligands, so a model can separate the classes on composition alone and score
-  well without learning anything position-specific.
-- Set B (decoys) — composition can be controlled by construction, but decoys
-  may be trivially separable in a different way, and overlap with the positive
-  set must be excluded explicitly.
-- Set C (hard negatives, resembling positives but unobserved) — the most
-  informative discrimination and the most defensible against the inflation
-  critique, but "unobserved" conflates genuine non-presentation with limits of
-  detection, which must be stated as a limitation rather than resolved.
+I committed when opening this to choosing on a composition diagnostic run before
+training, and to preferring the construction not separable on composition alone.
+The optimal *linear* classifier on 20-dimensional amino-acid composition, no
+positional information, held out:
 
-**Open sub-decision**
-Fixed positive:negative ratio (e.g. 1:1, 1:10, 1:100). Must be locked in
-preregistration and reported next to every AUPRC. A ratio chosen after seeing
-performance invalidates the endpoint.
+| Set | Construction | Composition-only AUROC | Composition divergence |
+|---|---|---|---|
+| A | reference-derived, length-matched | 0.6120 | 10.05 pp |
+| B | shuffled positives | **0.5000** | 0.00 pp |
+| C | same source proteins, unobserved | 0.6085 | 10.26 pp |
 
-**Recommendation:** Decide A/B/C on a composition diagnostic run *before*
-training — compare per-position and overall composition of each candidate
-negative set against the positives — and prefer the construction that is not
-separable on composition alone. Record the diagnostic as the evidence for the
-choice.
+### The criterion I set turned out to be insufficient, and I am not applying it
 
-**What must be true before this can be marked RESOLVED**
-- One primary strategy named, with the composition diagnostic attached.
-- Class ratio fixed and written into the preregistration.
-- Rejected options retained here with their reason.
-- Exclusion of positive/negative overlap specified as a G4 check.
+Read literally, B wins: it leaks exactly nothing, by construction, since
+shuffling preserves composition. But B is not a set of biologically possible
+non-ligands — shuffled peptides are not peptides any cell could present. A model
+separating real fragments from shuffled ones can succeed on *sequence realism*
+alone, which every real protein fragment has and no shuffled string does, while
+learning nothing about presentation.
 
-**Next step:** Cannot run the diagnostic until Phase B yields a positive set.
-Decide the *decision procedure* now (above), execute it at G4.
+So the original criterion optimises for the wrong thing when followed to its
+conclusion. A set can be unleakable on composition and still pose a question
+nobody asked.
+
+### Why C is primary
+
+C is the biologically meaningful contrast: real peptides from proteins the
+sample demonstrably expressed, which were nonetheless not observed. That
+controls for expression — A would let the model learn which proteins are present
+in the sample rather than which peptides are presented from them — and its
+composition leakage is indistinguishable from A's (0.6085 vs 0.6120), so the
+control costs nothing on the criterion that motivated the diagnostic.
+
+### The leakage is declared, not eliminated
+
+**The floor for the primary endpoint is not chance.** A composition-only linear
+model reaches AUROC 0.6085 against set C, which at 1:1 corresponds to an
+average precision of **0.597** under the binormal model, not 0.5 — so nearly a
+fifth of the distance from chance to a perfect score is available before the
+CNN learns anything. Any reported AP must be stated
+against that floor, and `results/qc/negative_diagnostic.json` is its source.
+
+This **amends D008**, which specified a lift over prevalence. Prevalence is the
+wrong reference: it describes a model with no information, and we have measured
+that a trivial one does considerably better. The threshold must be a lift over
+the measured composition floor.
+
+### Set B's role
+
+Reported as a secondary control, not an alternative. The pairing is
+diagnostic: strong on C and weak on B would mean the model found composition;
+strong on both means it found positional structure, which is what the experiment
+claims to test. Neither reading is available from one set alone.
+
+### Class ratio 1:1
+
+Three independent grounds converge, which is worth more than any one:
+run-001 F4 (average precision is biased upward at wide ratios, by roughly 10% of
+the lift at 1:100), F6 (relative precision degrades 3–5× at 1:100), and run-006
+(the ratio is a 5.5× compute lever). With D024's cap this gives 520,000
+positives and 520,000 negatives.
+
+### Rejected, retained with reasons
+
+**Set A** — composition leakage equal to C's with no expression control, so it
+is strictly dominated. **Set B as primary** — argued above. **1:10 and 1:100** —
+rejected on F4, F6 and compute together.
+
+### Residual limitation, not solved
+
+Non-observation is not non-presentation. Set C's members may well be presented
+and simply not detected: run-006 measured 1.45× redundancy with the final unit
+still 55% novel, so these repertoires are deeply undersampled. The negative
+class is therefore contaminated at an unknown rate, which biases measured
+performance downward. This is inherent to any construction built on absence,
+survives into the report, and is the reason §20's interpretation cannot treat a
+negative label as evidence of non-presentation.
 
 ---
 
@@ -129,7 +167,7 @@ blocks:
 | D005 | Instrument confound. **RESOLVED — accepted as a limitation**; total confound, cannot be corrected. See entry below | G3, FAIL accepted |
 | D006 | Training-set overlap between the comparison predictors and these peptides; handling rule if overlap exists | G11 |
 | D007 | Minimum-N gate. **RESOLVED — clears overwhelmingly**: 2,658,972 eligible positives. The confirmatory arm is not data-limited | G4 |
-| D008 | Decision rule for §25. **Form now fixed by D014 (ratified)**: a lift over prevalence, tested on the interval's lower bound. Magnitude still open and cannot close before D002, since prevalence follows the class ratio | G6, after D002 |
+| D008 | Decision rule for §25. Form fixed by D014: a lift tested on the interval's lower bound. **Reference corrected by D002**: the floor is the measured composition-only AP of 0.597, not the 0.5 prevalence — a model with no information does better than chance here. Magnitude still open | G6 |
 | D009 | Preregistration freeze mechanism (commit hash + timestamp) | G8 |
 | D010 | Seed convention — 20261006 is today's date; record the convention or replace it | G8 |
 | D011 | Unit definition. **RESOLVED** — participant as unit; 52 class-I units over 222 runs, verified. See entry below | G3 passed |

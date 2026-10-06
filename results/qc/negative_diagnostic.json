@@ -1,0 +1,26 @@
+{
+ "seed": 20261006,
+ "n_per_class": 60000,
+ "observed_universe": 2658972,
+ "proteome_sequences": 20652,
+ "results": {
+  "A": {
+   "auroc_composition_only": 0.6120064144444445,
+   "description": "reference-derived, length-matched",
+   "n": 60000,
+   "total_abs_divergence_pp": 10.045635223388672
+  },
+  "B": {
+   "auroc_composition_only": 0.5,
+   "description": "shuffled positives",
+   "n": 60000,
+   "total_abs_divergence_pp": 0.0
+  },
+  "C": {
+   "auroc_composition_only": 0.6084513361111111,
+   "description": "same source proteins, unobserved",
+   "n": 60000,
+   "total_abs_divergence_pp": 10.25847339630127
+  }
+ }
+}
