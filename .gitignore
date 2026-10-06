@@ -8,3 +8,8 @@ data/raw/**
 
 __pycache__/
 *.pyc
+
+# Transient stdout/stderr capture from runs. The provenance artifacts are the
+# CSV and params JSON a run writes, not its progress stream.
+results/**/run.log
+results/**/run.err
