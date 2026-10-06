@@ -128,6 +128,8 @@ blocks:
 | D008 | Decision rule for §25 — effect size and threshold, replacing "better than chance" | G13 |
 | D009 | Preregistration freeze mechanism (commit hash + timestamp) | G8 |
 | D010 | Seed convention — 20261006 is today's date; record the convention or replace it | G8 |
+| D011 | Unit definition: participant as the independent unit, with replicates and fractions nested within it, versus treating replicates as units. Sets the resampling unit and therefore the width of every uncertainty interval. Raised by `METHODOLOGY.md` M2 | G3 |
+| D012 | Partial typing: units with fewer recorded alleles than loci are ambiguous between a genuine single-allele locus and incomplete reporting. Imputation is prohibited; the question is whether such units are excluded from allele-stratified analyses or retained with a flag. Raised by `METHODOLOGY.md` M4 | G2 |
 
 ---
 
