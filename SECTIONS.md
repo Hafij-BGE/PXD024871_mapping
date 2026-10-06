@@ -723,9 +723,9 @@ Re-check the projection once more units are extracted.
 - "Better than chance" undefined without threshold
 - Small donor count may prevent robust effect estimation
 
-**Status:** OPEN — remains the primary endpoint per D014 (ratified); the threshold itself is still unspecified and blocked on D002
+**Status:** RESOLVED — primary endpoint per D014; decision rule fixed by D008: reject if the lower bound of a nominal-99% cluster-bootstrap interval exceeds 0.647 (composition floor 0.597 + 0.05). Nominal 99% because 95% delivers only ~89% actual coverage at 10 test units
 
-**Next Step:** Preregister the decision rule in the form D014 fixes — a lift over prevalence, tested on the interval's lower bound. The magnitude cannot be set until D002 fixes the class ratio, since prevalence follows from it. Run-001 indicates ~0.10 AP is cleanly resolvable at ten held-out participants and ~0.04 is marginal.
+**Next Step:** None. The rule is preregistered. Note its limitation: power is 0.42 at AUROC 0.70, so the minimum reliably detectable effect is a lift of ~0.14 AP (AUROC ≈ 0.75). Failure to reject is not evidence of no signal.
 
 ---
 
