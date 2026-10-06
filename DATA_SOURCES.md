@@ -59,12 +59,12 @@ Per master prompt §2, every source records all twelve:
    retrieved it — but it **cannot** establish that we retrieved the file the
    publisher intended. That distinction is recorded per source and carried into
    the limitations section.
-4. **[provisional]** The metadata file is described as being published without
-   a checksum while the data files carry one. If so, the metadata file — which
-   is the single source for most of Phase A — is the one input whose integrity
-   we cannot verify against the publisher. G1 records this explicitly, and §7
-   of `METHODOLOGY.md` cross-checks its content against the accompanying
-   publication as partial compensation.
+4. **Confirmed 2026-10-06.** 503 of 504 deposited files carry a published
+   checksum. The one that does not is the metadata file itself — the single
+   evidence source for M2, M3 and M4. Its integrity rests on our own SHA-256
+   plus one independent agreement: the manifest declares 317,806 bytes and the
+   retrieved file is exactly that size. That is weaker than a hash and is
+   carried as a limitation (`QC_G1.md`).
 5. Algorithm choice: SHA-256 for everything we compute. Published hashes are
    recorded in whatever algorithm the publisher used, with the algorithm named;
    they are not re-expressed or converted.
@@ -125,7 +125,7 @@ entire evidence base for M2, M3, and M4 — unit assignment, class assignment,
 and genotype all derive from this one file.
 
 **Risk concentration:** four of the seven mappings depend on this file alone,
-and it is **[provisional]** expected to lack a published checksum. It is also
+and it **does** lack a published checksum (confirmed). It is also
 community-annotated rather than depositor-authored, meaning its annotations are
 a third-party interpretation of the submission. Both facts are recorded as
 limitations. The independent cross-check in `METHODOLOGY.md`, *Independent verification*, exists
@@ -161,17 +161,22 @@ and a logged decision.
 
 **Role:** source of peptide identifications. Right side of M5, input to M6.
 
-**Retrieval strategy — streaming.** **[provisional]** the full container set is
-described as tens of gigabytes, which exceeds the working allowance. Per
+**Retrieval strategy — streaming.** **Verified:** the container set totals
+107.53 GiB over 101 files, against a 30 GB working allowance. Per
 container: retrieve → verify checksum → extract the identification table to
 Parquet → record both checksums in the registry → delete the container.
 
 Peak storage is one container plus its extract, rather than the whole set.
 
-**Not a choice — a constraint.** run-002 measured 30 GB of writable disk
-against a container set described as ~47.8 GB. The full set cannot be held at
-once, so streaming is the only feasible route rather than the tidier of two
-options. This paragraph originally presented it as a trade; it is not one.
+**Not a choice — a constraint.** 30 GB of writable disk (run-002) against a
+container set **verified at 107.53 GiB over 101 files**. The full set cannot be
+held at once, so streaming is the only feasible route rather than the tidier of
+two options. This paragraph originally presented it as a trade; it is not one.
+
+The margin is also thinner than first stated. The largest single container is
+**9.25 GiB**, so peak working space is ~12 GiB rather than the ~2 GB claimed
+before anything had been measured. Still comfortable against 30 GB, but the
+earlier figure was a guess presented as a budget.
 
 **Consequence for reproducibility, stated plainly:** the containers are not
 retained. Reproduction re-retrieves them from the publisher and verifies
@@ -199,7 +204,7 @@ path exists to `data/raw/`.
 | `retrieval_date` | **NOT PLANNED** |
 | `local_path` | n/a |
 | `checksum` | Published hashes recorded from S1 without retrieval |
-| `file_size` | **[provisional]** described as hundreds of gigabytes |
+| `file_size` | **Verified** 247.31 GiB over 402 files |
 | `license` | PENDING |
 | `reference` | PENDING |
 | `acquisition_method` | **NOT PLANNED** |
@@ -387,9 +392,9 @@ the host, S1 is a single invocation.
 | S7 | Dataset publication | PENDING | G2 | — |
 
 Nothing in this registry can be retrieved under the current network policy.
-Every `[provisional]` figure in this project therefore remains provisional, and
-G1 cannot be attempted. S1 is the one retrieval that unblocks the rest: it
-settles the counts and it determines S2's route.
+**Superseded 2026-10-06:** the policy was opened and S1 and S2 were retrieved.
+G1, G2 and G3 have been run (`results/qc/`). The remaining blocked source is
+S3, the identification containers.
 
 ---
 

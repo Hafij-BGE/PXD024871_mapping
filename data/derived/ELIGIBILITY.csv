@@ -1,0 +1,403 @@
+raw_file,hla_class,source_evidence,eligible,exclusion_reason
+UPN01_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN01_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN01_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN01_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN01_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN01_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN01_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN02_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN02_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN02_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN02_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN02_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN02_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN02_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN03_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN03_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN03_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN04_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN04_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN04_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN04_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN04_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN05_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN05_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN05_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN05_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN05_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN05_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN05_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN06_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN06_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN06_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN06_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN06_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep6.raw,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep7.raw,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep8.raw,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep9.raw,I,W6/32 (pan-HLA class I),yes,
+UPN07_class_I_Rep10.raw,I,W6/32 (pan-HLA class I),yes,
+UPN08_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN08_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN08_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN08_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN08_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN09_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN09_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN09_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN09_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN09_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN09_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN09_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN10_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN10_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN10_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN10_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN10_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN11_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN11_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN11_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN11_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN12_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN12_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN12_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN12_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN12_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN13_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN13_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN13_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN13_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN13_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN13_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN13_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN13_class_II_Rep3.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN13_class_II_Rep4.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN13_class_II_Rep5.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN14_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN14_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN14_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN14_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN14_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN15_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN15_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN15_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN15_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN15_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN16_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN16_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN16_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN16_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN16_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN17_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN17_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN17_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN17_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN17_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN17_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN18_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN18_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN18_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN18_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN18_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN18_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN18_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN18_class_II_Rep3.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN18_class_II_Rep4.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN18_class_II_Rep5.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN19_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN19_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN19_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN19_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN19_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN19_class_I_Rep6.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN19_class_I_Rep7.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN19_class_I_Rep8.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_I_Rep6.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_I_Rep7.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_I_Rep8.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_I_Rep9.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN20_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN20_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN20_class_II_Rep3.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN20_class_II_Rep4.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN20_class_II_Rep5.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN20_class_II_Rep6.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN20_class_II_Rep7.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN20_class_II_Rep8.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN20_class_II_Rep9.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN20_class_II_Rep10.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN21_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN21_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN21_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN21_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN21_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN21_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN21_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN21_class_II_Rep3.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN21_class_II_Rep4.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN21_class_II_Rep5.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN21_class_II_Rep6.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN21_class_II_Rep7.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN22_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN22_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN22_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN22_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN22_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN22_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN23_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN23_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN23_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN23_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN23_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN24_class_I_Rep1.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN24_class_I_Rep2.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN24_class_I_Rep3.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN24_class_I_Rep4.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN24_class_I_Rep5.RAW,I,W6/32 (pan-HLA class I),yes,
+UPN24_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN24_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN24_class_II_Rep3.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN24_class_II_Rep4.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN24_class_II_Rep5.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN25_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN25_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN25_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN25_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN25_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN25_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep4.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep5.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep6.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep7.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep8.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep9.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep10.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep11.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep12.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep13.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep14.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_I_Rep15.raw,I,W6/32 (pan-HLA class I),yes,
+UPN26_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep4.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep5.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep6.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep7.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep8.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep9.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep10.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep11.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep12.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep13.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep14.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN26_class_II_Rep15.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN27_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN27_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN27_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN27_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN27_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN27_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN28_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN28_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN28_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN28_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN28_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN28_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN29_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN29_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN29_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN29_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN29_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN29_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN30_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN30_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN30_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN30_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN30_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN30_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN31_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN31_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN31_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN31_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN31_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN31_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN32_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN32_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN32_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN32_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN32_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN32_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN33_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN33_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN33_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN33_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN33_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN33_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN34_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN34_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN34_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN34_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN34_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN34_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN35_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN35_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN35_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN35_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN35_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN35_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN36_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN36_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN36_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN36_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN36_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN36_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN37_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN37_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN37_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN37_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN37_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN37_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN38_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN38_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN38_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN38_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN38_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN38_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN39_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN39_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN39_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN39_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN39_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN39_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN40_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN40_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN40_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN40_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN40_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN40_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN41_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN41_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN41_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN41_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN41_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN41_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN42_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN42_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN42_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN42_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN42_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN42_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN43_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN43_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN43_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN43_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN43_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN43_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN44_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN44_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN44_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN44_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN44_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN44_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN45_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN45_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN45_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN45_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN45_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN45_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN46_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN46_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN46_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN46_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN46_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN46_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN47_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN47_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN47_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN47_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN47_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN47_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN48_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN48_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN48_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN48_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN48_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN48_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN49_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN49_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN49_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN49_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN49_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN49_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN50_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN50_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN50_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN50_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN50_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN50_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN51_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN51_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN51_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN51_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN51_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN51_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN52_class_I_Rep1.raw,I,W6/32 (pan-HLA class I),yes,
+UPN52_class_I_Rep2.raw,I,W6/32 (pan-HLA class I),yes,
+UPN52_class_I_Rep3.raw,I,W6/32 (pan-HLA class I),yes,
+UPN52_class_I_Rep4.raw,I,W6/32 (pan-HLA class I),yes,
+UPN52_class_I_Rep5.raw,I,W6/32 (pan-HLA class I),yes,
+UPN52_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN52_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN52_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN52_class_II_Rep4.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN52_class_II_Rep5.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN53_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN53_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN53_class_II_Rep3.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN53_class_II_Rep4.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN54_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN54_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN54_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN55_class_II_Rep1.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN55_class_II_Rep2.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN55_class_II_Rep3.RAW,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN56_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN56_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN56_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN57_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN57_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN57_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN58_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN58_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN58_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN59_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN59_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN59_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN60_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN60_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN60_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep1.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep2.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep3.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep4.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep5.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep6.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep7.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep8.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep9.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II
+UPN61_class_II_Rep10.raw,II,L243 (HLA-DR);Tue39 (pan-HLA class II),no,class II

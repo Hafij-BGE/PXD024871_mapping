@@ -1,0 +1,8 @@
+# Controlled vocabulary for M3. Every distinct value of
+# characteristics[antibody enrichment] observed in S2, mapped deliberately.
+# A value absent from this table halts the stage rather than defaulting.
+# Verified 2026-10-06 against characteristics[mhc protein complex] as an
+# independent source: 402/402 rows agree, zero conflicts.
+antibody_enrichment	hla_class
+W6/32 (pan-HLA class I)	I
+L243 (HLA-DR);Tue39 (pan-HLA class II)	II

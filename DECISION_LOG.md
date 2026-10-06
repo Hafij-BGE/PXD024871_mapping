@@ -9,9 +9,9 @@ Status values: OPEN / RESOLVED / PERMANENT
 
 ## D001 — Carry HLA genotype into the dataset schema
 
-**Date opened:** 2026-10-06
-**Status:** OPEN
-**Blocks:** Phase A2 (file map), Phase B (dataset), G2
+**Date opened:** 2026-10-06 · **Resolved:** 2026-10-06 by run-003
+**Status:** RESOLVED — option A taken; see *Resolved by Phase A retrieval* below
+**Blocks:** nothing; G2 passed
 **Affects sections:** §5 A2, §6, §9, §10, §25
 
 **Question**
@@ -120,17 +120,18 @@ blocks:
 
 | # | Decision | Blocks |
 |---|---|---|
+| D021 | Peak extraction disk corrected from ~2 GB to ~12 GiB once container sizes were verified. **RESOLVED** — see entry below | G8 |
 | D003 | Cross-donor shared sequences: drop from one split, or allow and report both ways | G5 |
 | D004 | Identification-confidence threshold for the positive set; whether to re-filter stricter than deposited | G4 |
-| D005 | Instrument as a confound — two instrument platforms in the class-I runs; check against donor assignment | G5 |
+| D005 | Instrument confound. **RESOLVED — accepted as a limitation**; total confound, cannot be corrected. See entry below | G3, FAIL accepted |
 | D006 | Training-set overlap between the comparison predictors and these peptides; handling rule if overlap exists | G11 |
 | D007 | Minimum-N gate: preregistered eligible-positive threshold below which the confirmatory arm does not run | G4 |
 | D008 | Decision rule for §25. **Form now fixed by D014 (ratified)**: a lift over prevalence, tested on the interval's lower bound. Magnitude still open and cannot close before D002, since prevalence follows the class ratio | G6, after D002 |
 | D009 | Preregistration freeze mechanism (commit hash + timestamp) | G8 |
 | D010 | Seed convention — 20261006 is today's date; record the convention or replace it | G8 |
-| D011 | Unit definition: participant as the independent unit, with replicates and fractions nested within it, versus treating replicates as units. Sets the resampling unit and therefore the width of every uncertainty interval. Raised by `METHODOLOGY.md` M2 | G3 |
-| D012 | Partial typing: units with fewer recorded alleles than loci are ambiguous between a genuine single-allele locus and incomplete reporting. Imputation is prohibited; the question is whether such units are excluded from allele-stratified analyses or retained with a flag. Raised by `METHODOLOGY.md` M4 | G2 |
-| D013 | S2 retrieval route: the metadata file as deposited in the submission, versus the separately maintained community-annotation repository. Different authorship, version history, and checksum availability, and possibly different contents. Settled by reading the S1 manifest, not by guessing a path. Raised by `DATA_SOURCES.md` | G1 |
+| D011 | Unit definition. **RESOLVED** — participant as unit; 52 class-I units over 222 runs, verified. See entry below | G3 passed |
+| D012 | Partial typing. **RESOLVED** — 14 of 52 units partial, none imputed. See entry below | G2 passed |
+| D013 | S2 route. **RESOLVED** — the metadata file is in the submission. See entry below | G1 passed |
 | D014 | Primary endpoint: §25 kept, threshold raised; §18 preregistered secondary. **RATIFIED, RESOLVED** — see entry below. Contingent on D006 | constrains D008 |
 | D020 | Compute gate numbers set from measured throughput on the target machine. **RESOLVED** — see entry below | G8 |
 | D015 | Master prompt transcription. **CONFIRMED, RESOLVED** — see entry below | closed |
@@ -211,6 +212,87 @@ adopting it is theirs.
 
 ---
 
+## Resolved by Phase A retrieval — D001, D005, D011, D012, D013, D021
+
+Resolved 2026-10-06 by run-003 against the retrieved sources. Evidence:
+`results/qc/QC_G1.md`–`QC_G3.md`, `data/derived/`.
+
+### D001 — HLA genotype in the schema · RESOLVED
+
+Option A taken: `hla_genotype`, `genotype_status` and `n_alleles` are columns in
+`FILE_MAP.csv` and `UNITS.csv`, and `ALLELE_FREQUENCY.csv` is emitted.
+
+**The question D001 existed to answer is settled, and favourably.** An
+allele-disjoint split is **constructible**: the most common allele appears in 29
+of 52 units (56%), so holding out its carriers leaves 23 for training — costly
+but feasible. 46 distinct alleles across 52 units, all 52 typed, zero
+nomenclature failures. §25's claim can therefore be *tested* rather than merely
+weakened, which is what I could not promise when this was opened.
+
+### D005 — Instrument confound · RESOLVED, accepted as a limitation
+
+**Total, not partial.** Two platforms partition the 52 class-I units 25/27 with
+**zero overlap**: no unit spans both. G3 records it as a FAIL. It cannot be
+corrected — it is a property of the deposited data — so under the governing
+prompt it is formally **accepted as a limitation**.
+
+**Cost to the study.** A unit-disjoint split cannot separate unit effects from
+platform effects. Any "generalizes to unseen units" result is equally consistent
+with a claim about generalizing across acquisition platforms. §25 must be worded
+to acknowledge this; no split over units rescues it.
+
+**Required mitigation, which is not a fix.** Stratify so both platforms appear
+in every partition — both groups are large enough. That stops the split
+*becoming* a platform split. It cannot make the effects separable, because no
+unit supplies within-unit platform variation.
+
+**No covariate rescue exists.** age and sex are "not available" on every row;
+disease and tissue are uniform across all 222 class-I runs. There is nothing to
+adjust with.
+
+### D011 — Unit definition · RESOLVED
+
+Participant as the unit, replicates and fractions nested, as proposed. Verified:
+**52 class-I units over 222 runs** (61 across the submission, 9 class-II only).
+Runs per unit 3–15: 29 units at 3, 17 at 5, a four-unit tail at 8/9/10/15.
+
+The conservative reading was right. The heaviest unit contributes five times the
+lightest, so pooled peptide-level statistics would be dominated by a handful of
+units — which is why run-001 resampled units rather than peptides.
+
+### D012 — Partial typing · RESOLVED
+
+Verified: **38 COMPLETE** at six alleles, **14 PARTIAL** (4 units at four
+alleles, 10 at five), zero ABSENT, zero LOW_RESOLUTION. 27% partial is material.
+None imputed. They stay eligible for unit-level analysis and are excluded from
+analyses keyed on the complete complement. The ambiguity named when this was
+opened is real and unresolvable from this metadata.
+
+### D013 — S2 retrieval route · RESOLVED
+
+**Route 1: it is in the submission.** The metadata file appears in the manifest
+as the single EXPERIMENTAL DESIGN entry, 317,806 bytes, retrieved from the
+submission's own path. The separate community-annotation repository was not
+needed. One prediction held: it is the **only** file of 504 without a published
+checksum, so its integrity rests on our own SHA-256 plus the manifest's declared
+size, which the retrieved file matches exactly.
+
+### D021 — Peak extraction disk corrected · RESOLVED
+
+Opened and closed by the same retrieval, because it corrects my own error.
+`DATA_SOURCES.md` and D020 claimed ~2 GB peak extraction disk. Container sizes
+from the manifest: median 841 MiB, **maximum 9.25 GiB** — so peak working space
+is ~12 GiB, a 6× understatement. The container set is **107.53 GiB**, not the
+~47.8 GB carried as provisional, exceeding the allowance by 3.6× rather than
+1.6×. Conclusions survive: 12 GiB fits in 30 GB and streaming remains mandatory.
+
+**Logged rather than quietly amended** because the ~2 GB figure sat in a budget
+table as though it were a measurement, was wrong by 6×, and nothing in the
+repository would have caught it — no container had been measured. The class of
+error is worth recording, not just the instance.
+
+---
+
 ## D020 — Compute gate numbers
 
 **Date opened:** 2026-10-06 · **Resolved:** 2026-10-06 · **Status:** RESOLVED
@@ -228,7 +310,8 @@ four cores with no GPU.
 
 **Limits set.** In `SECTIONS.md` §14. In summary: 20 configurations, 100 epochs
 with patience 10, 5 folds, 5 seeds for the selected configuration only, 150
-total runs, 48 hours wall clock, 4 cores, no GPU, ~2 GB peak extraction disk.
+total runs, 48 hours wall clock, 4 cores, no GPU, ~12 GiB peak extraction disk
+(corrected from ~2 GB once container sizes were verified; see D021).
 Worst-case grid cost ~31 hours against the 48-hour cap.
 
 **Reduction ladder is preregistered** and ordered: seeds, then configurations,
@@ -247,7 +330,8 @@ compute gate exists to prevent — so the gate must not become its instrument.
 1. **No GPU is required.** The architecture is small enough that CPU throughput
    suffices, removing a hardware dependency the proposal left implicit.
 2. **Streaming the containers is forced, not chosen.** 30 GB writable disk
-   against a container set described as ~47.8 GB: the full set cannot be held.
+   against a container set since verified at 107.53 GiB: the full set cannot be
+   held.
    `DATA_SOURCES.md` presented stream-and-delete as the better of two options;
    it is in fact the only feasible one, which means the reproducibility cost
    recorded there — dependence on the publisher's continued availability — is a

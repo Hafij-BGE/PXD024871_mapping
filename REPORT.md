@@ -86,9 +86,11 @@ against a 48-hour cap. Limits and the preregistered reduction ladder are in
 Two incidental findings. **No GPU is required** — the architecture is small
 enough that CPU suffices, removing a dependency the proposal left implicit.
 **Streaming the identification containers is forced rather than chosen** — 30 GB
-of writable disk against a set described as ~47.8 GB, so the stream-and-delete
-strategy in `DATA_SOURCES.md` is the only feasible route, and its
-reproducibility cost is a constraint rather than a trade.
+of writable disk against a set now verified at 107.53 GiB, so the
+stream-and-delete strategy in `DATA_SOURCES.md` is the only feasible route, and
+its reproducibility cost is a constraint rather than a trade. Peak working space
+is ~12 GiB, the largest single container being 9.25 GiB — corrected upward from
+a ~2 GB figure that predated any measurement.
 
 ## Discussion
 
