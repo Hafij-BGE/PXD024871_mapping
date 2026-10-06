@@ -124,12 +124,19 @@ def main():
     def process(c):
         t0 = time.time()
         dest = RAW_S3/c['name']
-        if not dest.exists():
+        complete = dest.exists() and dest.stat().st_size == c['size']
+        if not complete:
+            # A partial from a previous attempt is resumed, not discarded. The
+            # checksum afterwards is what makes that safe.
+            extra = ['--resume'] if dest.exists() else []
             r = run([str(RETRIEVE), '--source-id', 'S3', '--url', c['url'],
                      '--filename', c['name'], '--origin', 'PRIDE Archive, EMBL-EBI',
-                     '--published-checksum', f'sha1:{c["sha1"]}'])
+                     '--published-checksum', f'sha1:{c["sha1"]}'] + extra)
             if r.returncode != 0:
-                dest.unlink(missing_ok=True)
+                # Keep the partial so the next run resumes; delete only if the
+                # bytes are known bad.
+                if 'CHECKSUM_MISMATCH' in (r.stdout or ''):
+                    dest.unlink(missing_ok=True)
                 return c, False, (r.stdout or r.stderr).strip()[:160], time.time()-t0
         r = run([str(EXTRACT), c['name']] + ([] if a.keep else ['--delete']))
         if r.returncode != 0:

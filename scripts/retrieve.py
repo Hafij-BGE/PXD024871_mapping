@@ -41,6 +41,12 @@ def main():
         default="ABSENT",
         help="as 'algo:hex' if the publisher supplies one",
     )
+    p.add_argument(
+        "--resume", action="store_true",
+        help="continue a partial transfer rather than restarting it. Safe because "
+             "the checksum is verified afterwards: a bad resume fails the check "
+             "exactly as a bad download would.",
+    )
     args = p.parse_args()
 
     name = args.filename or unquote(Path(urlparse(args.url).path).name)
@@ -49,12 +55,22 @@ def main():
 
     dest_dir = RAW / args.source_id
     dest = dest_dir / name
-    if dest.exists():
-        sys.exit(f"refusing to overwrite {dest}; data/raw is write-once")
+    partial = dest.exists() and args.resume
+    if dest.exists() and not args.resume:
+        sys.exit(f"refusing to overwrite {dest}; data/raw is write-once "
+                 f"(pass --resume to continue an interrupted transfer)")
     dest_dir.mkdir(parents=True, exist_ok=True)
 
+    # Abort on a STALL, not on duration. A total time limit punishes large files
+    # for being large: the 9.25 GiB container failed at 5.7 GiB purely because
+    # it was still going at 30 minutes. --speed-limit/--speed-time ends a
+    # transfer that has genuinely died, while letting a slow one finish.
     cmd = ["curl", "--fail", "--location", "--silent", "--show-error",
-           "--max-time", "1800", "--output", str(dest), args.url]
+           "--speed-limit", "10240", "--speed-time", "120",
+           "--max-time", "21600",
+           "--output", str(dest), args.url]
+    if partial:
+        cmd[-3:-3] = ["--continue-at", "-"]
     started = datetime.now(timezone.utc)
     proc = subprocess.run(cmd, capture_output=True, text=True)
 
@@ -69,7 +85,7 @@ def main():
         "license": args.license,
         "reference": args.reference,
         "acquisition_method": " ".join(cmd),
-        "processing_history": "NONE",
+        "processing_history": "RESUMED from a partial transfer" if partial else "NONE",
         "published_checksum": args.published_checksum,
     }
 
