@@ -177,12 +177,18 @@ point estimate and degrades relative precision. 1:1 or 1:10 is preferable.
 Consider BCa or studentized intervals to address F3, and a bias correction for
 F4 if an extreme ratio is chosen anyway.
 
-**New: D014 — should §18 be the primary endpoint?** F7 shows the paired
+**D014 — should §18 be the primary endpoint? Resolved: no, ratified 2026-10-06.** F7 shows the paired
 comparison is better powered than the absolute claim at every K. Proposing,
 not making, this change: it would make the confirmatory question "does the CNN
 differ from existing predictors on identical rows" rather than "is the CNN
 better than chance", which is both more informative and better matched to the
-design's resolution. Recorded as a decision rather than applied.
+design's resolution. Recorded as a decision rather than applied — and subsequently decided the other
+way. The consideration this section missed is in `METHODOLOGY.md` M7: §18's
+fairness depends on the comparison predictors' training sets, which M7 may be
+unable to verify. A better-powered endpoint resting on an uncheckable premise
+is worse than a weaker one that is fully specified, so §25 was kept with a lift
+threshold and §18 preregistered as secondary. Power was not the deciding
+consideration; verifiability was. See `DECISION_LOG.md` D014.
 
 ## Feasibility verdict
 

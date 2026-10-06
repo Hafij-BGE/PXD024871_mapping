@@ -392,9 +392,14 @@ whose training data cannot be inspected is reportable only with that caveat
 attached. Treating it as clean would misstate the CNN's position without
 knowing in which direction.
 
-**Bearing on D014.** Because §18's primary weakness is an `UNVERIFIABLE` this
-pipeline cannot resolve, making it the confirmatory endpoint would rest the
-headline claim on an uncheckable assumption. See `DECISION_LOG.md` D014.
+**Bearing on D014, now decided.** Because §18's weakness is an `UNVERIFIABLE`
+this pipeline cannot resolve, making it the confirmatory endpoint would rest the
+headline claim on an uncheckable assumption. D014 is ratified on that basis:
+§25 stays primary with a raised threshold, §18 is preregistered as secondary.
+**This mapping is the gate on revisiting that.** If M7 returns `CLEAN` or a
+quantified `OVERLAPPING` for every comparison predictor, the objection
+disappears and §18 may be promoted — by a new decision entry, before results
+are seen. If any predictor returns `UNVERIFIABLE`, it may not.
 
 **Outputs and gate.** Per-predictor overlap counts and sequence lists; gate G11.
 
@@ -497,7 +502,7 @@ S8  M6  peptide to unit, freeze filtering           -> G4   [D004, D007]
 S9  negative construction, fix class ratio          -> G4   [D002]
 S10 leakage + confound audit                        -> G5   [D003, D005]
 S11 split construction, hash and commit             -> G6
-S12 preregistration freeze                          -> G6   [D008, D009, D010, D014]
+S12 preregistration freeze                          -> G6   [D008, D009, D010]
 S13 model fit                                       -> G7-G10
 S14 held-out evaluation, resampling                 -> G10-G12
 S15 M7 contamination check, comparison              -> G11  [D006]
