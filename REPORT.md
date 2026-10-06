@@ -36,6 +36,7 @@ That mapping is the current work.
 | Approximate matching | Prohibited on all identifier joins, argued in M1 | Specified; departure from `PROJECT_PROMPT.md`, logged as D016 |
 | QC gates | G1–G13, `METHODOLOGY.md`, *QC gates*, and `SECTIONS.md` | Specified; none attempted |
 | Design analysis | Binormal simulation, `scripts/power_analysis.py` | **Complete** (run-001) |
+| Compute budget | Measured throughput, `scripts/benchmark_compute.py` | **Complete** (run-002); §14 limits set, D020 |
 
 Two rules are stated as prohibitions rather than preferences, because both
 would manufacture assertions the sources do not make: class is never inferred
@@ -73,6 +74,21 @@ distribution host; the failed attempt is retained at
 No count describing PXD024871 anywhere in this repository has been verified.
 All such figures are marked `[provisional]` and originate from a description
 supplied in conversation, not from a retrieved file.
+
+### R3 — Compute budget (run-002)
+
+Measured throughput on the target machine: ~123,000 peptides/sec training on
+four cores with no GPU. Worst-case grid — 100,000 positives at 1:10, 20
+configurations across 5 folds plus a 5-seed final fit — comes to about 31 hours
+against a 48-hour cap. Limits and the preregistered reduction ladder are in
+`SECTIONS.md` §14; basis in `DECISION_LOG.md` D020.
+
+Two incidental findings. **No GPU is required** — the architecture is small
+enough that CPU suffices, removing a dependency the proposal left implicit.
+**Streaming the identification containers is forced rather than chosen** — 30 GB
+of writable disk against a set described as ~47.8 GB, so the stream-and-delete
+strategy in `DATA_SOURCES.md` is the only feasible route, and its
+reproducibility cost is a constraint rather than a trade.
 
 ## Discussion
 
@@ -139,6 +155,7 @@ are acquired; none is asserted from memory.
 |---|---|---|---|
 | T1 | Design resolution grid, 91 rows | `results/power/power_grid.csv` | `scripts/power_analysis.py` (run-001) |
 | T2 | Run parameters and reconstruction note | `results/power/power_params.json` | `scripts/power_analysis.py` (run-001) |
+| T3 | Measured throughput and derived grid cost | `results/compute/benchmark.json` | `scripts/benchmark_compute.py` (run-002) |
 | F1–F6 | Methodology flowcharts: pipeline, mapping dataflow, status resolution, gate handling, decision order, scope constraint | `FLOWCHART.md` | Hand-authored; Mermaid grammar validated |
 
 No figure has been generated from project data, because no project data exists.

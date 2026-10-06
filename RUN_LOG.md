@@ -104,3 +104,81 @@ they do not describe it.
 
 **Status:** RESOLVED as an analysis. Supersedes nothing. To be superseded by
 run-00N after retrieval.
+
+---
+
+## run-002 — Compute throughput benchmark
+
+| Element | Value |
+|---|---|
+| Timestamp | 2026-10-06, UTC |
+| Stage | Pre-retrieval design analysis (no gate; same standing as run-001 under D017) |
+| Purpose | Measure this machine's throughput on the §11 architecture so the §14 compute gate is set from data rather than guessed |
+| Serves | `SECTIONS.md` §14; decision D020 |
+| Code | `scripts/benchmark_compute.py`, blob `d5a5ec2c4667570ab287591e1fbeb08a1a4a9e92` |
+| Environment | env-001 (`ENVIRONMENT.md`) |
+| Inputs | **None.** Synthetic indices; no project data exists |
+| Parameters | seed 20261006; batches 256/1024/4096; 20 reps each; architecture L=12 E=32 C1=C2=64 D=64 K=3 |
+| Outputs | `results/compute/benchmark.json` (sha256 `b4616b78b562b69d…`) |
+| Software versions | Python 3.11.15, numpy 2.4.6 |
+| Random seed | 20261006 |
+| CPU/RAM/GPU | 4 cores Intel Xeon @ 2.10 GHz, 15 GiB RAM, **no GPU** |
+| Runtime | <10 s |
+| Errors/warnings | A numerically unstable sigmoid in the exploratory version overflowed on random weights; replaced with the sign-stable form before this run. Irrelevant to timing either way, fixed so the committed script is correct |
+| Metrics | Forward 367,945 peptides/s; training 122,648 peptides/s |
+
+### Research record
+
+**Purpose.** Supply the §14 numbers, which had been empty since the proposal was
+written and which I had been declining to fill because I had no basis for them.
+
+**Reasoning.** The author asked for the numbers to be set. I cannot know their
+institutional budget, but the *machine* is measurable and the architecture is
+specified, so a budget derived from measured throughput on the target hardware
+is defensible in a way an invented figure is not. Measuring also answered a
+question nobody had asked: whether a GPU is needed. It is not.
+
+**Alternatives considered.** (a) Benchmark with PyTorch for a realistic
+framework measurement — attempted and abandoned. The CPU-only wheel index is
+blocked by the network policy, and the PyPI wheel began pulling 553 MB of cuDNN
+onto a machine with no GPU. Not worth ~2.5 GB of dead GPU libraries to refine a
+number whose purpose is a conservative cap. (b) Estimate from FLOP counts alone
+— computed as a cross-check and rejected as the primary basis: it gave a floor
+of 2.7–27 s/epoch while ignoring memory movement, which dominates at this model
+size. (c) Decline again and leave §14 empty — rejected; the author asked, and a
+measured conservative bound is better than an open gate.
+
+**Interpretation.** Below.
+
+**Limitations.** numpy over BLAS rather than an optimised framework, so the
+figure is an upper bound on time; training taken as 3× forward; the worst-case
+dataset size is assumed, not known; and the numbers are specific to this
+machine.
+
+**Decision.** D020.
+
+**Next step.** Re-check the worst-case sizing once D007 fixes the real eligible
+count. Re-run entirely if the hardware changes.
+
+### Interpretation
+
+The design is comfortably affordable on hardware already available, and the
+binding constraint is not compute. Worst-case sizing — 100,000 positives at
+1:10, 20 configurations across 5 folds plus a 5-seed final fit — comes to about
+31 hours against a 48-hour cap, on four cores with no GPU.
+
+Two findings beyond the budget itself:
+
+**No GPU is required.** The §11 architecture is small enough that CPU
+throughput suffices. This removes a hardware dependency the proposal left
+implicit.
+
+**Streaming the containers is mandatory, not an optimisation.** Available
+writable disk is 30 GB against a container set described as ~47.8 GB. The full
+set cannot be held at once, so `DATA_SOURCES.md`'s stream-and-delete strategy is
+the only feasible route rather than the tidier of two options. That also means
+the reproducibility cost recorded there — dependence on the publisher's
+continued availability — is forced, not chosen.
+
+**Status:** RESOLVED. Supersedes nothing. To be superseded if the hardware
+changes or D007 fixes a materially different dataset size.

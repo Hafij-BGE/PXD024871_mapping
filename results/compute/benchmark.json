@@ -1,0 +1,87 @@
+{
+  "seed": 20261006,
+  "machine": {
+    "platform": "Linux-6.18.44-fc-v70-x86_64-with-glibc2.39",
+    "processor": "x86_64",
+    "cores": 4,
+    "gpu": null
+  },
+  "architecture": {
+    "length": 12,
+    "embed": 32,
+    "conv1": 64,
+    "conv2": 64,
+    "dense": 64,
+    "kernel": 3,
+    "alphabet": 21
+  },
+  "numpy": "2.4.6",
+  "per_batch": {
+    "256": {
+      "ms_per_batch": 1.2183900500019718,
+      "peptides_per_sec": 210113.33767834507
+    },
+    "1024": {
+      "ms_per_batch": 4.339370900004269,
+      "peptides_per_sec": 235978.90652743983
+    },
+    "4096": {
+      "ms_per_batch": 11.13209334999965,
+      "peptides_per_sec": 367945.17178569373
+    }
+  },
+  "forward_peptides_per_sec": 367945.17178569373,
+  "training_peptides_per_sec": 122648.39059523125,
+  "scenarios": {
+    "10000_1to1": {
+      "positives": 10000,
+      "neg_per_pos": 1,
+      "rows": 20000,
+      "sec_per_epoch": 0.1630677736816355,
+      "min_per_100ep_run": 0.2717796228027259,
+      "hours_20cfg_5fold": 0.4529660380045431
+    },
+    "10000_1to10": {
+      "positives": 10000,
+      "neg_per_pos": 10,
+      "rows": 110000,
+      "sec_per_epoch": 0.8968727552489952,
+      "min_per_100ep_run": 1.494787925414992,
+      "hours_20cfg_5fold": 2.491313209024987
+    },
+    "50000_1to1": {
+      "positives": 50000,
+      "neg_per_pos": 1,
+      "rows": 100000,
+      "sec_per_epoch": 0.8153388684081775,
+      "min_per_100ep_run": 1.3588981140136291,
+      "hours_20cfg_5fold": 2.264830190022715
+    },
+    "50000_1to10": {
+      "positives": 50000,
+      "neg_per_pos": 10,
+      "rows": 550000,
+      "sec_per_epoch": 4.484363776244976,
+      "min_per_100ep_run": 7.47393962707496,
+      "hours_20cfg_5fold": 12.456566045124934
+    },
+    "100000_1to1": {
+      "positives": 100000,
+      "neg_per_pos": 1,
+      "rows": 200000,
+      "sec_per_epoch": 1.630677736816355,
+      "min_per_100ep_run": 2.7177962280272583,
+      "hours_20cfg_5fold": 4.52966038004543
+    },
+    "100000_1to10": {
+      "positives": 100000,
+      "neg_per_pos": 10,
+      "rows": 1100000,
+      "sec_per_epoch": 8.968727552489952,
+      "min_per_100ep_run": 14.94787925414992,
+      "hours_20cfg_5fold": 24.913132090249867
+    }
+  },
+  "method": "numpy/BLAS im2col forward pass; training = 3x forward",
+  "caveat": "conservative: no framework kernel fusion, so a real framework should be faster. Upper bound on time."
+}

@@ -401,35 +401,57 @@ Each section of the experiment has:
 **Why this method is needed:** An unbounded compute budget means the design silently expands until something works, which is selection. A declared budget forces any reduction to be recorded as a decision instead.
 
 **Input & Sources:**
-- Maximum wall-clock time available
-- Available CPU/GPU
-- Disk space (47.8 GB .msf + intermediate outputs)
+- Measured throughput on the target machine: `results/compute/benchmark.json`, run-002
+- Machine: 4 cores, Intel Xeon @ 2.10 GHz, 15 GiB RAM, **no GPU**
+- Measured training throughput: **122,648 peptides/sec** for the §11 architecture
+- Available writable disk: 30 GB
+- **[provisional]** identification containers described as ~47.8 GB in total
 
 **Methodology:**
-- Calculate .msf extraction footprint: stream 1 file at a time (peak ~2 GB, not 48 GB)
-- Set maximum training runs (e.g., 10 random hyperparameter initializations)
-- Set maximum epochs per run (e.g., 100)
-- Set maximum hyperparameter configurations (e.g., 20)
-- Document compute grid: runs × epochs × configs
-- If full design exceeds limit, record reduction and why
+Limits derived from measurement, not assumption. Worst-case sizing assumes 100,000 eligible positives at a 1:10 class ratio — 1.1M rows per epoch, 9.0 s/epoch, 14.9 min per 100-epoch run.
+
+| Limit | Value | Basis |
+|---|---|---|
+| Max hyperparameter configurations | **20** | Grid cost below |
+| Max epochs per run | **100**, early-stopping patience 10 | Convergence expected far sooner at this model size |
+| Max cross-validation folds | **5** | Participant count will not support more stable folds |
+| Max seeds, selected config only | **5** | Search runs at 1 seed |
+| Max total training runs | **150** | 20 configs × 5 folds = 100 for selection; 1 config × 5 folds × 5 seeds = 25 for the final fit; 25 spare |
+| Max wall-clock | **48 hours** | Worst case is ~31 h; see grid |
+| CPU allocation | **4 cores** | All that exists |
+| GPU allocation | **0** | None available, and the measurement shows none is needed |
+| Peak disk, extraction | **~2 GB** | One container plus its extract at a time |
+
+Grid cost at the worst-case size: selection 25 h, final fit ~6 h, total ~31 h against a 48 h cap.
+
+**Predefined reduction ladder.** Applied in this order if the cap is reached, each step recorded as a decision:
+1. Seeds for the selected config, 5 → 3
+2. Hyperparameter configurations, 20 → 10, dropped by a priority order fixed at preregistration
+3. Cross-validation folds, 5 → 3
+4. Epochs 100 → 50, patience 10 → 5
+
+**Never reduced:** the test partition, the split definition, or the allele-disjoint secondary analysis. Those are the design, not the budget, and cutting them to fit a budget would be changing the experiment to afford it.
 
 **Metrics & QC:**
-- Total estimated compute time < available time
-- Disk footprint verified
-- Reduction (if any) recorded explicitly
+- Worst-case grid cost < wall-clock cap ✓ (~31 h vs 48 h)
+- Peak extraction disk < available ✓ (~2 GB vs 30 GB)
+- Full container set > available disk ✓ **confirms streaming is mandatory, not an optimisation** (~47.8 GB [provisional] vs 30 GB)
+- Any reduction-ladder step taken is recorded with the measurement that triggered it
 
 **Expected Outcome:**
-- Compute gate specification
-- Peak disk space verified
-- Runtime estimate provided
+- Budget fixed before any model is fit, so no run can be justified retrospectively
+- Reduction, if needed, is a logged decision rather than a silent design change
 
 **Limitations:**
-- Estimate may be inaccurate until first run
-- GPU availability may change
+- Throughput measured with numpy over BLAS, not an optimised framework. Conservative by construction: a real framework should be faster, so the budget has headroom rather than a shortfall.
+- Training cost taken as 3× forward, the standard approximation; the true factor varies with optimiser and implementation.
+- The 100,000-positive worst case is an assumption. The real eligible count is unknown and gates on D007; a smaller set makes every figure here slack.
+- Measured on this cloud machine. If the work moves to different hardware, run-002 must be re-executed and the budget reset — the ladder is valid, the numbers are not portable.
+- No GPU was available to measure. If one is used later, these limits understate what is affordable.
 
-**Status:** OPEN (no numbers yet; needs specification)
+**Status:** RESOLVED — budget set from measurement (D020, run-002). Reopens if the hardware changes.
 
-**Next Step:** Set actual compute limits, document.
+**Next Step:** None for this section. The worst-case sizing is re-checked once D007 fixes the real eligible count.
 
 ---
 

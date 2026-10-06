@@ -168,13 +168,18 @@ Parquet → record both checksums in the registry → delete the container.
 
 Peak storage is one container plus its extract, rather than the whole set.
 
+**Not a choice — a constraint.** run-002 measured 30 GB of writable disk
+against a container set described as ~47.8 GB. The full set cannot be held at
+once, so streaming is the only feasible route rather than the tidier of two
+options. This paragraph originally presented it as a trade; it is not one.
+
 **Consequence for reproducibility, stated plainly:** the containers are not
 retained. Reproduction re-retrieves them from the publisher and verifies
 against the checksums recorded here. This makes our extraction verifiable but
 makes the pipeline dependent on the publisher's continued availability. The
 recorded checksums are what make the dependency auditable — a future retrieval
-that hashes differently is detectable. This is a deliberate trade of local
-retention for feasibility, and it is a limitation, not a solved problem.
+that hashes differently is detectable. This is a constraint we are under rather than a trade we made (run-002), and it
+is a limitation, not a solved problem.
 
 **Extraction is read-only.** The container is opened for reading; no write
 path exists to `data/raw/`.
