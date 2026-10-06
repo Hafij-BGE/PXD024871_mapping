@@ -1,0 +1,19 @@
+{
+ "container": "UPN18_class_I.msf",
+ "unit_id": "UPN18",
+ "internal_run_refs": [
+  "131031_DK_CLL54_AllTherapiesPooled_W_20%_Rep#1_25cm90min3s_msms8.RAW",
+  "131031_DK_CLL54_AllTherapiesPooled_W_20%_Rep#2_25cm90min3s_msms9.RAW",
+  "131031_DK_CLL54_AllTherapiesPooled_W_20%_Rep#3_25cm90min3s_msms10.RAW",
+  "131031_DK_CLL54_AllTherapiesPooled_W_20%_Rep#4_25cm90min3s_msms11.RAW",
+  "131031_DK_CLL54_AllTherapiesPooled_W_20%_Rep#5_25cm90min3s_msms12.RAW"
+ ],
+ "n_internal_runs": 5,
+ "psms_total": 70443,
+ "unique_sequences": 43634,
+ "extract_sha256": "c9e688a49d710a40ac26b21a0d9817abef46c7af7762fc44863090a710623df3",
+ "length_window": [
+  8,
+  12
+ ]
+}
