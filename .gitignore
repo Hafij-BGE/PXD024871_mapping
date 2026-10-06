@@ -1,0 +1,10 @@
+# Raw data is never committed: it is large, and the repository is not its
+# archive. Provenance records are committed, because they are what make the
+# raw data verifiable without storing it.
+data/raw/**
+!data/raw/
+!data/raw/*/
+!data/raw/*/provenance.jsonl
+
+__pycache__/
+*.pyc
