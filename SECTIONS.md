@@ -401,57 +401,102 @@ Each section of the experiment has:
 **Why this method is needed:** An unbounded compute budget means the design silently expands until something works, which is selection. A declared budget forces any reduction to be recorded as a decision instead.
 
 **Input & Sources:**
-- Measured throughput on the target machine: `results/compute/benchmark.json`, run-002
-- Machine: 4 cores, Intel Xeon @ 2.10 GHz, 15 GiB RAM, **no GPU**
-- Measured training throughput: **122,648 peptides/sec** for the §11 architecture
-- Available writable disk: 30 GB
-- **Verified** 2026-10-06: identification containers total 107.53 GiB over 101 files; largest single container 9.25 GiB
+- Measured throughput, run-002: **122,648 peptides/sec** training, 4 cores, no GPU
+- Measured peptide yield, run-004/005: **~16,500 unique 8–12mers per acquisition**
+- Measured cross-unit redundancy, run-005: **2.9–6.2% pairwise overlap**, Heaps' β ≈ 0.92
+- **Projected eligible positives at 52 units: ~1.9M** (see limitations — this is a projection from 4 units)
+- Machine: 4 cores, 15 GiB, no GPU, **ephemeral session container**
 
-**Methodology:**
-Limits derived from measurement, not assumption. Worst-case sizing assumes 100,000 eligible positives at a 1:10 class ratio — 1.1M rows per epoch, 9.0 s/epoch, 14.9 min per 100-epoch run.
+**Methodology — RESIZED 2026-10-06 (D022).** The original gate was sized at a
+100,000-positive worst case. Measurement puts the real figure near **1.9
+million**, a 19× error, so the budget is rebuilt from the measured numbers.
 
-| Limit | Value | Basis |
+Grid cost, 20 configurations × 5 folds × 100 epochs = 100 runs:
+
+| Positives | 1:1 ratio | 1:10 ratio |
 |---|---|---|
-| Max hyperparameter configurations | **20** | Grid cost below |
-| Max epochs per run | **100**, early-stopping patience 10 | Convergence expected far sooner at this model size |
-| Max cross-validation folds | **5** | Participant count will not support more stable folds |
-| Max seeds, selected config only | **5** | Search runs at 1 seed |
-| Max total training runs | **150** | 20 configs × 5 folds = 100 for selection; 1 config × 5 folds × 5 seeds = 25 for the final fit; 25 spare |
-| Max wall-clock | **48 hours** | Worst case is ~31 h; see grid |
-| CPU allocation | **4 cores** | All that exists |
-| GPU allocation | **0** | None available, and the measurement shows none is needed |
-| Peak disk, extraction | **~12 GiB** | Largest container is 9.25 GiB (verified), plus its extract. Corrected from an earlier ~2 GB figure, which assumed a container size nothing had measured |
+| 500,000 | 22.6 h | 124.6 h |
+| 1,000,000 | 45.3 h | 249.1 h |
+| 1,900,000 | 86.1 h | 473.5 h |
 
-Grid cost at the worst-case size: selection 25 h, final fit ~6 h, total ~31 h against a 48 h cap.
+**The class ratio is a 5.5× compute lever.** This is new information for D002:
+run-001's F4 and F6 already argued against wide ratios on bias and precision
+grounds, and compute now points the same way. 1:1 is preferred on all three.
 
-**Predefined reduction ladder.** Applied in this order if the cap is reached, each step recorded as a decision:
+| Limit | Value | Change |
+|---|---|---|
+| Planning worst case | **2,000,000 positives** | was 100,000 |
+| Class ratio assumed | **1:1** | was 1:10; D002 recommendation strengthened |
+| Max hyperparameter configurations | **20** | unchanged |
+| Max epochs per run | **100**, patience 10 | unchanged |
+| Max folds | **5** | unchanged |
+| Max seeds, selected config | **5** | unchanged |
+| Max total training runs | **150** | unchanged |
+| Max wall-clock | **96 hours** | was 48 h |
+| CPU allocation | **4 cores** | unchanged |
+| GPU allocation | **0 available** | unchanged, and now the binding constraint |
+| Peak disk, extraction | **~12 GiB** | unchanged (D021) |
+| Transfer budget, S3 | **47.85 GiB, ~9 h at 1.5 MiB/s measured** | newly specified |
+
+**The honest conclusion: the work has outgrown this environment.** At 1:1 and 2M
+positives the grid is ~90 hours. The session container is **ephemeral** — it is
+reclaimed after inactivity — so a 90-hour grid cannot run here at all,
+regardless of the cap. Raising the cap to 96 h makes the budget arithmetically
+consistent; it does not make it executable on this machine.
+
+Three ways out, in preference order:
+
+1. **A GPU.** The architecture is small; the cost is row throughput, not model
+   size. This is the change that makes the design comfortable rather than
+   marginal, and run-002 already established no GPU is *needed* for a small
+   dataset — that conclusion does not survive a 19× larger one.
+2. **Persistent hardware** with equivalent CPU. 90 hours is fine on a machine
+   that is not reclaimed; it is impossible on one that is.
+3. **Shrink the design.** The reduction ladder below, or subsampling positives.
+   Subsampling is a design change requiring its own decision, not a budget
+   adjustment.
+
+**Predefined reduction ladder** (unchanged in order; it now triggers much
+earlier). Applied in order, each step recorded:
 1. Seeds for the selected config, 5 → 3
-2. Hyperparameter configurations, 20 → 10, dropped by a priority order fixed at preregistration
-3. Cross-validation folds, 5 → 3
+2. Configurations, 20 → 10, by a priority order fixed at preregistration
+3. Folds, 5 → 3
 4. Epochs 100 → 50, patience 10 → 5
 
-**Never reduced:** the test partition, the split definition, or the allele-disjoint secondary analysis. Those are the design, not the budget, and cutting them to fit a budget would be changing the experiment to afford it.
+At 1M positives and 1:10 the full ladder still leaves 37 h; at 1:1 it leaves
+6.8 h. The ladder alone cannot rescue a wide class ratio at this dataset size.
+
+**Never reduced:** the test partition, the split definition, or the
+allele-disjoint secondary analysis. Those are the design, not the budget.
 
 **Metrics & QC:**
-- Worst-case grid cost < wall-clock cap ✓ (~31 h vs 48 h)
-- Peak extraction disk < available ✓ (~12 GiB vs 30 GB) — comfortable, but 2.5× tighter than the uncorrected figure implied
-- Full container set > available disk ✓ **streaming is mandatory, not an optimisation** (107.53 GiB verified vs 30 GB — 3.6× over, not the 1.6× the provisional figure suggested)
-- Any reduction-ladder step taken is recorded with the measurement that triggered it
+- Worst-case grid < wall-clock cap ✓ at 1:1 (86 h vs 96 h) ✗ at 1:10 (474 h)
+- Peak extraction disk < available ✓ (~12 GiB vs 30 GB)
+- Transfer feasible within session lifetime ✗ **9 h transfer on an ephemeral container is a live risk**
+- Any ladder step taken is recorded with the measurement that triggered it
 
 **Expected Outcome:**
-- Budget fixed before any model is fit, so no run can be justified retrospectively
-- Reduction, if needed, is a logged decision rather than a silent design change
+- Budget fixed before any model is fit, from measured rather than assumed inputs
+- The hardware requirement is stated explicitly rather than discovered at run time
 
 **Limitations:**
-- Throughput measured with numpy over BLAS, not an optimised framework. Conservative by construction: a real framework should be faster, so the budget has headroom rather than a shortfall.
-- Training cost taken as 3× forward, the standard approximation; the true factor varies with optimiser and implementation.
-- The 100,000-positive worst case is an assumption. The real eligible count is unknown and gates on D007; a smaller set makes every figure here slack.
-- Measured on this cloud machine. If the work moves to different hardware, run-002 must be re-executed and the budget reset — the ladder is valid, the numbers are not portable.
-- No GPU was available to measure. If one is used later, these limits understate what is affordable.
+- **The 1.9M projection comes from 4 units of 52.** Heaps' β ≈ 0.92 is fitted on
+  four points; the 52-unit figure is an order of magnitude, not an estimate.
+  Marginal novelty was still 92% at the fourth unit, so saturation is not near,
+  but the exponent could move materially with more units.
+- Only **one** of the six sampled pairs shared any alleles. That pair overlapped
+  5.6%, inside the 2.9–6.2% range of the genotype-disjoint pairs, which weakens
+  but does not settle the concern that the sample was unusually novel. More
+  shared-allele pairs, ideally carrying the most common allele, would settle it.
+- Throughput is numpy over BLAS, an upper bound on time; a real framework is faster.
+- Training cost taken as 3× forward.
+- Numbers are specific to this machine and do not port.
 
-**Status:** RESOLVED — budget set from measurement (D020, run-002). Reopens if the hardware changes.
+**Status:** RESOLVED — resized from measurement (D022, run-005). **Flagged:** the
+budget is arithmetically consistent but not executable on this hardware.
 
-**Next Step:** None for this section. The worst-case sizing is re-checked once D007 fixes the real eligible count.
+**Next Step:** Decide the hardware question before the preregistration freeze.
+Re-check the projection once more units are extracted.
 
 ---
 

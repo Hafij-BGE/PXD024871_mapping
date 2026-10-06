@@ -267,3 +267,75 @@ observed distribution.
 
 **Status:** RESOLVED. G1 and G2 pass. G3 passes except M5 (not run) and the
 accepted D005 limitation.
+
+---
+
+## run-004 / run-005 — S3 pilot and redundancy measurement
+
+| Element | Value |
+|---|---|
+| Timestamp | 2026-10-06, UTC |
+| Stage | S7 pilot; informs G4. Not a gate pass |
+| Purpose | Validate the stream-extract-delete cycle, then measure yield and cross-unit redundancy so §14 could be resized from data |
+| Serves | `SECTIONS.md` §14; D004, D007, D021, D022, D023 |
+| Code | `scripts/extract_peptides.py` blob `0c984da3c722c3aafbff2cb46d80346fcc546481`; `scripts/reconcile_provenance.py` blob `79f852122607e973311dd326485c6521f1ce8a4a` |
+| Environment | env-001 |
+| Inputs | 4 class-I containers (UPN03, UPN11, UPN15, UPN25), publisher SHA-1 verified for each; 1.58 GiB transferred |
+| Parameters | length window 8–12; unique sequences per unit; pairwise Jaccard |
+| Outputs | `data/derived/peptides/{UPN03,UPN11,UPN15,UPN25}.csv` + `.meta.json`; `results/qc/QC_G3_pilot.md` |
+| Software versions | Python 3.11.15, stdlib only |
+| Random seed | n/a |
+| CPU/RAM/GPU | 4 cores, 15 GiB, no GPU |
+| Runtime | ~25 min, transfer-dominated (~1.5 MiB/s) |
+| Errors/warnings | One transfer truncated at 77.4% and left unrecorded; caught by reconciliation, re-fetched clean. See D023 |
+| Metrics | 49,373 / 51,219 / 45,057 / 41,578 unique per unit; pairwise overlap 2.9–6.2%; Heaps' β 0.923 |
+
+### Research record
+
+**Purpose.** Resize §14 from measurement, as the author directed, rather than
+proceed with a budget known to be wrong.
+
+**Reasoning.** Union size is a between-unit property, so one unit could not give
+it. Four units give six pairs, enough for a redundancy estimate and a Heaps' fit,
+at ~1.6 GiB rather than 47.85 GiB.
+
+**Alternatives considered.** (a) Size for the no-redundancy worst case, 3.65M —
+rejected as needlessly conservative when redundancy is cheap to measure.
+(b) Download all 52 first and size afterwards — rejected; that is the 9-hour
+transfer the resize was supposed to inform. (c) Assume literature redundancy
+figures — rejected; no source was available to cite and the measurement cost
+little.
+
+**Interpretation.** Below.
+
+**Limitations.** Four units of 52; β weakly determined. The four were chosen as
+the smallest containers, which turned out to make five of six pairs
+genotype-disjoint — a selection effect on the quantity being estimated, and the
+reason the projection is stated as an order of magnitude.
+
+**Decision.** D022, D023 resolved; D004 and D007 reframed; D021 corrected.
+
+**Next step.** Settle the hardware question before the freeze. Extract more
+shared-allele pairs to firm the projection.
+
+### Interpretation
+
+**The cycle works, and the pilot earned its place by failing two checks.** M5's
+specified join path does not work for this submission (QC_G3_pilot), and one
+transfer truncated silently (D023). Both were found at 1.6 GiB instead of 47.85.
+
+**Yield is 411× the run-001 assumption** and redundancy is low: 2.9–6.2%
+pairwise, with the fourth unit still 92% novel. The union projects to ~1.9M,
+against the 100,000 §14 was sized for.
+
+**D007 clears by a wide margin.** **D004 is nearly a no-op** at the
+unique-sequence level — the confidence filter removes 0.5% — so purity control
+must come from the score table instead.
+
+**D003's premise was wrong in the reassuring direction.** I argued that
+ligandomes overlap heavily between units sharing alleles, making cross-split
+leakage a serious concern. Measured overlap is 3–6%, and the single
+shared-allele pair sits inside the genotype-disjoint range. The leakage risk is
+much smaller than I claimed, though one pair is thin evidence.
+
+**Status:** RESOLVED as a pilot. G4 not attempted: 48 of 52 containers remain.
