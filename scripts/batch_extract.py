@@ -16,7 +16,8 @@ the metadata, and the stems are corroborated 1:1 against the 52 metadata-derived
 unit ids before any transfer starts. A mismatch aborts.
 """
 
-import argparse, csv, json, subprocess, sys, time
+import argparse, csv, json, shutil, subprocess, sys, threading, time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
@@ -69,6 +70,9 @@ def main():
     ap.add_argument('--limit', type=int, default=0, help='stop after N containers (0 = all)')
     ap.add_argument('--keep', action='store_true', help='do not delete containers after extraction')
     ap.add_argument('--dry-run', action='store_true')
+    ap.add_argument('--parallel', type=int, default=1,
+                    help='concurrent downloads. EBI rate-limits per connection, so '
+                         'this is usually near-linear. Bounded by free disk.')
     a = ap.parse_args()
 
     RAW_S3.mkdir(parents=True, exist_ok=True)
@@ -99,30 +103,63 @@ def main():
             print(f'  would fetch {c["name"]} ({c["size"]/2**20:,.0f} MiB)')
         return
 
-    ok = fail = 0
-    for i, c in enumerate(todo, 1):
+    # Disk guard. Parallel downloads multiply peak usage, and the largest
+    # container is 9.25 GiB, so N workers can need N x that before any is
+    # deleted. Refuse rather than fill the disk mid-run.
+    workers = max(1, a.parallel)
+    if workers > 1:
+        free = shutil.disk_usage(REPO).free
+        biggest = max(c['size'] for c in todo)
+        need = workers * biggest * 1.2          # container + its extract, with slack
+        if need > free * 0.8:
+            safe = max(1, int(free * 0.8 / (biggest * 1.2)))
+            print(f'  disk guard: {workers} workers would need {need/2**30:.1f} GiB of '
+                  f'{free/2**30:.1f} GiB free; reducing to {safe}')
+            workers = safe
+        print(f'  downloading {workers} containers concurrently')
+
+    lock = threading.Lock()
+    counter = {'n': 0, 'ok': 0, 'fail': 0}
+
+    def process(c):
         t0 = time.time()
-        print(f'[{i}/{len(todo)}] {c["name"]} ({c["size"]/2**20:,.0f} MiB)', flush=True)
         dest = RAW_S3/c['name']
         if not dest.exists():
             r = run([str(RETRIEVE), '--source-id', 'S3', '--url', c['url'],
                      '--filename', c['name'], '--origin', 'PRIDE Archive, EMBL-EBI',
                      '--published-checksum', f'sha1:{c["sha1"]}'])
             if r.returncode != 0:
-                print(f'  RETRIEVE FAILED: {(r.stdout or r.stderr).strip()[:200]}')
                 dest.unlink(missing_ok=True)
-                fail += 1
-                continue
-        cmd = [str(EXTRACT), c['name']] + ([] if a.keep else ['--delete'])
-        r = run(cmd)
+                return c, False, (r.stdout or r.stderr).strip()[:160], time.time()-t0
+        r = run([str(EXTRACT), c['name']] + ([] if a.keep else ['--delete']))
         if r.returncode != 0:
-            print(f'  EXTRACT FAILED: {(r.stdout or r.stderr).strip()[:200]}')
-            fail += 1
-            continue
-        print(f'  {r.stdout.strip()}  [{time.time()-t0:.0f}s]', flush=True)
-        ok += 1
+            return c, False, (r.stdout or r.stderr).strip()[:160], time.time()-t0
+        return c, True, r.stdout.strip(), time.time()-t0
 
+    started = time.time()
+    bytes_done = 0
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futs = {pool.submit(process, c): c for c in todo}
+        for fut in as_completed(futs):
+            c, good, msg, dt = fut.result()
+            with lock:
+                counter['n'] += 1
+                counter['ok' if good else 'fail'] += 1
+                if good:
+                    bytes_done += c['size']
+                elapsed = time.time() - started
+                rate = bytes_done / elapsed / 2**20 if elapsed > 0 else 0
+                tag = 'ok  ' if good else 'FAIL'
+                print(f'[{counter["n"]}/{len(todo)}] {tag} {c["name"]:<24} '
+                      f'{c["size"]/2**20:>6,.0f} MiB  {dt:>5.0f}s  '
+                      f'| aggregate {rate:.1f} MiB/s  | {msg[:60]}', flush=True)
+
+    ok, fail = counter['ok'], counter['fail']
+    elapsed = time.time() - started
     print(f'\ndone: {ok} extracted, {fail} failed, {len(done_units())} units total')
+    if elapsed > 0 and bytes_done:
+        print(f'aggregate throughput: {bytes_done/elapsed/2**20:.2f} MiB/s '
+              f'over {elapsed/60:.1f} min with {workers} worker(s)')
     if fail:
         print('re-run to retry the failures; completed units are skipped')
         sys.exit(1)
