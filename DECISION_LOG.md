@@ -169,8 +169,8 @@ blocks:
 | D006 | Training-set overlap between the comparison predictors and these peptides; handling rule if overlap exists | G11 |
 | D007 | Minimum-N gate. **RESOLVED — clears overwhelmingly**: 2,658,972 eligible positives. The confirmatory arm is not data-limited | G4 |
 | D008 | Decision rule for §25. Form fixed by D014: a lift tested on the interval's lower bound. **Reference corrected by D002**: the floor is the measured composition-only AP of 0.597, not the 0.5 prevalence — a model with no information does better than chance here. Magnitude still open | G6 |
-| D009 | Preregistration freeze mechanism (commit hash + timestamp) | G8 |
-| D010 | Seed convention — 20261006 is today's date; record the convention or replace it | G8 |
+| D009 | Preregistration freeze. **RESOLVED** — annotated signed-content tag pushed to the remote, carrying every artifact checksum. Limits of what it proves stated explicitly. See entry below | G6 |
+| D010 | Seed convention. **RESOLVED** — base 20261006 kept, per-purpose seeds derived via `scripts/seeds.py`; seed shopping prohibited. See entry below | G6 |
 | D011 | Unit definition. **RESOLVED** — participant as unit; 52 class-I units over 222 runs, verified. See entry below | G3 passed |
 | D012 | Partial typing. **RESOLVED** — 14 of 52 units partial, none imputed. See entry below | G2 passed |
 | D013 | S2 route. **RESOLVED** — the metadata file is in the submission. See entry below | G1 passed |
@@ -408,6 +408,78 @@ container whose record does not show a verified publisher checksum.
 as malformed. That was luck: a truncation landing on a page boundary could open
 cleanly and under-report rows. The checksum is the integrity check; a reader's
 willingness to open a file is not one, and nothing should be built on it.
+
+---
+
+## D009 — Preregistration freeze mechanism · RESOLVED
+
+**Resolved:** 2026-10-06 · **Status:** RESOLVED
+
+**Decision: an annotated git tag at the freeze commit, carrying the SHA-256 of
+every frozen artifact, pushed to the remote.**
+
+**What it does.** Names one commit as the preregistration boundary, records the
+checksums of the dataset and the decision log inside the tag message rather than
+only referencing them, and places the whole thing on a remote that records when
+it arrived. Anyone can verify afterwards that the artifacts they are given are
+the ones the preregistration covered.
+
+**What it does not do, stated plainly because the alternative is implying
+otherwise.** A git tag is created by the repository owner and its timestamp is
+taken from the owner's clock. History can be rewritten and tags can be moved or
+deleted. This mechanism proves **content integrity** — the artifacts match the
+record — and it proves **ordering within the repository**. It does **not**
+provide independent third-party evidence that the preregistration preceded
+seeing any result. A reader who does not trust the repository owner gets
+integrity, not chronology.
+
+**Why that is accepted here.** Genuine independent timestamping means sending a
+hash to an external service, which is a disclosure decision the author should
+make deliberately rather than have made for them. The honest position is to
+implement the mechanism that costs nothing, state its limit, and leave the
+stronger option available: publishing only the SHA-256 of the preregistration to
+an external timestamping service discloses no data and would close the gap.
+
+**Rejected: a bare commit hash in prose**, as the decision originally proposed.
+A hash written into a document proves nothing on its own — the document
+containing it is as mutable as everything else. The tag at least makes the claim
+a distinct, verifiable object.
+
+---
+
+## D010 — Seed convention · RESOLVED
+
+**Resolved:** 2026-10-06 · **Status:** PERMANENT
+
+**Decision: base seed 20261006 is kept. Per-purpose seeds are derived
+deterministically by `scripts/seeds.py`. Seed shopping is prohibited.**
+
+**The base is the date the preregistration was drafted.** That makes it
+arbitrary in the way a seed should be — fixed in advance, with no relationship
+to any outcome. Recording the convention is what matters; a seed that looks
+meaningful is no better than one that looks random, provided it was chosen
+before results existed.
+
+**Per-purpose derivation, not one shared seed.** `seed(purpose)` is
+`SHA-256(base:purpose:replicate)` truncated to 32 bits. One seed used everywhere
+is reproducible but couples unrelated draws: the per-unit subsample and the
+split would share a stream, so changing one silently reshuffles the other, and
+any accidental alignment between them would be undetectable. Derivation keeps
+every draw reproducible and independent.
+
+**The substantive clause: seed shopping is prohibited.** A sensitivity analysis
+over seeds uses `seed(purpose, replicate=n)` and **reports every replicate**.
+Selecting the best-performing seed, or quietly re-running until a result
+improves, invalidates the endpoint as surely as changing the threshold would. A
+seed convention that does not forbid this is decoration.
+
+**Runs already completed used the base seed directly** — run-001 through
+run-010. That is recorded rather than retrofitted: those are exploratory and
+design analyses, none of them touches the held-out partition, and rewriting
+their seeds would change published numbers for no benefit. The derivation
+applies from the split onward, which is where it matters.
+
+**PERMANENT** because it governs every future stochastic step, not one choice.
 
 ---
 
