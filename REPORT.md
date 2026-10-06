@@ -619,11 +619,45 @@ how much weight the remaining simulation-based figures should carry.
 
 ## Conclusion
 
-No conclusion about PXD024871 is available, and none should be inferred from
-this document. The statistical design has been bounded and found viable for a
-coarse claim, conditional on raising the hypothesis threshold (D008) and
-restating the sample-size gate in participants rather than peptides (D007).
-Whether sufficient eligible data exist is unknown and blocked on retrieval.
+**The experiment is specified, frozen and ready to run. It has not been run, and
+nothing here indicates whether its hypothesis is true.**
+
+What the work established is a dataset and a design whose properties are
+measured rather than assumed. A public immunopeptidomics submission was mapped
+to 52 independent participants with complete provenance and no unresolved joins;
+2,658,972 unique peptides were extracted with every container verified against
+its publisher checksum; and an analysis dataset and evaluation split were built
+from decisions fixed in advance and recorded with checksums.
+
+Three measurements constrain what any eventual result can mean, and all three
+were unknown when the experiment was proposed. Performance must be read against
+a composition-only floor of **0.597**, not against chance. The primary test
+partition contains **15.99%** of peptides seen verbatim in training, because
+splitting by participant does not deliver splitting by sequence. And the
+acquisition instrument is separable from the peptide sequences alone at AUROC
+**0.645**, against **0.515** for a control, so a held-out-participant result is a
+joint statement about unseen individuals and unseen instrument conditions.
+
+The design is also honestly underpowered for a modest effect: at the
+preregistered rule, power is 0.42 at a true AUROC of 0.70. A failure to reject
+will not be evidence that sequence carries no signal.
+
+**One finding stands independent of the experiment.** That the instrument is
+learnable from the peptides is a property of this dataset, not of this analysis.
+Any study holding out participants in it inherits the same confound, measured or
+not, and that is worth reporting whether or not the model is ever trained.
+
+The clearest change is to the hypothesis itself. As proposed, §25 asked whether
+the network beats chance — a test simulation showed passes at AUROC 0.60 with
+certainty, and which therefore could not have failed. It now asks whether the
+network beats a measured floor by a specified margin, on an interval calibrated
+to its actual coverage, at a threshold chosen for power. **The question is finally
+capable of coming out the other way**, which is the precondition for the answer
+being worth having.
+
+What remains is execution: training hardware beyond the environment used here,
+the 105 preregistered runs, and a single reading of a test partition that has
+not been touched.
 
 ## References
 
