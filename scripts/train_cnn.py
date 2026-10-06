@@ -278,5 +278,107 @@ def main():
                   f"partition stays locked.")
 
 
+    if a.mode == 'final':
+        sel = json.loads((RES/'selection.json').read_text())
+        cfg = sel['selected']['config']
+        print(f"final fit: {cfg}  (selected on mean validation AP)")
+        models = []
+        for f in range(5):
+            tr = [(s, u, l) for s, u, l in cv if int(split[u]['cv_fold']) != f]
+            va = [(s, u, l) for s, u, l in cv if int(split[u]['cv_fold']) == f]
+            Xtr, ytr = encode([s for s, _, _ in tr]), np.array([l for _, _, l in tr])
+            Xva, yva = encode([s for s, _, _ in va]), np.array([l for _, _, l in va])
+            for r_ in range(5):
+                sd = seed('model_init', f*5 + r_)
+                m, ap, ep = fit(cfg, (Xtr, ytr), (Xva, yva), sd, device, a.max_epochs)
+                path = RES/f'final_f{f}_s{r_}.pt'
+                torch.save({'state': m.state_dict(), 'cfg': cfg, 'seed': sd,
+                            'fold': f, 'replicate': r_, 'val_ap': ap, 'epochs': ep}, path)
+                models.append({'fold': f, 'replicate': r_, 'seed': sd,
+                               'val_ap': ap, 'epochs': ep, 'file': path.name})
+                print(f"  fold {f} seed {r_}: val AP {ap:.4f} ({ep} epochs)", flush=True)
+        json.dump({'config': cfg, 'models': models,
+                   'n_models': len(models)}, open(RES/'final.json', 'w'), indent=1)
+        print(f"\nwrote {len(models)} models; none has seen the test partition")
+
+    if a.mode == 'test':
+        fin = RES/'final.json'
+        if not fin.exists():
+            sys.exit("REFUSING: --mode test requires results/model/final.json")
+        meta = json.loads(fin.read_text())
+        cfg = meta['config']
+        test_rows = [(s, u, l) for s, u, l in rows if split[u]['primary_partition'] == 'test']
+        units = sorted({u for _, u, _ in test_rows})
+        leakfree = {r['sequence'] for r in csv.DictReader((DER/'TEST_LEAKFREE.csv').open(newline=''))}
+        print(f"READING THE HELD-OUT PARTITION. {len(test_rows):,} rows, {len(units)} units.")
+        print("This is the single preregistered reading of the endpoint.\n")
+
+        X = encode([s for s, _, _ in test_rows])
+        y = np.array([l for _, _, l in test_rows])
+        unit_of = np.array([u for _, u, _ in test_rows])
+        clean = np.array([s in leakfree for s, _, _ in test_rows])
+        Xt = torch.from_numpy(X).to(device)
+
+        scores = []
+        for mrec in meta['models']:
+            ck = torch.load(RES/mrec['file'], map_location=device, weights_only=False)
+            m = CNN(**cfg).to(device); m.load_state_dict(ck['state']); m.eval()
+            with torch.no_grad():
+                sc = torch.cat([m(Xt[i:i+8192]) for i in range(0, len(Xt), 8192)]).cpu().numpy()
+            scores.append(sc)
+        S = np.vstack(scores)                       # (25, n)
+
+        def per_unit(mask):
+            """mean-across-models per-unit AP (D027), over rows selected by mask"""
+            out = {}
+            for u in units:
+                sel_ = (unit_of == u) & mask
+                if sel_.sum() == 0 or y[sel_].sum() == 0:
+                    continue
+                out[u] = float(np.mean([average_precision(y[sel_], S[k][sel_])
+                                        for k in range(S.shape[0])]))
+            return out
+
+        rng = np.random.default_rng(seed('bootstrap'))
+        def report(name, mask):
+            pu = per_unit(mask)
+            v = np.array([pu[u] for u in sorted(pu)])
+            idx = rng.integers(0, v.size, size=(10000, v.size))
+            reps = v[idx].mean(axis=1)
+            lo, hi = np.percentile(reps, [0.5, 99.5])      # nominal 99% (D008)
+            print(f"  {name}")
+            print(f"    units {v.size}   mean per-unit AP {v.mean():.4f}")
+            print(f"    nominal-99% CI  [{lo:.4f}, {hi:.4f}]")
+            print(f"    per-unit range  {v.min():.4f} - {v.max():.4f}")
+            return {'name': name, 'n_units': int(v.size), 'mean_ap': float(v.mean()),
+                    'ci99_lo': float(lo), 'ci99_hi': float(hi),
+                    'per_unit': {u: pu[u] for u in sorted(pu)}}
+
+        FLOOR, THRESH = 0.597, 0.647
+        print(f"floor {FLOOR}  threshold {THRESH} (D008)\n")
+        full = report('PRIMARY — full test partition', np.ones(len(y), bool))
+        print()
+        lf = report('SENSITIVITY — leakage-free subset (D003)', clean)
+        ens = float(np.mean([average_precision(y[unit_of == u], S.mean(axis=0)[unit_of == u])
+                             for u in units]))
+        print(f"\n  SECONDARY — score-ensembled (D027, flattering framing): {ens:.4f}")
+
+        decision = full['ci99_lo'] > THRESH
+        print(f"\n{'='*64}")
+        print(f"  DECISION (D008): lower bound {full['ci99_lo']:.4f} vs threshold {THRESH}")
+        print(f"  -> {'REJECT the null' if decision else 'DO NOT REJECT'}")
+        if not decision:
+            print("  Not evidence of absent signal: power is 0.42 at AUROC 0.70.")
+        print(f"  Inflation from leakage: {full['mean_ap'] - lf['mean_ap']:+.4f}")
+        print('='*64)
+
+        json.dump({'floor': FLOOR, 'threshold': THRESH, 'reject_null': bool(decision),
+                   'primary': full, 'leakage_free': lf, 'ensemble_secondary': ens,
+                   'n_models': S.shape[0], 'config': cfg,
+                   'bootstrap': {'B': 10000, 'nominal': 0.99, 'unit': 'participant'}},
+                  open(RES/'endpoint.json', 'w'), indent=1)
+        print(f"\nwrote {RES/'endpoint.json'}")
+
+
 if __name__ == '__main__':
     main()

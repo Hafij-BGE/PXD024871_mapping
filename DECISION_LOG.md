@@ -162,6 +162,7 @@ blocks:
 | D022 | Compute gate resized: planning worst case 100k -> 2M positives, cap 48h -> 96h, class ratio 1:1. **RESOLVED**, but flags that the budget is not executable on this hardware. See entry below | G8 |
 | D023 | Provenance cannot depend on the downloader surviving: a completed transfer whose writer died left an unrecorded, truncated file. **RESOLVED** — reconciler added. See entry below | G1 |
 | D026 | Architecture, input representation and training protocol frozen. Closes the preregistration gap found while writing Methods: these were carried past the freeze unlocked. See entry below | before training |
+| D027 | How the 25 final models yield one endpoint value. §13 required all 25 be reported but never said how they combine. **RESOLVED before the test partition was read.** See entry below | before --mode test |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -605,6 +606,40 @@ case against a 96 h cap.
 
 **Consequence.** The preregistration is now complete. Any deviation from §§11–13
 requires a new decision entry and renders the affected claim exploratory.
+
+---
+
+## D027 — How 25 final models yield one endpoint · RESOLVED
+
+**Opened and resolved:** 2026-10-06, **before the held-out partition was read**
+**Evidence:** `results/model/cv_results.json`; §13; D010
+
+**The gap.** §13 fixes the final fit at five folds × five seeds and requires all
+25 be reported, but never states how 25 models produce the single number the
+decision rule is applied to. Found while implementing the evaluation, with the
+test partition still unread, so it can be closed without any result influencing
+it.
+
+**Decision.** For each held-out unit, average precision is computed separately
+under each of the 25 models and **averaged across models**; the estimand is the
+mean of those per-unit values, and the cluster bootstrap resamples units. The
+25 individual per-unit matrices are reported.
+
+**Why not ensemble the scores.** Averaging the 25 models' outputs and scoring
+once would measure an ensemble of 25 networks. §25 asks whether *a* CNN trained
+on these data carries signal, and an ensemble is reliably better than its
+members, so that framing would answer a more flattering question than the one
+preregistered. Score-ensembling is reported as a **secondary** figure, labelled
+as such.
+
+**Why average APs rather than take the best or the median of 25.** Taking the
+best is seed selection, prohibited by D010. The median discards information for
+no gain at this spread. Averaging gives the expected performance of one model
+drawn from the preregistered procedure, which is what the hypothesis is about.
+
+**Bootstrap unit is unchanged.** Units, not models and not peptides — the
+quantity bounding every claim is the number of independent participants
+(run-001).
 
 ---
 
