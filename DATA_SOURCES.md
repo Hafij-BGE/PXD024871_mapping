@@ -6,6 +6,15 @@ Provenance registry for every input to the PXD024871 mapping project.
 provenance field below is `PENDING`. This file is the acquisition plan and
 becomes the record as each source is retrieved.
 
+> **BLOCKED 2026-10-06 — outbound network policy.** Retrieval of S1 was
+> attempted and denied. The execution environment's network policy refuses
+> `www.ebi.ac.uk:443`; the gateway answers 403 to CONNECT, which surfaces to
+> `curl` as HTTP 403. The denial was confirmed independently of the retrieval
+> attempt, so it is the policy and not a malformed request or a wrong endpoint.
+> The attempt is recorded in `data/raw/S1/provenance.jsonl` with `outcome:
+> FAILED`. No retrieval is possible until the policy allows the host; see
+> **Blocked retrievals** below.
+
 **Raw data is never modified.** Retrieved files are written once to
 `data/raw/<source_id>/`, checksummed, and treated as read-only thereafter.
 All derived files go to `data/derived/`. No process writes to `data/raw/`
@@ -311,21 +320,69 @@ A disagreement between this source and S2 is `CONFLICT` under
 
 ---
 
+## Blocked retrievals
+
+### Hosts the network policy must allow
+
+| Host | Needed for | Note |
+|---|---|---|
+| `www.ebi.ac.uk` | S1, S2, S3 | API and file distribution. Confirmed denied 2026-10-06 |
+| `ftp.pride.ebi.ac.uk` | S2, S3 | Bulk file distribution; may be the actual transfer host once the manifest is readable. Not yet probed |
+
+Adding `www.ebi.ac.uk` alone may be sufficient for S1 and therefore for
+settling the counts. Whether file payloads transfer from that host or from the
+FTP host is not knowable until the manifest can be read, so the second host may
+also be required for S3.
+
+### S2 is additionally blocked behind S1
+
+Independently of the policy, S2's retrieval URL is **not yet known**. Two
+candidate routes exist and they are not equivalent:
+
+1. **From the submission** — if the metadata file is deposited alongside the
+   data, its URL comes from the S1 manifest. This route makes S2 part of the
+   submission, with whatever checksum the submission carries.
+2. **From the community annotation project** — community-annotated metadata is
+   maintained in a separate public repository, in which case S2 is a different
+   artifact with a different version history, different authorship, and no
+   submission checksum at all.
+
+These produce **different provenance records and possibly different file
+contents**, so the route is a recorded decision rather than a convenience. It
+cannot be settled by guessing a path; it is settled by reading the S1 manifest
+and checking whether the file is present in the submission. Guessing a
+distribution path would also violate the no-approximate-matching rule in
+`METHODOLOGY.md` §4 applied to provenance: a file retrieved from an assumed
+location has unestablished identity.
+
+Recorded as pending decision **D013**.
+
+### What is not blocked
+
+The retrieval mechanism itself is written and tested on its failure path:
+`scripts/retrieve.py` writes to a write-once raw directory, computes our own
+SHA-256, verifies a published checksum when one is supplied, and appends a
+provenance record for every attempt including failures. Once the policy allows
+the host, S1 is a single invocation.
+
+---
+
 ## Summary
 
 | ID | Source | Retrieved? | Gates | Blocked by |
 |---|---|---|---|---|
-| S1 | File manifest | PENDING | G1 | — |
-| S2 | Sample metadata | PENDING | G1–G3 | — |
-| S3 | Identification containers | PENDING, streamed | G3–G4 | — |
+| S1 | File manifest | **BLOCKED** | G1 | network policy |
+| S2 | Sample metadata | **BLOCKED** | G1–G3 | network policy, then D013 |
+| S3 | Identification containers | BLOCKED, streamed when open | G3–G4 | network policy |
 | S4 | Acquisition files | **Not planned** | — | decision recorded above |
 | S5 | Reference background | Conditional | G4 | D002 |
 | S6 | Comparison predictors | PENDING | G11 | D006 |
 | S7 | Dataset publication | PENDING | G2 | — |
 
-S1 and S2 are unblocked and are the immediate next retrieval. Together they
-settle the counts that every `[provisional]` figure in this project currently
-rests on.
+Nothing in this registry can be retrieved under the current network policy.
+Every `[provisional]` figure in this project therefore remains provisional, and
+G1 cannot be attempted. S1 is the one retrieval that unblocks the rest: it
+settles the counts and it determines S2's route.
 
 ---
 
