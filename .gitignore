@@ -1,10 +1,17 @@
-# Raw data is never committed: it is large, and the repository is not its
-# archive. Provenance records are committed, because they are what make the
-# raw data verifiable without storing it.
+# Raw PAYLOADS are not committed: the containers are tens of gigabytes and the
+# repository is not their archive. Provenance records are committed, because
+# they are what make absent payloads verifiable.
+#
+# The small authoritative inputs ARE committed. The manifest and the metadata
+# file total under a megabyte, every pipeline stage reads them, and excluding
+# them made the repository non-self-contained: a fresh clone could not run
+# batch_extract.py at all, which is how this was found.
 data/raw/**
 !data/raw/
 !data/raw/*/
 !data/raw/*/provenance.jsonl
+!data/raw/S1/*.json
+!data/raw/S2/*.tsv
 
 __pycache__/
 *.pyc
