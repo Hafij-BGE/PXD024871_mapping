@@ -274,18 +274,128 @@ and no amount of resampling corrects it.
 
 ## Limitations
 
-Methodological limitations of the approach are enumerated at
-`METHODOLOGY.md`, *Known methodological limitations* (ten items, including
-participant-bounded resolution,
-platform confounding, and that absence of observation is not negative
-evidence). Limitations of run-001 specifically are at `POWER_ANALYSIS.md`,
-Limitations (seven items).
+Grouped by what they prevent the study from claiming. Those marked **measured**
+have a magnitude in `results/`; the rest are structural.
 
-The limitation governing everything else: **Phase A asserts only what the
-deposited annotation asserts.** An error in the source metadata propagates
-through every mapping and is undetectable from inside this pipeline, except
-where independent verification (`METHODOLOGY.md`, *Independent verification*)
-happens to cover it.
+### Limitations that bound the primary claim
+
+**The instrument confound is total and cannot be removed — measured.** Two
+acquisition platforms partition the 52 participants 25/27 with **zero overlap**:
+no participant was run on both. No split over participants can therefore
+separate participant effects from platform effects. Worse, the peptides
+themselves carry a platform signature: a linear model on amino-acid composition
+alone separates the two platforms at AUROC **0.6451**, against **0.5150** for a
+control comparing random halves of participants. Generic between-participant
+variation is near-nothing; platform is a third of the way to perfect separation.
+A result on held-out participants is therefore a **joint** statement about
+generalizing to unseen individuals and to unseen instrument conditions, and §25
+cannot be worded as though it were about biology alone. Stratification bounds
+the artefact; it does not remove it (D005, D025, `QC_G5.md`).
+
+**Participant-disjointness does not deliver sequence-disjointness — measured.**
+On the realised split, **15.99%** of test positives appear verbatim in training;
+across 2,000 random splits the range is 11.76–17.25%. Exposure compounds across
+42 training participants rather than staying at the pairwise rate. The
+leakage-free subset (84,012 of 100,000 rows) is reported alongside, and the gap
+between the two is the inflation — but the primary figure is the inflated one,
+and must be read as such (D003).
+
+**The floor is not chance — measured.** A composition-only linear model achieves
+average precision **0.597** against the primary negatives. Roughly a fifth of
+the distance from chance to a perfect score is available before the network
+learns anything about sequence structure. Every reported figure is relative to
+0.597, not 0.5 (D002).
+
+**The study is underpowered for a modest effect — measured.** At the
+preregistered decision rule, power is **0.42** at a true AUROC of 0.70 and 0.98
+at 0.75. The minimum reliably detectable effect is a lift of about **0.14**
+average precision. **Failure to reject is not evidence of absent signal**: it is
+equally consistent with a real effect below the detectable range. This follows
+from 10 held-out participants, which the data fixes and no analytic choice can
+improve (D008).
+
+**Nominal intervals under-cover — measured.** Nominal 95% cluster-bootstrap
+intervals achieve 0.884–0.890 actual coverage at this participant count.
+Reporting is at nominal 99% to deliver approximately 95%; any figure quoted at
+nominal 95% elsewhere would overstate precision by that margin.
+
+### Limitations of the data itself
+
+**Negative labels are not evidence of non-presentation.** Negatives are peptides
+not observed, and non-observation conflates genuine absence with detection
+limits. The repertoires are deeply undersampled — redundancy across participants
+is 1.45× and the 52nd participant added was still 55% novel — so the negative
+class is contaminated at an unknown rate. This biases measured performance
+**downward** and is inherent to any construction built on absence.
+
+**Low cross-participant overlap may be sampling, not biology.** Only 20.1% of
+the union occurs in more than one participant, and overlap barely tracks shared
+alleles (4.8% for allele-sharing pairs against 4.0% for disjoint pairs). The
+parsimonious reading is depth: roughly 16,500 peptides observed per acquisition
+from a far larger presented space, so even identical repertoires would overlap
+little by chance. If that is right, "generalizes to an unseen participant" partly
+tests generalization across *samples of* a repertoire rather than across
+repertoires. The data cannot settle this; the testable signature is that overlap
+should rise with per-participant depth.
+
+**The cohort is uniform and narrow.** All 222 class-I acquisitions are from one
+disease and one tissue; age and sex are recorded as unavailable for every row.
+No covariate is available for confound modelling, and no claim extends beyond
+this single clinical context. This is one submission from one laboratory: there
+is no external replication anywhere in this design.
+
+**The depositor's identification pipeline is inherited and unaudited.** The
+acquisition files were deliberately not retrieved, so search parameters and
+error-rate control are taken as given. Positive-set purity is capped at whatever
+that pipeline achieved, and the expected lever — confidence-based re-filtering —
+proved a no-op, removing 0.7% of the union.
+
+**The single most load-bearing input has no publisher checksum.** 503 of 504
+deposited files carry one; the exception is the metadata file, which is the sole
+evidence for sample class, participant identity and genotype. Its integrity
+rests on our own hash plus agreement with a declared size.
+
+**Run-level attribution was not recoverable.** Container-internal references use
+original laboratory filenames with no intersection with the deposited names, and
+a different participant identifier scheme with no cross-walk in the deposit.
+Attribution rests on container filenames, corroborated one-to-one against the
+52 metadata participants but not independently verifiable. A misnamed container
+at deposition would be undetectable from inside this pipeline.
+
+**Fourteen of 52 participants are incompletely typed** and are excluded from
+analyses keyed on the full allele complement. The allele-disjoint secondary
+split is also costly: holding out the 29 carriers of the most common allele
+leaves 23 for training.
+
+### Limitations of the process
+
+**The preregistration establishes integrity, not chronology.** The freeze record
+proves the artifacts match it and fixes ordering within the repository. It does
+**not** provide independent third-party evidence that it preceded seeing any
+result, because it is created by the repository owner with the owner's clock
+(D009).
+
+**The model specification was frozen after the data was in hand.** §§11–13 were
+fixed on 2026-10-06, after extraction and dataset construction, and were found
+unfrozen only while the Methods section was being written. No model had been
+fit and no performance figure existed, so no outcome could have influenced them
+— but the length distribution was known, and it motivated the centre-padding
+choice. That choice is defensible on its own terms and is declared in §12, but
+it is not blind to the data and should not be described as though it were.
+
+**Several design parameters were chosen by simulation under an assumed model.**
+The per-participant cap, the interval calibration and the decision threshold all
+rest on a binormal score model with an assumed between-participant variance that
+cannot be measured until the model runs. The figures bound the design; they do
+not describe it.
+
+**Estimates made during this work were checked against outcomes, and one was
+badly wrong.** The eligible-peptide count was projected at 1.55M from five
+participants and measured at 2,658,972 — an error of −41.8%, in the direction
+that made the compute budget optimistic. The compute gate was consequently
+breached twice. This is recorded because a projection never checked against its
+outcome teaches nothing, and because it is the clearest available evidence about
+how much weight the remaining simulation-based figures should carry.
 
 ## Conclusion
 
