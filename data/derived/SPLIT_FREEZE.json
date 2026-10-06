@@ -1,0 +1,209 @@
+{
+ "frozen_utc": "2026-10-06T16:24:26.976897+00:00",
+ "commit": "e9635f0ca1bca1332136f0cb3db0d84dc2aca5f0",
+ "base_seed": 20261006,
+ "split_seed": 3708237009,
+ "decisions_applied": {
+  "D011": "unit = participant; partitions participant-disjoint",
+  "D025": "every partition platform-stratified; cross-platform transfer preregistered",
+  "D003": "shared sequences kept; leakage-free test subset written out",
+  "D010": "seed('split') derived from the base seed",
+  "D001": "allele-disjoint secondary split constructed"
+ },
+ "primary": {
+  "test_units": [
+   "UPN01",
+   "UPN08",
+   "UPN14",
+   "UPN22",
+   "UPN24",
+   "UPN27",
+   "UPN31",
+   "UPN38",
+   "UPN46",
+   "UPN51"
+  ],
+  "n_test": 10,
+  "n_cv": 42,
+  "n_folds": 5,
+  "test_platforms": {
+   "LTQ": 5,
+   "Lumos": 5
+  },
+  "folds": {
+   "0": [
+    "UPN09",
+    "UPN10",
+    "UPN15",
+    "UPN16",
+    "UPN28",
+    "UPN36",
+    "UPN42",
+    "UPN43",
+    "UPN52"
+   ],
+   "1": [
+    "UPN06",
+    "UPN13",
+    "UPN19",
+    "UPN20",
+    "UPN34",
+    "UPN39",
+    "UPN44",
+    "UPN48",
+    "UPN50"
+   ],
+   "2": [
+    "UPN04",
+    "UPN17",
+    "UPN18",
+    "UPN25",
+    "UPN26",
+    "UPN30",
+    "UPN35",
+    "UPN37"
+   ],
+   "3": [
+    "UPN02",
+    "UPN05",
+    "UPN12",
+    "UPN23",
+    "UPN32",
+    "UPN33",
+    "UPN40",
+    "UPN47"
+   ],
+   "4": [
+    "UPN03",
+    "UPN07",
+    "UPN11",
+    "UPN21",
+    "UPN29",
+    "UPN41",
+    "UPN45",
+    "UPN49"
+   ]
+  }
+ },
+ "secondary_allele_disjoint": {
+  "allele": "HLA-A*02:01",
+  "n_test_units": 29,
+  "n_train_units": 23,
+  "test_units": [
+   "UPN01",
+   "UPN02",
+   "UPN05",
+   "UPN07",
+   "UPN08",
+   "UPN09",
+   "UPN12",
+   "UPN14",
+   "UPN17",
+   "UPN21",
+   "UPN22",
+   "UPN23",
+   "UPN24",
+   "UPN25",
+   "UPN27",
+   "UPN28",
+   "UPN30",
+   "UPN31",
+   "UPN33",
+   "UPN34",
+   "UPN36",
+   "UPN37",
+   "UPN40",
+   "UPN41",
+   "UPN42",
+   "UPN46",
+   "UPN47",
+   "UPN48",
+   "UPN49"
+  ]
+ },
+ "secondary_cross_platform": {
+  "LTQ_units": [
+   "UPN01",
+   "UPN02",
+   "UPN03",
+   "UPN04",
+   "UPN05",
+   "UPN06",
+   "UPN07",
+   "UPN08",
+   "UPN09",
+   "UPN10",
+   "UPN11",
+   "UPN12",
+   "UPN13",
+   "UPN14",
+   "UPN15",
+   "UPN16",
+   "UPN17",
+   "UPN18",
+   "UPN19",
+   "UPN20",
+   "UPN21",
+   "UPN22",
+   "UPN23",
+   "UPN24",
+   "UPN25"
+  ],
+  "Lumos_units": [
+   "UPN26",
+   "UPN27",
+   "UPN28",
+   "UPN29",
+   "UPN30",
+   "UPN31",
+   "UPN32",
+   "UPN33",
+   "UPN34",
+   "UPN35",
+   "UPN36",
+   "UPN37",
+   "UPN38",
+   "UPN39",
+   "UPN40",
+   "UPN41",
+   "UPN42",
+   "UPN43",
+   "UPN44",
+   "UPN45",
+   "UPN46",
+   "UPN47",
+   "UPN48",
+   "UPN49",
+   "UPN50",
+   "UPN51",
+   "UPN52"
+  ],
+  "protocol": "train on one instrument, evaluate on the other, and the reverse"
+ },
+ "leakage_on_chosen_split": {
+  "test_positive_rows": 100000,
+  "leaked_rows": 15988,
+  "leaked_pct": 15.988,
+  "leakfree_rows": 84012
+ },
+ "files": {
+  "SPLIT.csv": {
+   "sha256": "c60de8a710a554c0e4604e5781a51a191c2d3115330fc463be272a63e3e10415",
+   "bytes": 1567
+  },
+  "TEST_LEAKFREE.csv": {
+   "sha256": "6ffe94e1701d608cd48a914420aeb8148d1f0a34a00cd39a6ec77e959a48ea91",
+   "bytes": 1491259
+  }
+ },
+ "dataset_freeze": {
+  "POSITIVES.csv": {
+   "sha256": "6c737a7bb6b9e580c3b85427dcd165b240dc0ebf9d3249c9b8226107363f17b9",
+   "bytes": 11595822
+  },
+  "NEGATIVES.csv": {
+   "sha256": "b990aa06ef257a88fc30ef6bdc2cebc25a1f365ded9b71182cd048c7e2438421",
+   "bytes": 11595822
+  }
+ }
+}
