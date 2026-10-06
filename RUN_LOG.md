@@ -339,3 +339,76 @@ shared-allele pair sits inside the genotype-disjoint range. The leakage risk is
 much smaller than I claimed, though one pair is thin evidence.
 
 **Status:** RESOLVED as a pilot. G4 not attempted: 48 of 52 containers remain.
+
+---
+
+## run-006 — Full extraction and union analysis
+
+| Element | Value |
+|---|---|
+| Timestamp | 2026-10-06, UTC |
+| Stage | S7 complete; input to G4 |
+| Purpose | Extract all 52 class-I containers and measure the eligible positive universe |
+| Serves | D003, D004, D007, D024; `SECTIONS.md` §14 |
+| Code | `scripts/batch_extract.py`, `scripts/extract_peptides.py`, `scripts/union_analysis.py` blob `2845b626c5bf6e2d39622b0343eaf81d14ba1576` |
+| Environment | **env-002** (Colab CPU, 2 cores) for extraction; env-001 for the union analysis |
+| Inputs | 52 containers, 47.85 GiB; every publisher SHA-1 verified |
+| Parameters | length window 8–12; unique sequences per unit |
+| Outputs | `data/derived/peptides/*.csv.gz` (52), `results/qc/union_stats.json`, `results/qc/QC_G4_prep.md` |
+| Software versions | Python 3.13 (Colab) / 3.11.15 (here), stdlib only |
+| Random seed | n/a — deterministic |
+| CPU/RAM/GPU | 2 cores on Colab; no GPU used, none needed |
+| Runtime | ~117 min at 5.21 MiB/s aggregate with 4 concurrent transfers |
+| Errors/warnings | 4 transfer failures, all retried clean: two truncations, one deliberate kill, one timeout caused by a duration cap that has since been replaced with stall detection |
+| Metrics | union 2,658,972; redundancy 1.45×; 79.9% private to one unit |
+
+### Research record
+
+**Purpose.** Replace the projected eligible-positive count with a measured one,
+and settle the decisions that waited on it.
+
+**Reasoning.** Everything downstream — D007's feasibility, §14's budget, D003's
+leakage exposure, D004's purity lever — rested on a Heaps' fit to five units.
+With the data in hand the projection could be retired.
+
+**Alternatives considered.** (a) Proceed to G4 on the projection — rejected; it
+was the projection that had already been wrong once. (b) Extract a larger
+sample rather than all 52 — rejected once parallel transfer made the full set
+affordable, and the union is the quantity of interest, which a sample cannot
+give. (c) Deduplicate during extraction — rejected; per-unit observation tables
+are what make the sharing structure measurable at all.
+
+**Interpretation.** Below.
+
+**Limitations.** The union counts distinct sequences, not distinct presented
+peptides: redundancy of 1.45× with the final unit still 55% novel means these
+repertoires are deeply undersampled, so low cross-unit sharing is consistent
+with sampling depth rather than disjoint biology. Everything still rests on the
+depositor's identification pipeline, which S4's non-retrieval leaves unaudited.
+
+**Decision.** D003, D004, D007 resolved; D024 opened.
+
+**Next step.** Close D024 and D002, then G4.
+
+### Interpretation
+
+**The union is 2,658,972 unique 8–12mers.** My five-unit projection said
+1,547,364 — **41.8% low**. β over 52 units is 0.977 against 0.840 from five, and
+the last unit was still 55% novel, so accumulation never saturated anywhere in
+the range I extrapolated across. The error direction matters: I
+under-estimated, so the compute budget built on it was optimistic.
+
+**Four fifths of the universe is private to one participant.** D003 assumed the
+opposite — I argued ligandomes overlap heavily between participants sharing
+alleles and that cross-split leakage was a serious hazard. The real exposure is
+534,696 sequences in more than one unit, a number the split rule can handle
+directly.
+
+**D004 is a no-op**: 99.29% of the union sits at the top confidence level.
+
+**D007 clears by a wide margin**, and §14 is breached again — 120 h at 1:1
+against a 96 h cap. The answer is not a larger budget but a per-unit cap
+justified by run-001's finding that precision is bounded by unit count. Opened
+as D024, explicitly as a design decision rather than a reduction-ladder step.
+
+**Status:** RESOLVED. Extraction complete. G4 blocked on D002 and D024.
