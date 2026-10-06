@@ -1,0 +1,17 @@
+{
+ "container": "UPN04_class_I.msf",
+ "unit_id": "UPN04",
+ "internal_run_refs": [
+  "121109_DK_CLL12_W_20%_Rep#1_msms7.RAW",
+  "121114_DK_CLL12_W_20%_Rep#2_msms2.RAW",
+  "121123_DK_CLL12_W_20%_Rep#3_msms13.RAW"
+ ],
+ "n_internal_runs": 3,
+ "psms_total": 96442,
+ "unique_sequences": 44090,
+ "extract_sha256": "6f79951bc369a59559694c45d529eae8301549ed27f3bda1fcc0cee7afd38f46",
+ "length_window": [
+  8,
+  12
+ ]
+}
