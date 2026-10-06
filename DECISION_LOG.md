@@ -125,7 +125,7 @@ blocks:
 | D023 | Provenance cannot depend on the downloader surviving: a completed transfer whose writer died left an unrecorded, truncated file. **RESOLVED** — reconciler added. See entry below | G1 |
 | D003 | Cross-unit shared sequences. **RESOLVED (informed)** — only 20.1% appear in >1 unit; 534,696 sequences are the actual exposure, not the heavy overlap I claimed. Split rule still to be written | G5 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
-| D024 | Per-unit positive cap. The union is 2.66M and a full grid costs 120h against a 96h cap, but run-001 showed precision is bounded by unit count, not peptide count — so a cap is a design choice justified by the power analysis rather than a budget cut. Must be preregistered before the split is locked | G4, G6 |
+| D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
 | D005 | Instrument confound. **RESOLVED — accepted as a limitation**; total confound, cannot be corrected. See entry below | G3, FAIL accepted |
 | D006 | Training-set overlap between the comparison predictors and these peptides; handling rule if overlap exists | G11 |
 | D007 | Minimum-N gate. **RESOLVED — clears overwhelmingly**: 2,658,972 eligible positives. The confirmatory arm is not data-limited | G4 |
@@ -372,48 +372,60 @@ willingness to open a file is not one, and nothing should be built on it.
 
 ---
 
-## D024 — Per-unit positive cap
+## D024 — Per-unit positive cap · RESOLVED
 
-**Opened:** 2026-10-06 · **Status:** OPEN · **Blocks:** G4, G6
-**Evidence:** run-006 (`results/qc/QC_G4_prep.md`), run-001 F2/F5, run-002
+**Opened and resolved:** 2026-10-06 · **Status:** RESOLVED
+**Evidence:** run-007 (`results/power/subsample_curve.json`), run-001 F2/F5, run-006
 
-**The situation.** The measured union is **2,658,972** positives. A 100-run grid
-costs 120 h at 1:1 and 662 h at 1:10 against a 96 h cap. §14 has now been
-breached twice, both times because it was sized against an estimate of the
-dataset rather than the dataset.
+**Decision: cap each unit at 10,000 positives, sampled stratified by peptide
+length, seed 20261006.** 520,000 positives total.
 
-**Why a bigger budget is the wrong answer.** run-001 established that the
-uncertainty on the participant-level estimand is bounded by the **number of
-held-out units — 52 —** and not by peptide count; bootstrap replicates were
-shown irrelevant across a 250-fold range. Positives beyond what makes each
-unit's average precision stable therefore buy almost nothing statistically
-while costing linearly in compute.
+**Chosen from the precision curve, not the compute table**, as the decision
+required. The estimand's variance is (between-unit + within-unit) / K. K is
+fixed at 52 by the data, so a cap touches only the within-unit term:
 
-| Per-unit cap | Total positives | Grid at 1:1 |
-|---|---|---|
-| 5,000 | 260,000 | 11.8 h |
-| 10,000 | 520,000 | 23.6 h |
-| 20,000 | 1,040,000 | 47.1 h |
-| 40,000 | 2,080,000 | 94.2 h |
+| Cap | within-unit SD | within ÷ between | SD of the mean | marginal gain |
+|---|---|---|---|---|
+| 500 | 0.01664 | 0.305 | 0.00790 | — |
+| 1,000 | 0.01085 | 0.199 | 0.00771 | +2.48% |
+| 5,000 | 0.00536 | 0.098 | 0.00760 | +0.28% |
+| **10,000** | **0.00359** | **0.066** | **0.00758** | **+0.26%** |
+| 40,000 | 0.00184 | 0.034 | 0.00757 | +0.04% |
 
-**This is a design decision, not a reduction-ladder step.** §14's ladder exists
-to trim the grid, and explicitly forbids trading design to afford compute. A
-per-unit cap is different in kind: it is justified by the power analysis
-independently of the budget, and would be defensible even with unlimited
-compute. It must be argued that way or not at all.
+*(τ = 0.25; 52 units; 1:1)*
 
-**What must be settled before it closes.**
-1. The cap, chosen from a per-unit AP precision curve rather than from the
-   compute table above — the compute figures must not be what picks the number.
-2. The sampling rule: random within unit, or stratified by length, which is the
-   mode at 9-mers and would otherwise drift.
-3. Whether units below the cap (minimum is 39,991) are left whole, making the
-   cap a ceiling rather than a quota.
-4. Preregistered before the split is locked. Choosing it after seeing results
-   would be selection.
+**Going from 10,000 to all 2.66M positives would improve the interval by
+0.16%.** Within-unit noise is already 15× smaller than between-unit variation,
+so the extra data is spent reducing a term that no longer matters.
 
-**Not yet decided.** Recorded now because the data is in hand and the decision
-is on the critical path to G4.
+**Why 10,000 and not 5,000.** The binding case is small between-unit variance,
+where within-unit noise matters most. At τ = 0.10 the threshold is reached at
+5,000; 10,000 gives a 2× margin against a τ we cannot measure until the model
+runs, and costs 23.6 h of a 96 h budget against 11.8 h. Buying margin on the
+one unknown parameter is worth 12 hours.
+
+**An unanticipated benefit.** Every unit holds at least 39,991 sequences, so
+all 52 clear the cap and it applies uniformly. That **equalises contribution
+across units** — and `METHODOLOGY.md` limitation 3 records that unit sizes vary
+5-fold, so pooled peptide-level statistics would otherwise be dominated by the
+heaviest contributors. The cap removes that distortion as a side effect. It is
+not why the cap was chosen, and it is recorded as a consequence rather than a
+justification.
+
+**Sampling rule: stratified by length, proportional to each unit's own
+distribution.** Random sampling preserves the length mix only in expectation;
+stratification preserves it exactly. Length is the strongest structural feature
+of the set — 9-mers are 27.8% of the union — and letting it drift between units
+would introduce a difference the model could learn that has nothing to do with
+presentation.
+
+**Preregistered.** Cap, rule and seed are fixed here, before the split is
+locked and before any model is fit. Choosing any of them after seeing
+performance would be selection.
+
+**What this does not do.** It does not reduce the evidence about *units*, which
+is what bounds every claim. It discards peptides, which are plentiful, to keep
+units, which are not.
 
 ---
 
