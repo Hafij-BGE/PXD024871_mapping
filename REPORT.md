@@ -27,21 +27,179 @@ That mapping is the current work.
 
 ## Methods
 
-| Component | Specification | Status |
-|---|---|---|
-| Mapping chain | Seven joins M1–M7, each under the prompt's eleven fields | Specified, not executed |
-| Source provenance | Seven sources S1–S7, twelve fields each, `DATA_SOURCES.md` | Schema only; nothing retrieved |
-| Status categories | Per mapping, *Confidence/status categories*; weakest-link composition in M6 | Specified |
-| Normalization | `METHODOLOGY.md`, *Shared normalization conventions* | Specified |
-| Approximate matching | Prohibited on all identifier joins, argued in M1 | Specified; departure from `PROJECT_PROMPT.md`, logged as D016 |
-| QC gates | G1–G13, `METHODOLOGY.md`, *QC gates*, and `SECTIONS.md` | Specified; none attempted |
-| Design analysis | Binormal simulation, `scripts/power_analysis.py` | **Complete** (run-001) |
-| Compute budget | Measured throughput, `scripts/benchmark_compute.py` | **Complete** (run-002); §14 limits set, D020 |
+All analyses to date are recorded in `RUN_LOG.md` (runs 001–012) with code
+blob hashes, inputs, parameters and outputs. Every figure below is traceable to
+a QC report in `results/qc/` or a results file in `results/`. **No model has
+been fit.**
 
-Two rules are stated as prohibitions rather than preferences, because both
-would manufacture assertions the sources do not make: class is never inferred
-from filenames (M3), and incomplete genotypes are never imputed to
-completeness (M4).
+### Source data and retrieval
+
+Two sources were retrieved from the PRIDE Archive: the submission file manifest
+(504 records, obtained as six paginated requests — the API silently caps
+`pageSize` at 100, so a single request returns an apparently complete 100-record
+response) and the community-annotated sample metadata file (402 rows, 37
+columns). A human reference proteome (UniProt release 2026_03, 20,652 sequences)
+was retrieved for negative construction.
+
+Of 504 deposited files, 503 carry a publisher checksum; the sole exception is
+the metadata file itself, which is also the single evidence source for sample
+class, participant identity and genotype. Its integrity rests on our own
+SHA-256 plus agreement between its retrieved size and the manifest's declared
+317,806 bytes. Every retrieval is recorded in `data/raw/*/provenance.jsonl` with
+our own SHA-256 computed independently of any published hash
+(`results/qc/QC_G1.md`).
+
+### Provenance mapping
+
+Five mappings were specified before execution under the governing project
+prompt's eleven-field format (`METHODOLOGY.md`) and executed in run-003.
+**Approximate matching is prohibited on every identifier join** (D016): in this
+submission, acquisition filenames differ by one character between distinct runs
+and participant identifiers by one digit between distinct individuals, so any
+edit-distance threshold loose enough to repair a typo would also silently merge
+distinct entities.
+
+The file-to-metadata join is exact and complete: 402 acquisitions against 402
+metadata rows, matched in both directions, zero rejects. Sample class was
+assigned from a controlled vocabulary of the two distinct antibody-enrichment
+annotations present, never inferred from filenames, giving 222 class-I and 180
+class-II acquisitions. An independent metadata column recording the MHC protein
+complex agreed on 402 of 402 rows with zero conflicts. Genotypes parsed without
+a single nomenclature failure across all 52 class-I participants, yielding 46
+distinct alleles; 38 participants carry a full six-allele complement and 14
+fewer. **Incomplete genotypes were not imputed** (D012): from this metadata a
+missing allele is indistinguishable between genuine homozygosity and incomplete
+reporting.
+
+The participant is the analysis unit (D011), with technical replicates and
+fractions nested within it: 52 class-I participants over 222 acquisitions,
+3–15 acquisitions each.
+
+One specified mapping failed. Identification containers record their input
+spectrum files under the original laboratory filenames, which share no
+intersection with the deposited filenames — the files were renamed at
+deposition, and the internal references additionally use a different participant
+identifier scheme for which no cross-walk exists in the deposit. Run-level
+attribution is therefore not recoverable by the specified method. The analysis
+does not require it, because the unit is the participant and container stems
+correspond one-to-one with all 52 metadata-derived participants, but attribution
+consequently rests on a filename and carries reduced status
+(`results/qc/QC_G3_pilot.md`).
+
+### Peptide extraction
+
+All 52 class-I identification containers (47.85 GiB) were retrieved, each
+verified against its publisher SHA-1 before use, its peptide table extracted,
+and the container deleted — peak working storage one container rather than the
+whole set. Extraction refuses any container whose checksum is unverified: during
+this work one transfer truncated at 77% and would otherwise have contributed a
+silently incomplete peptide table.
+
+The deposited search was already restricted to 8–12 residues. The union across
+all participants is **2,658,972 unique peptides** (sum of per-participant counts
+3,850,275; redundancy 1.45×), with 39,991–198,567 per participant and 9-mers the
+modal length at 27.8%. **79.9% of the union occurs in exactly one participant.**
+99.29% is at the highest reported confidence level, so confidence-based
+re-filtering removes 0.7% and is not a meaningful purity control (D004).
+
+### Dataset construction
+
+**Positives.** 10,000 per participant, sampled stratified by length in
+proportion to that participant's own length distribution, seed 20261006 (D024).
+The cap was chosen from a precision curve, not a compute budget: the estimand's
+variance decomposes into between-participant and within-participant terms over a
+fixed 52 participants, and at 10,000 the within-participant term is already 15×
+smaller than the between-participant term, so using all 2.66M peptides would
+improve the interval by 0.16%. Because every participant holds at least 39,991
+peptides the cap binds uniformly, which additionally equalises contribution
+across participants that otherwise vary five-fold.
+
+**Negatives.** Length-matched peptides drawn from proteins yielding at least one
+observed peptide (20,152 of 20,652, 97.6%), excluding every observed sequence,
+at a 1:1 ratio (D002). The construction was selected by a preregistered
+diagnostic: the optimal linear classifier on amino-acid composition alone,
+without positional information, separates reference-derived negatives from
+positives at AUROC 0.6120 and these expressed-protein negatives at 0.6085, while
+shuffled-positive decoys give exactly 0.5000 by construction. Shuffled decoys
+were rejected as the primary set despite that perfect score, because shuffled
+strings are not peptides any cell could present and a model separating real
+fragments from them can succeed on sequence realism alone; they are retained as
+a preregistered secondary control. **The resulting floor is not chance**: a
+composition-only model achieves an average precision of 0.597 against the
+primary negatives, and all performance is reported against that figure
+(`results/qc/negative_diagnostic.json`).
+
+The frozen dataset is 520,000 positives and 520,000 negatives over 52
+participants, with checksums in `data/derived/FREEZE.json`. 53,054 positive rows
+(10.20%) are sequences also positive in another participant; these are retained
+rather than deduplicated, being the exposure the split must handle.
+
+### Split
+
+Ten participants were held out as a test partition, the remaining 42 divided
+into five grouped folds for model selection, every partition stratified by
+acquisition platform (D025). Two secondary splits were fixed before any result:
+an allele-disjoint split holding out all 29 carriers of the most common allele,
+and a cross-platform transfer analysis training on one instrument and evaluating
+on the other in both directions.
+
+**Participant-disjointness does not deliver sequence-disjointness.** Across
+2,000 random ten-participant partitions, 14.59% of test positives also appear in
+training (11.76–17.25%), because exposure compounds across 42 training
+participants rather than remaining at the pairwise rate. The realised split
+leaks 15.99%, near the top of that range; it was not re-drawn, as selecting a
+split on its leakage would be selection on a property of the data. The 84,012
+leakage-free test rows are written out and the primary metric is reported on
+both partitions, the gap between them measuring the inflation directly (D003).
+
+### Statistical analysis
+
+The estimand is the mean per-participant average precision. Uncertainty is
+assessed by cluster bootstrap resampling participants, which is what bounds the
+claim: simulation established that bootstrap replicates are irrelevant across a
+250-fold range while participant count is not (run-001). Nominal 95% intervals
+were measured to achieve only 0.884–0.890 actual coverage at ten held-out
+participants, so **all intervals are reported at nominal 99%**, which delivers
+approximately 95% (run-012).
+
+The preregistered decision rule rejects the null when the lower bound of a
+nominal-99% interval exceeds **0.647** — the composition floor of 0.597 plus a
+lift of 0.05 (D008). This rule has power 0.98 at a true AUROC of 0.75 and 0.42
+at 0.70, with a false-positive rate of 0.000 when the truth lies at the floor.
+The minimum reliably detectable effect is therefore a lift of about 0.14 average
+precision; **failure to reject is not evidence of absent signal.**
+
+Seeds are derived per purpose from a base of 20261006 by hashing, so unrelated
+draws do not share a stream. Sensitivity analyses over seeds report every
+replicate; selecting among them is prohibited (D010).
+
+### Preregistration
+
+The dataset, split, endpoint reference and decision rule are fixed at commit
+`f7550f54`, with artifact checksums recorded in `PREREGISTRATION.md`. That
+record establishes content integrity and ordering within the repository; it does
+**not** provide independent third-party evidence of chronology, since it is
+created by the repository owner (D009).
+
+**The preregistration is incomplete in one respect, stated here rather than
+discovered later.** Sections 11, 12 and 13 of the experiment specification — the
+network architecture, the input representation, and the training protocol —
+remain unlocked. The configuration used for throughput benchmarking (length-12
+input, 32-dimensional embedding, two 64-filter convolutions with kernel width 3,
+64-unit dense layer) was chosen to size the compute budget, not as a
+preregistered architecture. Until those sections are frozen there is latitude in
+exactly the component whose behaviour the experiment measures, and any
+confirmatory claim must either follow their freezing or be reported as
+exploratory.
+
+### Software and environment
+
+Phase A and dataset construction use only the Python standard library. The
+design analyses use numpy 2.4.6 and scipy 1.17.1. Environments are recorded in
+`ENVIRONMENT.md`: `env-001` (4-core cloud container, no GPU) for analysis,
+`env-002` (Colab, 2 cores) for extraction. Measured training throughput for the
+benchmarked configuration is 122,648 peptides/second on `env-001`, from which
+the compute budget derives and to which it does not port.
 
 ## Results
 
