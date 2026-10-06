@@ -1,0 +1,54 @@
+{
+ "frozen_utc": "2026-10-06T16:04:58.216176+00:00",
+ "commit": "74c5f12f7af90c58b8923c28c61f3af2b5267037",
+ "decisions_applied": {
+  "D024": "cap 10000 per unit, length-stratified, seed 20261006",
+  "D002": "negatives = set C (expressed-protein, unobserved); ratio 1:1",
+  "D004": "no confidence filter: 99.29% of the union is level 1, so it is a no-op",
+  "D011": "unit = participant"
+ },
+ "seed": 20261006,
+ "cap_per_unit": 10000,
+ "ratio": 1,
+ "length_window": [
+  8,
+  12
+ ],
+ "n_units": 52,
+ "n_positives": 520000,
+ "n_negatives": 520000,
+ "distinct_positive_sequences": 466946,
+ "cross_unit_duplicate_rows": 53054,
+ "cross_unit_duplicate_pct": 10.203,
+ "note_on_duplicates": "Sequences positive in more than one unit are retained, not deduplicated. They are the exposure D003 governs and the split rule must handle them.",
+ "observed_universe": 2658972,
+ "expressed_proteins": 20152,
+ "proteome_sequences": 20652,
+ "length_distribution": {
+  "8": 81422,
+  "9": 160700,
+  "10": 132243,
+  "11": 89813,
+  "12": 55822
+ },
+ "composition_floor_ap": 0.597,
+ "composition_floor_source": "results/qc/negative_diagnostic.json (set C)",
+ "files": {
+  "POSITIVES.csv": {
+   "sha256": "6c737a7bb6b9e580c3b85427dcd165b240dc0ebf9d3249c9b8226107363f17b9",
+   "bytes": 11595822
+  },
+  "NEGATIVES.csv": {
+   "sha256": "b990aa06ef257a88fc30ef6bdc2cebc25a1f365ded9b71182cd048c7e2438421",
+   "bytes": 11595822
+  }
+ },
+ "integrity_checks": {
+  "positives are observed": true,
+  "no negative is observed": true,
+  "positive/negative disjoint": true,
+  "negatives globally unique": true,
+  "class ratio 1:1": true,
+  "length profiles match": true
+ }
+}
