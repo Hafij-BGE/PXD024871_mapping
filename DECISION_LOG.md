@@ -132,6 +132,7 @@ blocks:
 | D012 | Partial typing: units with fewer recorded alleles than loci are ambiguous between a genuine single-allele locus and incomplete reporting. Imputation is prohibited; the question is whether such units are excluded from allele-stratified analyses or retained with a flag. Raised by `METHODOLOGY.md` M4 | G2 |
 | D013 | S2 retrieval route: the metadata file as deposited in the submission, versus the separately maintained community-annotation repository. Different authorship, version history, and checksum availability, and possibly different contents. Settled by reading the S1 manifest, not by guessing a path. Raised by `DATA_SOURCES.md` | G1 |
 | D014 | Primary endpoint: §25 kept, threshold raised; §18 preregistered secondary. **RATIFIED, RESOLVED** — see entry below. Contingent on D006 | constrains D008 |
+| D020 | Compute gate numbers set from measured throughput on the target machine. **RESOLVED** — see entry below | G8 |
 | D015 | Master prompt transcription. **CONFIRMED, RESOLVED** — see entry below | closed |
 | D016 | Approximate matching prohibited on every identifier join. **RATIFIED, PERMANENT** — see entry below | standing rule |
 | D017 | Proceeding with run-001 while G1 was failing. **RATIFIED, RESOLVED** — see entry below | closed |
@@ -207,6 +208,62 @@ are seen, or it is endpoint switching regardless of how well justified.
 **Ratification note.** Ratified on the author's instruction. The reasoning
 behind it is mine and reversed my own earlier position; the authority for
 adopting it is theirs.
+
+---
+
+## D020 — Compute gate numbers
+
+**Date opened:** 2026-10-06 · **Resolved:** 2026-10-06 · **Status:** RESOLVED
+**Blocks:** nothing further · **Evidence:** run-002, `results/compute/benchmark.json`
+
+**Question.** What are the §14 limits? The field had been empty since the
+proposal was written, and I had declined twice to fill it on the grounds that a
+compute budget is an institutional fact I cannot know.
+
+**What changed.** The author asked for the numbers. The institutional budget is
+still not mine to know, but the target machine is measurable and the
+architecture is specified, so the limits are derived from measured throughput
+rather than invented. Measured: 122,648 peptides/sec training throughput on
+four cores with no GPU.
+
+**Limits set.** In `SECTIONS.md` §14. In summary: 20 configurations, 100 epochs
+with patience 10, 5 folds, 5 seeds for the selected configuration only, 150
+total runs, 48 hours wall clock, 4 cores, no GPU, ~2 GB peak extraction disk.
+Worst-case grid cost ~31 hours against the 48-hour cap.
+
+**Reduction ladder is preregistered** and ordered: seeds, then configurations,
+then folds, then epochs. The prompt requires that a reduction be recorded
+rather than silently applied; fixing the *order* in advance goes further, by
+removing the discretion to choose which corner to cut once a budget is already
+under pressure.
+
+**What is never reduced:** the test partition, the split definition, the
+allele-disjoint secondary analysis. These are the design. Cutting them to fit a
+budget would be changing the experiment to afford it, which is the failure the
+compute gate exists to prevent — so the gate must not become its instrument.
+
+**Two findings the measurement produced incidentally.**
+
+1. **No GPU is required.** The architecture is small enough that CPU throughput
+   suffices, removing a hardware dependency the proposal left implicit.
+2. **Streaming the containers is forced, not chosen.** 30 GB writable disk
+   against a container set described as ~47.8 GB: the full set cannot be held.
+   `DATA_SOURCES.md` presented stream-and-delete as the better of two options;
+   it is in fact the only feasible one, which means the reproducibility cost
+   recorded there — dependence on the publisher's continued availability — is a
+   constraint we are under rather than a trade we made.
+
+**Validity is bounded by the hardware.** Measured on this cloud machine. The
+ladder and the structure port; the numbers do not. Different hardware requires
+re-running run-002 and resetting the limits, and §14's status says so.
+
+**Honest caveat on the measurement.** numpy over BLAS, not an optimised
+framework, because the CPU-only framework wheel is blocked by the network policy
+and the available wheel wanted 553 MB of GPU libraries for a machine with no
+GPU. The figure is therefore an upper bound on time: a real framework should be
+faster, so the budget has headroom rather than a shortfall. A FLOP-count
+cross-check gave a floor of 2.7–27 s/epoch, which brackets the measured 9 s/epoch
+from below as expected.
 
 ---
 
