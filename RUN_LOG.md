@@ -412,3 +412,76 @@ justified by run-001's finding that precision is bounded by unit count. Opened
 as D024, explicitly as a design decision rather than a reduction-ladder step.
 
 **Status:** RESOLVED. Extraction complete. G4 blocked on D002 and D024.
+
+---
+
+## run-010 — Leakage and confound audit (G5)
+
+| Element | Value |
+|---|---|
+| Timestamp | 2026-10-06, UTC |
+| Stage | G5, on the frozen dataset before the split exists |
+| Purpose | Measure what the split must handle: sequence leakage under unit-disjoint splitting, and whether the instrument confound is learnable from sequence |
+| Serves | D003, D005, D025; G6 |
+| Code | `scripts/leakage_audit.py`, blob `fccb182e49e1ba25f0d650e446752f6ba41be3d4` |
+| Environment | env-001 |
+| Inputs | `data/derived/POSITIVES.csv` (frozen, commit 74c5f12f), `UNITS.csv` |
+| Parameters | seed 20261006; 2,000 random 10-unit test partitions; composition-only LDA |
+| Outputs | `results/qc/leakage_audit.json`, `results/qc/QC_G5.md` |
+| Software versions | Python 3.11.15, numpy 2.4.6 |
+| Random seed | 20261006 |
+| CPU/RAM/GPU | 4 cores, no GPU |
+| Runtime | ~2 min |
+| Errors/warnings | None. Two gate checks FAIL by measurement, not by defect |
+| Metrics | leakage 14.59% mean; platform AUROC 0.6451 vs 0.5150 control |
+
+### Research record
+
+**Purpose.** G5 before G6, so the split rule is written against measured
+exposure rather than an assumption about it.
+
+**Reasoning.** Both quantities are properties of the frozen data and need no
+split to measure. Measuring them first means the split can be designed around
+them; measuring after would mean discovering the design was inadequate.
+
+**Alternatives considered.** (a) Audit after splitting — rejected: a single
+split gives one leakage number with no sense of its variability, and 2,000
+random splits show the range is 11.76–17.25%. (b) Report row-level duplication
+only — rejected: 10.20% understates what a test partition actually faces, and
+the gap between the two figures is itself the finding. (c) Test platform
+separability with a strong model — rejected: a *trivial* model succeeding is
+the stronger result, since it shows the signal needs no sophistication to
+exploit.
+
+**Interpretation.** Below.
+
+**Limitations.** Platform separability was measured on composition alone;
+positional information would likely raise it, so 0.645 is a floor. Leakage was
+measured on positives; negatives are unit-agnostic by construction and cannot
+leak this way.
+
+**Decision.** D003 resolved; D025 opened and resolved; D005 escalated.
+
+**Next step.** G6: build the split, stratified by platform, with the
+leakage-free subset defined.
+
+### Interpretation
+
+**Unit-disjointness does not deliver sequence-disjointness.** 14.59% of test
+positives are seen verbatim in training, against 10.20% row-level duplication,
+because exposure compounds across 42 training units. §9 lists these as separate
+leakage types; the design treated satisfying one as delivering the other.
+
+**The instrument confound is worse than D005 recorded.** Platform is readable
+from amino-acid composition at AUROC 0.645 while random halves of units give
+0.515 — so the signal is specific to the instrument, not generic between-unit
+variation. A model evaluated on held-out units is partly being tested on
+platform transfer, at a magnitude now measured rather than feared.
+
+Both gate checks FAIL and neither is correctable. They are accepted as
+limitations with mandated handling: report both leakage-inclusive and
+leakage-free metrics (D003), and stratify by platform with a preregistered
+cross-platform transfer analysis (D025).
+
+**Status:** RESOLVED as an audit. G5 passes only in the sense that both failures
+are declared and have mandated handling; nothing here was fixed.
