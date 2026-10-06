@@ -18,6 +18,13 @@ becomes the record as each source is retrieved.
 
 **Raw data is never modified.** Retrieved files are written once to
 `data/raw/<source_id>/`, checksummed, and treated as read-only thereafter.
+
+**The small authoritative inputs are committed; the large payloads are not.**
+S1 (manifest, ~690 KB) and S2 (metadata, 318 KB) are in the repository, because
+every pipeline stage reads them and excluding them made a fresh clone unable to
+run at all. The identification containers are not, because they are 107 GiB and
+the repository is not their archive — their provenance records stand in for
+them. Committed copies are checksum-verified against their provenance records.
 All derived files go to `data/derived/`. No process writes to `data/raw/`
 after its initial retrieval and verification.
 
