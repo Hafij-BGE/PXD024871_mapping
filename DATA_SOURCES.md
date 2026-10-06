@@ -7,7 +7,8 @@ provenance field below is `PENDING`. This file is the acquisition plan and
 becomes the record as each source is retrieved.
 
 > **BLOCKED 2026-10-06 — outbound network policy.** Retrieval of S1 was
-> attempted and denied. The execution environment's network policy refuses
+> attempted twice (two API versions, 00:32 and 00:59 UTC) and denied both
+> times; `ftp.pride.ebi.ac.uk` was also probed and denied. The execution environment's network policy refuses
 > `www.ebi.ac.uk:443`; the gateway answers 403 to CONNECT, which surfaces to
 > `curl` as HTTP 403. The denial was confirmed independently of the retrieval
 > attempt, so it is the policy and not a malformed request or a wrong endpoint.
