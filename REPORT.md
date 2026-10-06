@@ -226,7 +226,9 @@ replicate; selecting among them is prohibited (D010).
 ### Preregistration
 
 The dataset, split, endpoint reference and decision rule are fixed at commit
-`f7550f54`, with artifact checksums recorded in `PREREGISTRATION.md`. That
+`f7550f54`, with artifact checksums recorded in `PREREGISTRATION.md`, committed
+at that commit. No tag was published: one was attempted and refused by the
+remote, and the commit is the anchor instead. That
 record establishes content integrity and ordering within the repository; it does
 **not** provide independent third-party evidence of chronology, since it is
 created by the repository owner (D009).
