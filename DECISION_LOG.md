@@ -123,11 +123,12 @@ blocks:
 | D021 | Peak extraction disk corrected from ~2 GB to ~12 GiB once container sizes were verified. **RESOLVED** — see entry below | G8 |
 | D022 | Compute gate resized: planning worst case 100k -> 2M positives, cap 48h -> 96h, class ratio 1:1. **RESOLVED**, but flags that the budget is not executable on this hardware. See entry below | G8 |
 | D023 | Provenance cannot depend on the downloader surviving: a completed transfer whose writer died left an unrecorded, truncated file. **RESOLVED** — reconciler added. See entry below | G1 |
-| D003 | Cross-donor shared sequences: drop from one split, or allow and report both ways | G5 |
-| D004 | Identification-confidence threshold for the positive set; whether to re-filter stricter than deposited | G4 |
+| D003 | Cross-unit shared sequences. **RESOLVED (informed)** — only 20.1% appear in >1 unit; 534,696 sequences are the actual exposure, not the heavy overlap I claimed. Split rule still to be written | G5 |
+| D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
+| D024 | Per-unit positive cap. The union is 2.66M and a full grid costs 120h against a 96h cap, but run-001 showed precision is bounded by unit count, not peptide count — so a cap is a design choice justified by the power analysis rather than a budget cut. Must be preregistered before the split is locked | G4, G6 |
 | D005 | Instrument confound. **RESOLVED — accepted as a limitation**; total confound, cannot be corrected. See entry below | G3, FAIL accepted |
 | D006 | Training-set overlap between the comparison predictors and these peptides; handling rule if overlap exists | G11 |
-| D007 | Minimum-N gate: preregistered eligible-positive threshold below which the confirmatory arm does not run | G4 |
+| D007 | Minimum-N gate. **RESOLVED — clears overwhelmingly**: 2,658,972 eligible positives. The confirmatory arm is not data-limited | G4 |
 | D008 | Decision rule for §25. **Form now fixed by D014 (ratified)**: a lift over prevalence, tested on the interval's lower bound. Magnitude still open and cannot close before D002, since prevalence follows the class ratio | G6, after D002 |
 | D009 | Preregistration freeze mechanism (commit hash + timestamp) | G8 |
 | D010 | Seed convention — 20261006 is today's date; record the convention or replace it | G8 |
@@ -368,6 +369,51 @@ container whose record does not show a verified publisher checksum.
 as malformed. That was luck: a truncation landing on a page boundary could open
 cleanly and under-report rows. The checksum is the integrity check; a reader's
 willingness to open a file is not one, and nothing should be built on it.
+
+---
+
+## D024 — Per-unit positive cap
+
+**Opened:** 2026-10-06 · **Status:** OPEN · **Blocks:** G4, G6
+**Evidence:** run-006 (`results/qc/QC_G4_prep.md`), run-001 F2/F5, run-002
+
+**The situation.** The measured union is **2,658,972** positives. A 100-run grid
+costs 120 h at 1:1 and 662 h at 1:10 against a 96 h cap. §14 has now been
+breached twice, both times because it was sized against an estimate of the
+dataset rather than the dataset.
+
+**Why a bigger budget is the wrong answer.** run-001 established that the
+uncertainty on the participant-level estimand is bounded by the **number of
+held-out units — 52 —** and not by peptide count; bootstrap replicates were
+shown irrelevant across a 250-fold range. Positives beyond what makes each
+unit's average precision stable therefore buy almost nothing statistically
+while costing linearly in compute.
+
+| Per-unit cap | Total positives | Grid at 1:1 |
+|---|---|---|
+| 5,000 | 260,000 | 11.8 h |
+| 10,000 | 520,000 | 23.6 h |
+| 20,000 | 1,040,000 | 47.1 h |
+| 40,000 | 2,080,000 | 94.2 h |
+
+**This is a design decision, not a reduction-ladder step.** §14's ladder exists
+to trim the grid, and explicitly forbids trading design to afford compute. A
+per-unit cap is different in kind: it is justified by the power analysis
+independently of the budget, and would be defensible even with unlimited
+compute. It must be argued that way or not at all.
+
+**What must be settled before it closes.**
+1. The cap, chosen from a per-unit AP precision curve rather than from the
+   compute table above — the compute figures must not be what picks the number.
+2. The sampling rule: random within unit, or stratified by length, which is the
+   mode at 9-mers and would otherwise drift.
+3. Whether units below the cap (minimum is 39,991) are left whole, making the
+   cap a ceiling rather than a quota.
+4. Preregistered before the split is locked. Choosing it after seeing results
+   would be selection.
+
+**Not yet decided.** Recorded now because the data is in hand and the decision
+is on the critical path to G4.
 
 ---
 
