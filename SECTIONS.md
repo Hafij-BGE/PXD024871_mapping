@@ -81,7 +81,7 @@ Each section of the experiment has:
 - Identification containers total 107.53 GiB over 101 files (verified); largest single container 9.25 GiB, so streaming is required
 - SDRF has 402 rows; 504 files include non-MS-run files
 
-**Status:** OPEN (not yet started)
+**Status:** RESOLVED — executed, G1 passed (run-003)
 
 **Next Step:** Download SDRF, verify file inventory, record metadata.
 
@@ -126,7 +126,7 @@ Each section of the experiment has:
 - 10 donors partially typed (4–5 alleles instead of 6)
 - Some alleles may be hemizygous
 
-**Status:** OPEN (blocked on HLA allotype decision, see DECISION_LOG #1)
+**Status:** RESOLVED — D001 resolved; file map built, G2 passed (run-003)
 
 **Next Step:** Resolve DECISION_LOG #1, then execute file map.
 
@@ -161,7 +161,7 @@ Each section of the experiment has:
 **Limitations:**
 - Cannot separate donors with identical allotype + metadata
 
-**Status:** OPEN (depends on A2)
+**Status:** RESOLVED — 52 class-I units resolved, G3 passed (run-003)
 
 **Next Step:** Execute after A2 complete.
 
@@ -203,7 +203,7 @@ Each section of the experiment has:
 - Negative strategy choice sets ceiling on all downstream metrics
 - Shared peptides across donors not yet decided (see leakage section)
 
-**Status:** OPEN (blocked on DECISION_LOG #2 and class-ratio lock)
+**Status:** RESOLVED — D002 and D024 resolved; dataset frozen, G4 passed (run-009)
 
 **Next Step:** Resolve #2, lock class ratio, then execute filtering.
 
@@ -238,7 +238,7 @@ Each section of the experiment has:
 **Limitations:**
 - **Shared-peptide ambiguity**: HLA ligandomes overlap between donors sharing alleles. Same sequence can be genuinely positive in both train and test donors. Unresolved handling: drop cross-split duplicates, or allow and report both ways?
 
-**Status:** OPEN (blocked on shared-peptide decision in DECISION_LOG)
+**Status:** RESOLVED — D003 resolved; G5 audited, two failures declared with mandated handling (run-010)
 
 **Next Step:** Decide cross-donor duplicate handling.
 
@@ -278,7 +278,7 @@ Each section of the experiment has:
 - Donor-held-out ≠ allele-held-out: HLA-A*02:01 in 29/52 donors
 - Unbalanced run counts (3–15) mean peptide counts dominated by 15-run donor
 
-**Status:** OPEN (depends on Phase B and shared-peptide decision)
+**Status:** RESOLVED — split frozen, G6 passed (run-011)
 
 **Next Step:** Lock positive/negative counts and class ratio, then define splits.
 
@@ -315,7 +315,7 @@ Each section of the experiment has:
 - Simplicity may underperform compared to more complex models
 - Outcome C (weak CNN) plausible on ~10k peptides
 
-**Status:** OPEN (depends on Phase B for sequence statistics)
+**Status:** OPEN — **not frozen.** The benchmarked configuration was chosen to size compute, not preregistered. Must be locked before any confirmatory claim
 
 **Next Step:** Observe sequence length distribution, finalize architecture.
 
@@ -351,7 +351,7 @@ Each section of the experiment has:
 - Fixed-length padding assumes variable-length peptides
 - Representation choice not validated on real data until model training
 
-**Status:** OPEN (depends on Phase B)
+**Status:** OPEN — **not frozen.** Must be locked before any confirmatory claim
 
 **Next Step:** Finalize representation, document exactly.
 
@@ -388,7 +388,7 @@ Each section of the experiment has:
 - Search space bounds may be conservative
 - Early stopping rule may fail on small datasets
 
-**Status:** OPEN (depends on Phase B and compute gate)
+**Status:** OPEN — **not frozen.** Compute gate is resolved; the protocol itself is not
 
 **Next Step:** Define compute budget, freeze preregistration.
 
@@ -542,7 +542,7 @@ Re-check the projection once more units are extracted.
 - AUPRC is incomparable across studies with different class ratios
 - Positive prevalence must not change after observing test performance
 
-**Status:** OPEN (blocked on class-ratio decision in DECISION_LOG)
+**Status:** RESOLVED — AUPRC primary at 1:1; floor is the measured 0.597, not prevalence (D002, D008)
 
 **Next Step:** Lock positive:negative ratio, then freeze primary endpoint.
 
