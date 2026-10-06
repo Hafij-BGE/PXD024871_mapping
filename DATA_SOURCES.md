@@ -128,7 +128,7 @@ and genotype all derive from this one file.
 and it is **[provisional]** expected to lack a published checksum. It is also
 community-annotated rather than depositor-authored, meaning its annotations are
 a third-party interpretation of the submission. Both facts are recorded as
-limitations. The independent cross-check in `METHODOLOGY.md` §7 exists
+limitations. The independent cross-check in `METHODOLOGY.md`, *Independent verification*, exists
 specifically because of this concentration.
 
 **Version sensitivity:** because the file may be revised after our retrieval,
@@ -315,7 +315,8 @@ makes us dependent on. Not a data source for the analysis table; an evidence
 source for validating the metadata and for the methods description.
 
 A disagreement between this source and S2 is `CONFLICT` under
-`METHODOLOGY.md` §2 — recorded, not resolved by preferring either.
+`METHODOLOGY.md` M3, *Confidence/status categories* — recorded, not resolved
+by preferring either.
 
 **Used by:** G2 independent verification; methods and limitations text.
 
@@ -353,7 +354,7 @@ contents**, so the route is a recorded decision rather than a convenience. It
 cannot be settled by guessing a path; it is settled by reading the S1 manifest
 and checking whether the file is present in the submission. Guessing a
 distribution path would also violate the no-approximate-matching rule in
-`METHODOLOGY.md` §4 applied to provenance: a file retrieved from an assumed
+`METHODOLOGY.md` M1, *Approximate/fuzzy matching rules*, applied to provenance: a file retrieved from an assumed
 location has unestablished identity.
 
 Recorded as pending decision **D013**.

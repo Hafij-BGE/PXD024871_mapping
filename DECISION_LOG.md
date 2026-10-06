@@ -131,8 +131,59 @@ blocks:
 | D011 | Unit definition: participant as the independent unit, with replicates and fractions nested within it, versus treating replicates as units. Sets the resampling unit and therefore the width of every uncertainty interval. Raised by `METHODOLOGY.md` M2 | G3 |
 | D012 | Partial typing: units with fewer recorded alleles than loci are ambiguous between a genuine single-allele locus and incomplete reporting. Imputation is prohibited; the question is whether such units are excluded from allele-stratified analyses or retained with a flag. Raised by `METHODOLOGY.md` M4 | G2 |
 | D013 | S2 retrieval route: the metadata file as deposited in the submission, versus the separately maintained community-annotation repository. Different authorship, version history, and checksum availability, and possibly different contents. Settled by reading the S1 manifest, not by guessing a path. Raised by `DATA_SOURCES.md` | G1 |
-| D014 | Primary endpoint: whether the §18 paired predictor comparison should replace the §25 absolute "better than chance" claim as the confirmatory endpoint. The paired analysis is better powered at every participant count tested (MDE ΔAP ≈ 0.05 at K=10 versus an absolute claim that passes at AUROC 0.60), and is better matched to the design's resolution. Evidence: run-001, `POWER_ANALYSIS.md` F1 and F7. Proposed, not applied | G6 |
+| D014 | Primary endpoint. **RESOLVED** as a recommendation — see the full entry below | G6 |
 | D015 | Master prompt transcription: the brief as supplied leaves the Mapping Methodology and Validation & QC Gates sections unnumbered (where 3 and 5 would fall), and three lines ("Maintain:", "Each gate is:", "Keep progress updates concise:") introduce content that did not survive into the supplied text. Transcribed verbatim rather than repaired, per the prompt's own rule against silently altering a source. Needs confirmation or replacement by the author | none; blocks nothing, but leaves §-number citations ambiguous |
+| D016 | Approximate matching prohibited on every identifier join, overriding the prompt's Mapping Methodology allowance for fuzzy rules. Argued in `METHODOLOGY.md` M1: at this identifier density any threshold loose enough to repair a typo also merges distinct entities. **Logged retroactively** — the override was argued in the file but never recorded as a decision, which the prompt §9 requires before changing structure | all mapping gates |
+| D017 | Proceeding with run-001 while G1 was failing, contrary to the prompt §1 rule against advancing before a gate passes. Authorised by the author in conversation but never logged, and the run record described the stage as "not a pipeline stage; no gate", which sidestepped rather than flagged it. **Logged retroactively** for ratification | none; already done |
+| D018 | `SECTIONS.md` was written with eight of the prompt §1's nine required per-section fields, omitting "Why the method is needed" and renaming two others, and `RUN_LOG.md` omitted three §4 research-record fields. Both **repaired 2026-10-06**; logged so the omission and its repair are on the record rather than silently corrected | none; repaired |
+| D019 | `METHODOLOGY.md` restructured to the prompt's eleven-field format on the author's instruction, with shared normalization conventions stated once rather than repeated under all seven normalization fields, and the M1–M7 tags retained as cross-reference labels only. Both compressions flagged in the file. **Logged for ratification** | none; done |
+
+---
+
+## D014 — Primary endpoint: keep §25, raised
+
+**Date opened:** 2026-10-06 · **Date resolved:** 2026-10-06
+**Status:** RESOLVED as a recommendation, pending the author's ratification
+**Blocks:** G6 (preregistration freeze)
+**Evidence:** run-001; `POWER_ANALYSIS.md` F1, F7; `METHODOLOGY.md` M7
+
+**Question.** Should the §18 paired predictor comparison replace the §25
+absolute claim as the confirmatory endpoint?
+
+**Recommendation: keep §25 primary with a raised threshold; report §18 as the
+better-powered secondary.**
+
+**This reverses my own earlier lean, and the reason matters.** I opened D014 on
+power grounds alone, where §18 plainly wins: its minimum detectable difference
+is about 0.05 AP at ten held-out participants, while §25 as worded passes for a
+classifier at AUROC 0.60 (F1, F7). Power is not the only consideration, and the
+one I had not weighed is in M7.
+
+**The deciding argument.** The two endpoints fail in different ways, and only
+one failure is fixable:
+
+- §25's weakness is **specification**. It has no threshold. That is repaired by
+  writing one (D008), today, from numbers run-001 already produced.
+- §18's weakness is **an unverifiable dependency**. Its fairness rests on the
+  comparison predictors' training sets not containing these peptides, and M7
+  returns `UNVERIFIABLE` wherever a training set cannot be obtained. Nothing in
+  this project can resolve that. Making it confirmatory would rest the headline
+  claim on an assumption we have no means to check, in a direction we could not
+  even determine — contamination would flatter the existing predictors, making
+  the CNN look worse, but we could not say by how much or whether it occurred.
+
+A well-specified weaker claim beats a better-powered claim with an uncheckable
+premise. Statistical power is worth less than knowing what you measured.
+
+**Conditional on D006.** If the comparison predictors' training sets turn out to
+be inspectable and M7 returns `CLEAN` or a quantified `OVERLAPPING`, the
+objection disappears and §18 becomes the better endpoint on power grounds.
+Revisit then; this recommendation is contingent, not permanent.
+
+**Consequences if accepted.** D008 must specify a lift threshold; §18 is
+preregistered as secondary with its own analysis plan; §16 reports the
+participant-level interval with the coverage shortfall from F3 stated; any
+promotion of §18 later requires a new entry citing this one.
 
 ---
 

@@ -1,7 +1,7 @@
 # RUN_LOG
 
 Computational record. One entry per meaningful run, per master prompt §4 and
-the traceability chain in `METHODOLOGY.md` §6. Append-only.
+the traceability chain in `METHODOLOGY.md`, *Traceability record*. Append-only.
 
 ---
 
@@ -34,6 +34,49 @@ Estimators were cross-checked rather than assumed correct:
   against 0.10 over 400 replicates).
 - The asymptotic integral is insensitive to grid resolution: identical to four
   decimals between 8001 and 24001 points.
+
+### Research record
+
+Required by `PROJECT_PROMPT.md` §4. These fields were omitted when this entry
+was first written; added 2026-10-06 on the author's challenge.
+
+**Purpose.** Bound what the proposal's §16/§25 design can resolve, so D007 and
+D008 could be set against numbers rather than intuition.
+
+**Reasoning.** Retrieval was blocked, so no empirical stage could advance. The
+design question was the only one answerable without data, and answering it
+cheaply before the expensive extraction stage is the point at which it can
+still change the plan. Had it shown the design unable to resolve any effect
+worth claiming, the confirmatory arm would have been reframed before any
+bulk effort was spent.
+
+**Alternatives considered.** (a) Scaffold the remaining registries instead —
+rejected as form-filling with no decision value while the real question was
+whether the study is powered. (b) Write the M1–M5 extraction scripts against
+the unseen metadata format — rejected as speculative; the format is unknown,
+so the code would likely be wrong and would need rewriting after retrieval.
+(c) Analytic power calculation rather than simulation — rejected because the
+estimand is a mean of per-participant average precisions under unbalanced
+cluster sizes, which has no convenient closed form, and because simulation
+also yields coverage, which turned out to be the more consequential finding.
+(d) Wait for retrieval — rejected as it would have left the session with no
+result; in hindsight this was the option that respected the gate order, and
+proceeding instead is logged as a departure (D017).
+
+**Limitations.** Seven, enumerated in `POWER_ANALYSIS.md`. The governing one:
+every figure is conditional on an assumed between-participant variance, which
+is the dominant term and is unmeasurable before data exist. Participant counts
+are a reconstruction of described marginals, not observed values.
+
+**Interpretation.** In the *Interpretation* section immediately below, and in
+full in `POWER_ANALYSIS.md`.
+
+**Decision.** Recorded under *Decision consequences* below. In summary: D007
+restated in participants, D008 to specify a lift, D002 gains a statistical
+argument against extreme class ratios, D014 opened.
+
+**Next step.** Re-execute with observed participant counts once S1 and S2 are
+retrieved. Until then the figures bound the design; they do not describe it.
 
 ### Interpretation
 
