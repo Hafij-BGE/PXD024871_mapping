@@ -133,10 +133,10 @@ blocks:
 | D013 | S2 retrieval route: the metadata file as deposited in the submission, versus the separately maintained community-annotation repository. Different authorship, version history, and checksum availability, and possibly different contents. Settled by reading the S1 manifest, not by guessing a path. Raised by `DATA_SOURCES.md` | G1 |
 | D014 | Primary endpoint. **RESOLVED** as a recommendation — see the full entry below | G6 |
 | D015 | Master prompt transcription: the brief as supplied leaves the Mapping Methodology and Validation & QC Gates sections unnumbered (where 3 and 5 would fall), and three lines ("Maintain:", "Each gate is:", "Keep progress updates concise:") introduce content that did not survive into the supplied text. Transcribed verbatim rather than repaired, per the prompt's own rule against silently altering a source. Needs confirmation or replacement by the author | none; blocks nothing, but leaves §-number citations ambiguous |
-| D016 | Approximate matching prohibited on every identifier join, overriding the prompt's Mapping Methodology allowance for fuzzy rules. Argued in `METHODOLOGY.md` M1: at this identifier density any threshold loose enough to repair a typo also merges distinct entities. **Logged retroactively** — the override was argued in the file but never recorded as a decision, which the prompt §9 requires before changing structure | all mapping gates |
-| D017 | Proceeding with run-001 while G1 was failing, contrary to the prompt §1 rule against advancing before a gate passes. Authorised by the author in conversation but never logged, and the run record described the stage as "not a pipeline stage; no gate", which sidestepped rather than flagged it. **Logged retroactively** for ratification | none; already done |
-| D018 | `SECTIONS.md` was written with eight of the prompt §1's nine required per-section fields, omitting "Why the method is needed" and renaming two others, and `RUN_LOG.md` omitted three §4 research-record fields. Both **repaired 2026-10-06**; logged so the omission and its repair are on the record rather than silently corrected | none; repaired |
-| D019 | `METHODOLOGY.md` restructured to the prompt's eleven-field format on the author's instruction, with shared normalization conventions stated once rather than repeated under all seven normalization fields, and the M1–M7 tags retained as cross-reference labels only. Both compressions flagged in the file. **Logged for ratification** | none; done |
+| D016 | Approximate matching prohibited on every identifier join. **RATIFIED, PERMANENT** — see entry below | standing rule |
+| D017 | Proceeding with run-001 while G1 was failing. **RATIFIED, RESOLVED** — see entry below | closed |
+| D018 | Required field sets omitted from `SECTIONS.md` and `RUN_LOG.md`, then repaired. **RATIFIED, RESOLVED** — see entry below | closed |
+| D019 | `METHODOLOGY.md` restructured to the prompt's eleven-field format. **RATIFIED, PERMANENT** — see entry below | standing structure |
 
 ---
 
@@ -184,6 +184,127 @@ Revisit then; this recommendation is contingent, not permanent.
 preregistered as secondary with its own analysis plan; §16 reports the
 participant-level interval with the coverage shortfall from F3 stated; any
 promotion of §18 later requires a new entry citing this one.
+
+---
+
+## Ratified departures — D016 to D019
+
+Ratified by the author in session on 2026-10-06, on the instruction "ratify the
+departures". Each had been applied before being recorded, which is the failure
+`PROJECT_PROMPT.md` §9 exists to prevent; ratification closes the procedural
+gap but does not erase it, and the record keeps both.
+
+Statuses use the prompt's §1 vocabulary. Two are **PERMANENT**: standing rules
+that govern all future work rather than one-time choices. Two are **RESOLVED**:
+closed events that need no further action.
+
+---
+
+### D016 — Approximate matching prohibited on every identifier join
+
+**Status:** PERMANENT · **Ratified:** 2026-10-06 · **Governs:** all mapping gates
+
+**What it departs from.** The prompt's *Mapping Methodology* section requires
+"approximate/fuzzy matching rules" to be defined. This project defines them as
+prohibited, which is a narrower answer than the field anticipates.
+
+**Why.** The identifier space is dense in near-neighbours. Acquisition
+filenames differ by one character between genuinely different runs; participant
+identifiers differ by one digit between different individuals. Any
+edit-distance threshold loose enough to repair a transcription error is also
+loose enough to merge two distinct entities, and the merge is silent and
+unrecoverable downstream. The prompt's own rule — never silently force an
+ambiguous match — is better served by refusing the match than by tuning a
+threshold.
+
+**What it commits us to.** A non-empty unmatched set is a normal, reportable
+outcome rather than a defect to be eliminated. Near-misses are recorded as
+adjudication candidates with both normalized keys and the edit distance, and
+stay unmatched until a logged decision resolves them. No matcher may promote a
+near-miss.
+
+**As PERMANENT, this applies to mappings not yet written.** Any future join
+added to this project inherits the prohibition unless a new entry supersedes
+this one.
+
+---
+
+### D017 — Proceeding with run-001 while G1 was failing
+
+**Status:** RESOLVED · **Ratified:** 2026-10-06 · **Scope:** that run only
+
+**What it departs from.** `PROJECT_PROMPT.md` §1: "Do not proceed to the next
+major stage until the current stage has passed its QC gate." G1 was failing —
+retrieval was blocked by network policy — and the design analysis that followed
+belongs to §16/§25 territory, well downstream.
+
+**Why it was defensible.** The analysis required no project data, so it could
+not be contaminated by the data it preceded. It was cheap, and it was run
+before the expensive extraction stage precisely so it could still change the
+plan. It did: it found the primary hypothesis near-unfalsifiable and the stated
+precision mechanism inert.
+
+**Why it was still a departure.** The gate rule is unconditional as written,
+and the alternative — waiting — was available. The run record originally
+described the stage as "not a pipeline stage; no gate", which sidestepped the
+question rather than raising it. That framing has been corrected and the
+rejected alternative is now recorded in the run's research record.
+
+**Scope of this ratification.** This covers run-001 only. It is **not** a
+standing permission to run downstream analyses while an upstream gate is
+failing; a further instance needs its own entry.
+
+---
+
+### D018 — Required field sets omitted, then repaired
+
+**Status:** RESOLVED · **Ratified:** 2026-10-06 · **Scope:** closed
+
+**What happened.** `SECTIONS.md` was written with eight of the nine
+per-section fields the prompt §1 requires, omitting "Why the method is needed"
+across all seventeen sections and renaming two others. `RUN_LOG.md` omitted
+three of the prompt §4 research-record fields. Neither omission was deliberate
+and neither was recorded.
+
+**Why it matters more than the missing text.** The omitted field is the
+justification for each method choice — the part of the record that explains why
+an approach was taken rather than what it does. Dropping it quietly is how a
+framework erodes into whatever the implementer found convenient, which is the
+specific failure the prompt's §9 is written against.
+
+**Repair.** All nine fields restored across all seventeen sections with
+substantive justifications; the three research-record fields added to run-001,
+including the alternative rejected in favour of the D017 departure. Verified by
+audit rather than inspection: field counts checked programmatically against the
+prompt's list.
+
+**Retained in the record** rather than silently corrected, so the omission and
+its repair are both visible.
+
+---
+
+### D019 — METHODOLOGY.md restructured to the prompt's eleven-field format
+
+**Status:** PERMANENT · **Ratified:** 2026-10-06 · **Governs:** document structure
+
+**What changed.** All seven mappings are now documented under the prompt's
+eleven *Mapping Methodology* fields, in its order, as headings. The numbered
+join, normalization and status schemes of the earlier draft are removed.
+
+**Two compressions, both flagged in the file.** Shared normalization
+conventions are stated once rather than repeated under all seven *normalization
+rules* fields, which would duplicate the same eight lines seven times. The
+`M1`–`M7` tags survive as cross-reference labels carrying no meaning, so that
+`FLOWCHART.md`, `REPORT.md` and `DATA_SOURCES.md` can name a specific mapping.
+
+**Cost paid.** The restructure broke twelve cross-references across three
+files, since the earlier section numbers no longer exist; all twelve were
+repointed to named sections, and the flowchart's status diagram was reconciled
+to the per-mapping definitions.
+
+**As PERMANENT, this fixes the document's format.** Any mapping added later is
+documented under the same eleven fields. A future change of format needs a new
+entry superseding this one.
 
 ---
 
