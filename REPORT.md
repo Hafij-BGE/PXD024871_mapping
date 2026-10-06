@@ -56,7 +56,7 @@ The only result to date. Full write-up in `POWER_ANALYSIS.md`; record in
 | Nominal 95% intervals achieve 0.66–0.95 actual coverage; ~0.80 at K=5 | F3 | Intervals must be reported as approximate |
 | At a 1:100 class ratio the AP estimator is biased upward by ~10% of the lift, and that bias exceeds interval width as a source of miscoverage | F4 | Statistical argument against extreme ratios, independent of composition (D002) |
 | Between-participant variance is the dominant unknown; half-width swings 5× across its plausible range | F5 | Achievable precision is bounded, not yet knowable |
-| Paired predictor comparison is better powered at every K; MDE ≈ 0.05 AP at K=10 | F7 | D014 proposes it as primary endpoint |
+| Paired predictor comparison is better powered at every K; MDE ≈ 0.05 AP at K=10 | F7 | D014 (ratified): §18 preregistered as secondary, not promoted — its weakness is an unverifiable dependency |
 
 Estimators were cross-validated before use: analytic average precision returns
 prevalence exactly at zero discrimination, agrees with the empirical estimator
@@ -86,8 +86,13 @@ collecting more data.
 The more useful finding is R1/F7: pairing removes the between-participant
 variance that bounds the absolute claim, so the comparison against existing
 predictors is the better-powered question at this sample size. That suggests
-the confirmatory endpoint may be in the wrong place, which is why D014 proposes
-the change rather than applying it.
+the confirmatory endpoint may be in the wrong place. D014 weighed that against
+M7 and was ratified the other way: §25 stays primary because its flaw is a
+missing threshold, which can be written, whereas §18's flaw is an unverifiable
+dependency on the comparison predictors' training data, which cannot be
+resolved from inside this project. §18 is preregistered as secondary and
+reported regardless. A well-specified weaker claim was preferred to a
+better-powered one resting on an unchecked premise.
 
 R1/F4 is a caution about the primary metric itself. AUPRC is not merely
 imprecise at extreme class imbalance; it is biased in the flattering direction,

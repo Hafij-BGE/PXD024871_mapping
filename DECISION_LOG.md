@@ -125,13 +125,13 @@ blocks:
 | D005 | Instrument as a confound — two instrument platforms in the class-I runs; check against donor assignment | G5 |
 | D006 | Training-set overlap between the comparison predictors and these peptides; handling rule if overlap exists | G11 |
 | D007 | Minimum-N gate: preregistered eligible-positive threshold below which the confirmatory arm does not run | G4 |
-| D008 | Decision rule for §25 — effect size and threshold, replacing "better than chance" | G13 |
+| D008 | Decision rule for §25. **Form now fixed by D014 (ratified)**: a lift over prevalence, tested on the interval's lower bound. Magnitude still open and cannot close before D002, since prevalence follows the class ratio | G6, after D002 |
 | D009 | Preregistration freeze mechanism (commit hash + timestamp) | G8 |
 | D010 | Seed convention — 20261006 is today's date; record the convention or replace it | G8 |
 | D011 | Unit definition: participant as the independent unit, with replicates and fractions nested within it, versus treating replicates as units. Sets the resampling unit and therefore the width of every uncertainty interval. Raised by `METHODOLOGY.md` M2 | G3 |
 | D012 | Partial typing: units with fewer recorded alleles than loci are ambiguous between a genuine single-allele locus and incomplete reporting. Imputation is prohibited; the question is whether such units are excluded from allele-stratified analyses or retained with a flag. Raised by `METHODOLOGY.md` M4 | G2 |
 | D013 | S2 retrieval route: the metadata file as deposited in the submission, versus the separately maintained community-annotation repository. Different authorship, version history, and checksum availability, and possibly different contents. Settled by reading the S1 manifest, not by guessing a path. Raised by `DATA_SOURCES.md` | G1 |
-| D014 | Primary endpoint. **RESOLVED** as a recommendation — see the full entry below | G6 |
+| D014 | Primary endpoint: §25 kept, threshold raised; §18 preregistered secondary. **RATIFIED, RESOLVED** — see entry below. Contingent on D006 | constrains D008 |
 | D015 | Master prompt transcription: the brief as supplied leaves the Mapping Methodology and Validation & QC Gates sections unnumbered (where 3 and 5 would fall), and three lines ("Maintain:", "Each gate is:", "Keep progress updates concise:") introduce content that did not survive into the supplied text. Transcribed verbatim rather than repaired, per the prompt's own rule against silently altering a source. Needs confirmation or replacement by the author | none; blocks nothing, but leaves §-number citations ambiguous |
 | D016 | Approximate matching prohibited on every identifier join. **RATIFIED, PERMANENT** — see entry below | standing rule |
 | D017 | Proceeding with run-001 while G1 was failing. **RATIFIED, RESOLVED** — see entry below | closed |
@@ -143,8 +143,9 @@ blocks:
 ## D014 — Primary endpoint: keep §25, raised
 
 **Date opened:** 2026-10-06 · **Date resolved:** 2026-10-06
-**Status:** RESOLVED as a recommendation, pending the author's ratification
-**Blocks:** G6 (preregistration freeze)
+**Status:** RESOLVED — **ratified by the author in session, 2026-10-06**
+**Blocks:** nothing further; now constrains D008
+**Not PERMANENT:** contingent on D006, see *Conditional* below
 **Evidence:** run-001; `POWER_ANALYSIS.md` F1, F7; `METHODOLOGY.md` M7
 
 **Question.** Should the §18 paired predictor comparison replace the §25
@@ -180,10 +181,32 @@ be inspectable and M7 returns `CLEAN` or a quantified `OVERLAPPING`, the
 objection disappears and §18 becomes the better endpoint on power grounds.
 Revisit then; this recommendation is contingent, not permanent.
 
-**Consequences if accepted.** D008 must specify a lift threshold; §18 is
-preregistered as secondary with its own analysis plan; §16 reports the
-participant-level interval with the coverage shortfall from F3 stated; any
-promotion of §18 later requires a new entry citing this one.
+**Binding consequences, now ratified.**
+
+1. **D008 is constrained, not free.** The §25 decision rule must be a *lift
+   over prevalence* with the test applied to the interval's lower bound. Its
+   *form* is fixed here; its *magnitude* still depends on D002, because
+   prevalence is set by the class ratio. D008 therefore cannot close before
+   D002.
+2. **§18 is preregistered as secondary**, with its own analysis plan, and is
+   reported whatever §25 shows. Its better power is not a reason to promote it
+   post hoc — doing so after seeing results would be endpoint switching.
+3. **§16 reports the participant-level interval with the F3 coverage shortfall
+   stated**, not as a bare 95% claim.
+4. **Promotion of §18 later requires a new entry citing this one**, and is
+   permitted only on the D006 condition below — never on the basis of §25
+   having failed.
+
+**Why this is not PERMANENT.** The decision rests on a fact that may change:
+that M7 cannot verify the comparison predictors' training sets. If D006
+establishes they are inspectable, the objection disappears and §18 becomes the
+better endpoint on power grounds. That revisit is anticipated here, so it would
+be a supersession rather than a reversal — but it must happen *before* results
+are seen, or it is endpoint switching regardless of how well justified.
+
+**Ratification note.** Ratified on the author's instruction. The reasoning
+behind it is mine and reversed my own earlier position; the authority for
+adopting it is theirs.
 
 ---
 

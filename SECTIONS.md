@@ -544,7 +544,7 @@ Each section of the experiment has:
 
 ## § 18. Comparison With Existing T-A4 Predictors
 
-**Purpose:** Benchmark CNN against existing predictors on identical peptide rows.
+**Purpose:** Benchmark CNN against existing predictors on identical peptide rows. Preregistered as the **secondary** endpoint per D014 (ratified), reported regardless of what §25 shows.
 
 **Why this method is needed:** An absolute performance figure has no interpretable scale. Comparison on identical rows is what converts it into a statement about whether this approach adds anything over what already exists.
 
@@ -574,7 +574,7 @@ Each section of the experiment has:
 
 **Status:** OPEN (depends on test evaluation)
 
-**Next Step:** Check IEDB overlap, obtain predictor outputs, evaluate.
+**Next Step:** Resolve D006 first — the contamination check in M7 gates both the fairness of this comparison and any future promotion of it to primary. Then obtain predictor outputs and evaluate. Better powered than §25 at every participant count tested (run-001, F7), but not promotable post hoc: a switch after seeing results is endpoint switching regardless of the power argument.
 
 ---
 
@@ -644,9 +644,9 @@ Each section of the experiment has:
 - "Better than chance" undefined without threshold
 - Small donor count may prevent robust effect estimation
 
-**Status:** OPEN (needs decision threshold specification)
+**Status:** OPEN — remains the primary endpoint per D014 (ratified); the threshold itself is still unspecified and blocked on D002
 
-**Next Step:** Preregister exact decision rule (e.g., AUPRC > 0.55 for primary support).
+**Next Step:** Preregister the decision rule in the form D014 fixes — a lift over prevalence, tested on the interval's lower bound. The magnitude cannot be set until D002 fixes the class ratio, since prevalence follows from it. Run-001 indicates ~0.10 AP is cleanly resolvable at ten held-out participants and ~0.04 is marginal.
 
 ---
 
