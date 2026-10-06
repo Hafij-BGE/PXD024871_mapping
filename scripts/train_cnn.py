@@ -227,8 +227,19 @@ def main():
 
     if a.mode == 'cv':
         grid = GRID[:a.limit_configs] if a.limit_configs else GRID
-        out = []
+        # Resume: a Colab session can drop mid-grid, and completed configs are
+        # deterministic given their seed, so re-running them would only burn
+        # time. Partial files from a truncated run are not resumed from -- they
+        # carry a different epoch budget and must not be mixed in.
+        out, done = [], set()
+        prev = RES/'cv_results.json'
+        if prev.exists() and a.max_epochs == MAX_EPOCHS and not a.limit_configs:
+            out = json.loads(prev.read_text())
+            done = {r['config_index'] for r in out}
+            print(f"resuming: {len(done)} of {len(grid)} configs already complete")
         for ci, cfg in enumerate(grid):
+            if ci in done:
+                continue
             aps = []
             for f in range(5):
                 tr = [(s, u, l) for s, u, l in cv if int(split[u]['cv_fold']) != f]
@@ -242,14 +253,16 @@ def main():
                 print(f"  cfg {ci} {cfg} fold {f}: val AP {ap:.4f} "
                       f"({ep} epochs, {time.time()-t0:.0f}s)", flush=True)
             out.append({'config_index': ci, 'config': cfg, 'fold_val_ap': aps,
-                        'mean_val_ap': float(np.mean(aps))})
+                        'mean_val_ap': float(np.mean(aps)),
+                        'device': device, 'torch': torch.__version__})
+            out.sort(key=lambda r: r['config_index'])
             json.dump(out, open(RES/'cv_results.json', 'w'), indent=1)
         best = max(out, key=lambda r: r['mean_val_ap'])
         # selection.json is what unlocks --mode test, so it is written ONLY by a
         # complete grid at the preregistered epoch budget. A truncated or
         # shortened run is a timing or debugging exercise and must not be able
         # to unlock the held-out partition.
-        complete = (len(grid) == len(GRID)) and (a.max_epochs == MAX_EPOCHS)
+        complete = (len(out) == len(GRID)) and (a.max_epochs == MAX_EPOCHS) and not a.limit_configs
         if complete:
             json.dump({'selected': best, 'grid_size': len(grid),
                        'criterion': 'mean validation average precision across 5 folds',
