@@ -90,8 +90,13 @@ def main():
     }
 
     if proc.returncode != 0:
-        dest.unlink(missing_ok=True)
+        # Keep whatever transferred: the next attempt resumes from it. Deleting
+        # here would discard gigabytes of good bytes on every interruption,
+        # which is what made the 9.25 GiB container unrecoverable. Bytes proven
+        # wrong are deleted below, under CHECKSUM_MISMATCH.
+        kept = dest.stat().st_size if dest.exists() else 0
         record["outcome"] = "FAILED"
+        record["partial_bytes_kept"] = kept
         record["error"] = (proc.stderr or "").strip() or f"curl exit {proc.returncode}"
         record["checksum"] = None
         record["file_size"] = None
@@ -111,6 +116,9 @@ def main():
             if not ok:
                 record["outcome"] = "CHECKSUM_MISMATCH"
                 record["error"] = f"published {expected}, computed {got}"
+                # These bytes are proven wrong; resuming from them would only
+                # reproduce the mismatch. Remove so the next attempt starts clean.
+                dest.unlink(missing_ok=True)
 
     log = dest_dir / "provenance.jsonl"
     with open(log, "a") as fh:
