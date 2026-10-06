@@ -19,7 +19,7 @@ training. The experiment is specified in
 
 The CNN is downstream of provenance mapping and is never an input to it: no
 model output may assign a file to a class, a run to a unit, or a peptide to a
-participant (`METHODOLOGY.md` §1; proposal §1, §28).
+participant (`METHODOLOGY.md`, *Scope constraint*; proposal §1, §28).
 
 Before the experiment can run, the deposited submission must be resolved into
 an analysis-ready peptide table whose every row traces to a deposited file.
@@ -29,12 +29,12 @@ That mapping is the current work.
 
 | Component | Specification | Status |
 |---|---|---|
-| Mapping chain | Seven joins M1–M7, `METHODOLOGY.md` §5 | Specified, not executed |
+| Mapping chain | Seven joins M1–M7, each under the prompt's eleven fields | Specified, not executed |
 | Source provenance | Seven sources S1–S7, twelve fields each, `DATA_SOURCES.md` | Schema only; nothing retrieved |
-| Status vocabulary | `METHODOLOGY.md` §2, weakest-link composition | Specified |
-| Normalization | N1–N8, `METHODOLOGY.md` §3 | Specified |
-| Approximate matching | Prohibited on all identifier joins, `METHODOLOGY.md` §4 | Specified; departure from `PROJECT_PROMPT.md`, argued in place |
-| QC gates | G1–G13, `METHODOLOGY.md` §7, `SECTIONS.md` | Specified; none attempted |
+| Status categories | Per mapping, *Confidence/status categories*; weakest-link composition in M6 | Specified |
+| Normalization | `METHODOLOGY.md`, *Shared normalization conventions* | Specified |
+| Approximate matching | Prohibited on all identifier joins, argued in M1 | Specified; departure from `PROJECT_PROMPT.md`, logged as D016 |
+| QC gates | G1–G13, `METHODOLOGY.md`, *QC gates*, and `SECTIONS.md` | Specified; none attempted |
 | Design analysis | Binormal simulation, `scripts/power_analysis.py` | **Complete** (run-001) |
 
 Two rules are stated as prohibitions rather than preferences, because both
@@ -96,7 +96,8 @@ and no amount of resampling corrects it.
 ## Limitations
 
 Methodological limitations of the approach are enumerated at
-`METHODOLOGY.md` §8 (nine items, including participant-bounded resolution,
+`METHODOLOGY.md`, *Known methodological limitations* (ten items, including
+participant-bounded resolution,
 platform confounding, and that absence of observation is not negative
 evidence). Limitations of run-001 specifically are at `POWER_ANALYSIS.md`,
 Limitations (seven items).
@@ -104,7 +105,8 @@ Limitations (seven items).
 The limitation governing everything else: **Phase A asserts only what the
 deposited annotation asserts.** An error in the source metadata propagates
 through every mapping and is undetectable from inside this pipeline, except
-where independent verification (`METHODOLOGY.md` §7) happens to cover it.
+where independent verification (`METHODOLOGY.md`, *Independent verification*)
+happens to cover it.
 
 ## Conclusion
 

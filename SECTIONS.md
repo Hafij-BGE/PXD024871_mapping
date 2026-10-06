@@ -4,6 +4,7 @@
 
 Each section of the experiment has:
 - **Purpose**: Research question and goal
+- **Why the method is needed**: Justification for this approach over the alternatives
 - **Input & Sources**: Data needed
 - **Methodology**: How it will be done
 - **Metrics & QC**: Validation criteria
@@ -17,6 +18,8 @@ Each section of the experiment has:
 ## § 1. Purpose & Research Questions
 
 **Purpose:** Define standalone CNN experiment to test sequence-based learning on PXD024871 HLA-I peptides.
+
+**Why this method is needed:** The experiment's scope must be fixed before any data is touched, otherwise the research question drifts to fit whatever the data turns out to support. Freezing it is what makes a later result confirmatory rather than a description of what was found.
 
 **Input & Sources:**
 - CNN Experiment Proposal (doc)
@@ -49,6 +52,8 @@ Each section of the experiment has:
 ## § 5A. Phase A1 — Dataset Inventory
 
 **Purpose:** Obtain and preserve complete PXD024871 file inventory, metadata, and provenance.
+
+**Why this method is needed:** Checksums and a retrieval record are what let any later claim be traced to a specific file state. Without them the whole pipeline rests on files that cannot be shown to be the ones analysed, and the clean-environment reproduction the prompt requires at completion becomes impossible.
 
 **Input & Sources:**
 - PRIDE accession PXD024871
@@ -85,6 +90,8 @@ Each section of the experiment has:
 ## § 5A2. Phase A2 — File Mapping Table
 
 **Purpose:** Create file-level mapping from raw files to normalized biological units with HLA class and donor context.
+
+**Why this method is needed:** Class and participant cannot be read off filenames without inventing assertions the metadata does not make. An explicit mapping table is the only way each eligibility decision stays auditable to the source cell that produced it.
 
 **Input & Sources:**
 - SDRF (402 rows, 1 per MS run)
@@ -129,6 +136,8 @@ Each section of the experiment has:
 
 **Purpose:** Normalize files to independent biological units (donors) for later model splitting.
 
+**Why this method is needed:** Files are not participants. Splitting or counting before units are resolved would treat replicates as independent observations, inflating apparent sample size and narrowing every uncertainty interval around a statistic whose real resolution is set by participant count.
+
 **Input & Sources:**
 - PXD024871_FILE_MAP.csv (from A2)
 - unit_id assignments
@@ -161,6 +170,8 @@ Each section of the experiment has:
 ## § 6. Phase B — Dataset Definition
 
 **Purpose:** Define positive and negative example sets with quality filtering frozen before CNN training.
+
+**Why this method is needed:** Filtering rules chosen after seeing model performance are not rules, they are tuning. Freezing them first is what separates a preregistered result from a selected one.
 
 **Input & Sources:**
 - 222 class-I MS runs (eligible set)
@@ -202,6 +213,8 @@ Each section of the experiment has:
 
 **Purpose:** Prevent data leakage across train/validation/test splits.
 
+**Why this method is needed:** Leakage produces high performance that means nothing, and it is invisible in the metrics it inflates. It has to be excluded by construction and audited, because no downstream number reveals it.
+
 **Input & Sources:**
 - PXD024871_POSITIVES.csv (from Phase B)
 - PXD024871_NEGATIVES.csv
@@ -234,6 +247,8 @@ Each section of the experiment has:
 ## § 10. Train/Validation/Test Design
 
 **Purpose:** Split data by biological unit to ensure independent generalization test.
+
+**Why this method is needed:** Splitting by participant is the only design that tests the claim actually being made. A peptide-level split would measure memorisation of a ligandome, not generalization to a new individual.
 
 **Input & Sources:**
 - 52 class-I donors with run counts (range: 3–15)
@@ -273,6 +288,8 @@ Each section of the experiment has:
 
 **Purpose:** Define simple 1D CNN to test whether sequence-local information provides predictive signal.
 
+**Why this method is needed:** A deliberately simple architecture is what makes the result interpretable: if a minimal model finds signal, the signal is in local sequence. A larger model that performed well would leave the source of its performance unidentifiable.
+
 **Input & Sources:**
 - Sequence length distribution from Phase B
 - Amino-acid encoding scheme (frozen)
@@ -308,6 +325,8 @@ Each section of the experiment has:
 
 **Purpose:** Define how peptide sequences are converted to numerical form and how variable lengths are handled.
 
+**Why this method is needed:** The representation determines what the model can possibly learn, so it is a scientific choice rather than an implementation detail. Changing it after seeing test performance would invalidate the endpoint.
+
 **Input & Sources:**
 - Sequence length range (expected: 8–12)
 - Amino-acid alphabet (20 standard + gaps)
@@ -341,6 +360,8 @@ Each section of the experiment has:
 ## § 13. Training Protocol
 
 **Purpose:** Specify all hyperparameters and training control before running experiments.
+
+**Why this method is needed:** Hyperparameters chosen with any sight of the test partition convert a held-out estimate into an optimistic one. Specifying the protocol in advance is what keeps the held-out estimate held out.
 
 **Input & Sources:**
 - Training data (from Phase B split)
@@ -376,6 +397,8 @@ Each section of the experiment has:
 ## § 14. Compute Gate
 
 **Purpose:** Define computational budget and ensure experiment fits within resource constraints.
+
+**Why this method is needed:** An unbounded compute budget means the design silently expands until something works, which is selection. A declared budget forces any reduction to be recorded as a decision instead.
 
 **Input & Sources:**
 - Maximum wall-clock time available
@@ -414,6 +437,8 @@ Each section of the experiment has:
 
 **Purpose:** Define primary performance metric and secondary metrics for evaluation.
 
+**Why this method is needed:** The primary metric must be fixed in advance or the best of several becomes the reported one. Run-001 further showed the chosen metric is only interpretable alongside a fixed class ratio, since its baseline is the prevalence.
+
 **Input & Sources:**
 - Test set predictions (from trained CNN)
 - Test set labels (positive / negative)
@@ -447,6 +472,8 @@ Each section of the experiment has:
 ## § 16. Statistical Evaluation
 
 **Purpose:** Distinguish peptide-level from biological-unit-level independence and provide uncertainty intervals.
+
+**Why this method is needed:** Peptide-level and participant-level uncertainty answer different questions, and conflating them overstates precision by a wide margin. Run-001 quantified this: resolution is bounded by participant count, and bootstrap replicates do not affect it.
 
 **Input & Sources:**
 - Test set predictions and labels
@@ -485,6 +512,8 @@ Each section of the experiment has:
 
 **Purpose:** Verify generalization across biological individuals, not just pooled peptide counts.
 
+**Why this method is needed:** A pooled number can be carried entirely by the heaviest-contributing participants. Per-participant reporting is the only way to see whether performance generalizes across individuals or merely across peptides.
+
 **Input & Sources:**
 - Test set from donors not in training
 - Model trained on training donors only
@@ -516,6 +545,8 @@ Each section of the experiment has:
 ## § 18. Comparison With Existing T-A4 Predictors
 
 **Purpose:** Benchmark CNN against existing predictors on identical peptide rows.
+
+**Why this method is needed:** An absolute performance figure has no interpretable scale. Comparison on identical rows is what converts it into a statement about whether this approach adds anything over what already exists.
 
 **Input & Sources:**
 - Same test-set peptides used for CNN evaluation
@@ -550,6 +581,8 @@ Each section of the experiment has:
 ## § 20. Biological Interpretation
 
 **Purpose:** Interpret CNN performance in biological context with appropriate caveats.
+
+**Why this method is needed:** Performance above chance has several possible causes besides the intended one, including batch, platform and donor effects. Interpretation has to exclude the alternatives explicitly or the biological reading is unsupported.
 
 **Input & Sources:**
 - CNN performance results (held-out donor evaluation)
@@ -586,6 +619,8 @@ Each section of the experiment has:
 ## § 25. Primary Hypothesis
 
 **Purpose:** State testable hypothesis with explicit decision threshold.
+
+**Why this method is needed:** A hypothesis without a threshold cannot fail. Run-001 demonstrated this concretely: as worded, the hypothesis passes for a classifier of negligible value, so it needs a stated effect size to carry information.
 
 **Input & Sources:**
 - Preregistered primary metric and test protocol

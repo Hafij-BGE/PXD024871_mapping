@@ -178,6 +178,12 @@ row silently.
 The decision procedure every join applies to a single source row. This is where
 "never silently force an ambiguous match" is operationalized.
 
+Since `METHODOLOGY.md` was restructured to the prompt's eleven-field format,
+these status values are defined **per mapping**, under each one's
+*Confidence/status categories* field, rather than in a single shared vocabulary.
+Not every mapping uses every value. The diagram shows the common procedure;
+each mapping's own field is authoritative for which statuses it can produce.
+
 ```mermaid
 flowchart TD
     START["source row"] --> NORM["normalize key<br/>N1 to N8"]
