@@ -161,9 +161,10 @@ blocks:
 | D021 | Peak extraction disk corrected from ~2 GB to ~12 GiB once container sizes were verified. **RESOLVED** — see entry below | G8 |
 | D022 | Compute gate resized: planning worst case 100k -> 2M positives, cap 48h -> 96h, class ratio 1:1. **RESOLVED**, but flags that the budget is not executable on this hardware. See entry below | G8 |
 | D023 | Provenance cannot depend on the downloader surviving: a completed transfer whose writer died left an unrecorded, truncated file. **RESOLVED** — reconciler added. See entry below | G1 |
-| D003 | Cross-unit shared sequences. **RESOLVED (informed)** — only 20.1% appear in >1 unit; 534,696 sequences are the actual exposure, not the heavy overlap I claimed. Split rule still to be written | G5 |
+| D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
+| D025 | Platform stratification and cross-platform transfer. **RESOLVED** — stratification mandatory; transfer analysis preregistered. Instrument is learnable from composition at AUROC 0.645 vs 0.515 control. See entry below | G6 |
 | D005 | Instrument confound. **RESOLVED — accepted as a limitation**; total confound, cannot be corrected. See entry below | G3, FAIL accepted |
 | D006 | Training-set overlap between the comparison predictors and these peptides; handling rule if overlap exists | G11 |
 | D007 | Minimum-N gate. **RESOLVED — clears overwhelmingly**: 2,658,972 eligible positives. The confirmatory arm is not data-limited | G4 |
@@ -407,6 +408,78 @@ container whose record does not show a verified publisher checksum.
 as malformed. That was luck: a truncation landing on a page boundary could open
 cleanly and under-report rows. The checksum is the integrity check; a reader's
 willingness to open a file is not one, and nothing should be built on it.
+
+---
+
+## D003 — Cross-split sequence leakage · RESOLVED
+
+**Resolved:** 2026-10-06 · **Evidence:** run-010 (`results/qc/QC_G5.md`), run-006
+
+**Decision: shared sequences are kept. The primary metric is computed on the
+full test partition; the leakage-free subset is reported alongside as a
+preregistered sensitivity analysis.**
+
+**The measurement that forced this.** Over 2,000 random 10-unit test
+partitions, **14.59%** of test positives also appear in training (range
+11.76–17.25%). That is higher than the 10.20% row-level duplication, because a
+test unit's sequences get 42 independent chances to appear among the training
+units — exposure compounds with the number of training units rather than
+staying at the pairwise rate.
+
+**Unit-disjointness is not sequence-disjointness.** The proposal's §9 lists them
+as separate leakage types but the design treats satisfying the first as
+delivering the second. It does not: roughly one test positive in seven has been
+seen verbatim during training.
+
+**Why keep them rather than drop them.** Dropping shared sequences from the test
+set would make it unrepresentative in a specific direction: the unit-private
+80% of the universe is enriched for peptides seen once, which are plausibly the
+noisiest and least reproducibly presented. A test set purged of everything
+shared would measure performance on exactly the subset least likely to be real.
+That trades a known, bounded bias for an unknown, unbounded one.
+
+**Reporting both is what makes it honest.** The gap between the full-test and
+leakage-free metrics *is* the inflation, measured rather than argued. A claim
+that survives both is sound; a claim that only survives the full set is a claim
+about memorisation.
+
+**Rejected: dropping from training instead.** It discards real observations and
+still leaves the test set's composition altered relative to the universe.
+
+---
+
+## D025 — Platform stratification and cross-platform transfer · RESOLVED
+
+**Resolved:** 2026-10-06 · **Evidence:** run-010 · **Escalates:** D005
+
+**Decision: the split must be stratified by platform. A cross-platform transfer
+analysis is preregistered as a secondary endpoint.**
+
+**What changed.** D005 accepted the instrument confound as a limitation on the
+grounds that no split over units can separate platform from participant. run-010
+shows the peptides themselves carry a platform signature readable by a trivial
+model: **composition-only AUROC 0.6451**, against a **0.5150** control
+comparing random halves of units. Generic unit-to-unit variation gives almost
+nothing; platform gives a third of the way to perfect separation from amino-acid
+frequencies alone.
+
+A visible mechanism: 12-mers are 11.69% of LTQ positives against 9.85% of
+Lumos, consistent with different detectability across the mass range.
+
+**Stratification is now mandatory rather than advisory.** Matched platform
+proportions in every partition do not remove the confound — nothing can, since
+no unit spans both platforms — but they stop the split from silently becoming a
+platform split, which at this separability would be a substantial artefact
+masquerading as generalization failure.
+
+**The transfer analysis is the point.** Train on the 25 LTQ units and test on
+the 27 Lumos units, and the reverse. This measures the confound directly instead
+of inferring it. If performance holds within platform and collapses across, the
+§25 claim is substantially about instrument rather than biology.
+
+**Preregistered now, before any result is visible**, because it is the analysis
+most likely to be reinterpreted as exploratory if it were run after seeing a
+disappointing headline number.
 
 ---
 
