@@ -1,0 +1,17 @@
+{
+ "container": "UPN25_class_I.msf",
+ "unit_id": "UPN25",
+ "internal_run_refs": [
+  "150419_DK_CLL80_W_20%_#1_25cm90min3s_msms25.raw",
+  "150419_DK_CLL80_W_20%_#2_25cm90min5s_msms26.raw",
+  "150419_DK_CLL80_W_20%_#3_25cm90min10s_msms27.raw"
+ ],
+ "n_internal_runs": 3,
+ "psms_total": 65014,
+ "unique_sequences": 41578,
+ "extract_sha256": "77b77aa8d7967e2a8e33922b68c92f5f17e559408d6eb9561f15b07045921361",
+ "length_window": [
+  8,
+  12
+ ]
+}

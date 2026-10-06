@@ -1,0 +1,19 @@
+{
+ "container": "UPN15_class_I.msf",
+ "unit_id": "UPN15",
+ "internal_run_refs": [
+  "130426_DK_CLL43_PreTherapy_W_20%_0p2ug_Rep#1_msms1.RAW",
+  "130503_DK_CLL43_PreTherapy_W_20%_0p2ug_15cm60min3sDynExcl_#2_msms1.RAW",
+  "130503_DK_CLL43_PreTherapy_W_20%_0p2ug_15cm60min3sDynExcl_#3_msms5.RAW",
+  "130503_DK_CLL43_PreTherapy_W_20%_0p2ug_15cm60min3sDynExcl_#4_msms9.RAW",
+  "130503_DK_CLL43_PreTherapy_W_20%_0p2ug_15cm60min3sDynExcl_#5_msms13.RAW"
+ ],
+ "n_internal_runs": 5,
+ "psms_total": 86344,
+ "unique_sequences": 45057,
+ "extract_sha256": "738fef235c41d8cdcf3c67f7d64df1abfc54b1c3bf5b288be327e4eccd914d82",
+ "length_window": [
+  8,
+  12
+ ]
+}

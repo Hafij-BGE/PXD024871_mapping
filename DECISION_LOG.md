@@ -121,6 +121,8 @@ blocks:
 | # | Decision | Blocks |
 |---|---|---|
 | D021 | Peak extraction disk corrected from ~2 GB to ~12 GiB once container sizes were verified. **RESOLVED** — see entry below | G8 |
+| D022 | Compute gate resized: planning worst case 100k -> 2M positives, cap 48h -> 96h, class ratio 1:1. **RESOLVED**, but flags that the budget is not executable on this hardware. See entry below | G8 |
+| D023 | Provenance cannot depend on the downloader surviving: a completed transfer whose writer died left an unrecorded, truncated file. **RESOLVED** — reconciler added. See entry below | G1 |
 | D003 | Cross-donor shared sequences: drop from one split, or allow and report both ways | G5 |
 | D004 | Identification-confidence threshold for the positive set; whether to re-filter stricter than deposited | G4 |
 | D005 | Instrument confound. **RESOLVED — accepted as a limitation**; total confound, cannot be corrected. See entry below | G3, FAIL accepted |
@@ -293,6 +295,82 @@ error is worth recording, not just the instance.
 
 ---
 
+## D022 — Compute gate resized
+
+**Resolved:** 2026-10-06 · **Status:** RESOLVED, with a flagged hardware blocker
+**Evidence:** run-002 (throughput), run-004/005 (yield, redundancy)
+
+**Why reopened.** The gate was sized at a 100,000-positive worst case, taken
+from run-001's assumption of 40 positives per acquisition. Measurement gives
+**~16,500 per acquisition** — 411× higher — and cross-unit redundancy of only
+**2.9–6.2%**, so the union projects to **~1.9M** at 52 units. The original
+figure was wrong by 19×.
+
+**Resized.** Planning worst case 2,000,000 positives; wall clock 48 → 96 h;
+assumed class ratio 1:10 → 1:1. Grid, configurations, folds, seeds and the
+reduction ladder are unchanged.
+
+**The class ratio turns out to be a 5.5× compute lever**, which is new input to
+D002. run-001's F4 and F6 already argued against wide ratios on estimator bias
+and relative precision; compute now agrees. 1:1 is preferred on three
+independent grounds, and that convergence is worth more than any one of them.
+
+**The conclusion that matters is not a number.** At 1:1 and 2M positives the
+grid is ~90 hours, and the session container is ephemeral. Raising the cap makes
+the budget arithmetically consistent; it does not make it executable. The work
+has outgrown this environment, and the honest statement is that **a hardware
+decision now gates the preregistration freeze** — a GPU being the option that
+turns a marginal design into a comfortable one.
+
+This also retires a run-002 conclusion. That run found no GPU was needed, which
+was true for the dataset size it assumed. It does not survive a 19× larger one,
+and the earlier claim is superseded rather than quietly dropped.
+
+**Limits of the projection.** Fitted on 4 units of 52. Marginal novelty was
+still 92% at the fourth unit, so saturation is far off, but β could move with
+more units. Only one of six sampled pairs shared alleles; it overlapped 5.6%,
+inside the genotype-disjoint range of 2.9–6.2%, which weakens the "my sample was
+unusually novel" worry without settling it.
+
+---
+
+## D023 — Provenance must not depend on the downloader surviving
+
+**Resolved:** 2026-10-06 · **Status:** RESOLVED, and the fix is PERMANENT in effect
+**Evidence:** `data/raw/S3/provenance.jsonl`; `scripts/reconcile_provenance.py`
+
+**What happened.** Four containers were fetched, three in parallel. One finished
+transferring but its writer did not survive to log it, leaving a file on disk
+that nothing in the provenance record accounted for. The file was **77.4%
+complete** — a truncated transfer.
+
+**Why it mattered more than a missing log line.** An unrecorded file is also an
+unverified file. Had it been extracted, it would have contributed a silently
+incomplete peptide table to the analysis with nothing flagging it.
+
+**Diagnosis, not assumption.** I first suspected a concurrent-append race and
+tested it: 30 simultaneous appends all landed, and the shell loop pattern was
+clean. The append was never the problem. The failure is that the record is
+written *after* the transfer by the same process, so anything that kills the
+process between the two loses the record while leaving the bytes.
+
+**Fix.** `scripts/reconcile_provenance.py` recovers the state from disk rather
+than trusting the writer: it hashes every file lacking a record, verifies
+against the publisher's checksum from the manifest, and writes the missing
+entry with `reconciled: true`. It reports both directions, distinguishing a
+streamed-and-deleted container from a loss by the recorded outcome. Run on S3 it
+immediately identified the truncated file as `CHECKSUM_MISMATCH`.
+
+**Second guard.** `scripts/extract_peptides.py` now **refuses** to extract a
+container whose record does not show a verified publisher checksum.
+
+**The near-miss worth recording.** SQLite happened to reject the truncated file
+as malformed. That was luck: a truncation landing on a page boundary could open
+cleanly and under-report rows. The checksum is the integrity check; a reader's
+willingness to open a file is not one, and nothing should be built on it.
+
+---
+
 ## D020 — Compute gate numbers
 
 **Date opened:** 2026-10-06 · **Resolved:** 2026-10-06 · **Status:** RESOLVED
@@ -329,6 +407,8 @@ compute gate exists to prevent — so the gate must not become its instrument.
 
 1. **No GPU is required.** The architecture is small enough that CPU throughput
    suffices, removing a hardware dependency the proposal left implicit.
+   **SUPERSEDED by D022:** true at the 100,000-positive size assumed here, false
+   at the ~1.9M the data actually yields.
 2. **Streaming the containers is forced, not chosen.** 30 GB writable disk
    against a container set since verified at 107.53 GiB: the full set cannot be
    held.
