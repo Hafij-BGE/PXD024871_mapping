@@ -286,111 +286,118 @@ Each section of the experiment has:
 
 ## § 11. CNN Architecture
 
-**Purpose:** Define simple 1D CNN to test whether sequence-local information provides predictive signal.
+**Purpose:** Define the network family, fixed before any model is fit.
 
-**Why this method is needed:** A deliberately simple architecture is what makes the result interpretable: if a minimal model finds signal, the signal is in local sequence. A larger model that performed well would leave the source of its performance unidentifiable.
+**Why this method is needed:** A deliberately simple architecture is what makes the result interpretable: if a minimal model finds signal, the signal is in local sequence. A larger model performing well would leave the source of its performance unidentifiable.
 
-**Input & Sources:**
-- Sequence length distribution from Phase B
-- Amino-acid encoding scheme (frozen)
-- Architecture reference: standard 1D CNN with convolutions, pooling, dense layer
+**Input & Sources:** Length distribution from run-006; throughput from run-002; compute gate §14.
 
-**Methodology:**
-- Define embedding or numerical representation per amino acid
-- Specify convolutional blocks (kernel size, filters, stride)
-- Specify pooling (type, size)
-- Specify dense layers and output
-- Keep architecture intentionally simple to isolate sequence signal
+**Methodology — FROZEN 2026-10-06.** Fixed topology; only the bracketed values vary, and only within the §13 grid.
 
-**Metrics & QC:**
-- Architecture documented in cnn_config.json
-- Reproducible from configuration alone
-- No data observed during architecture selection
+```
+input  (12,) integer-encoded          §12
+  -> embedding, dim E                 [E]
+  -> conv1d, kernel k, C filters      [k] [C]  -> ReLU
+  -> max-pool, size 2
+  -> conv1d, kernel k, C filters      [k] [C]  -> ReLU
+  -> global max-pool                  -> (C,)
+  -> dropout p                        [p]
+  -> dense 64 -> ReLU
+  -> dense 1  -> sigmoid
+```
 
-**Expected Outcome:**
-- cnn_config.json (full architecture specification)
-- Architecture diagram or description
+Two convolutional blocks, not more: the receptive field after two kernel-3 blocks with one pooling step already spans the full 12-residue input, so depth beyond this cannot see more of the peptide and would only add capacity. Global max-pooling is used rather than flattening so the representation is position-invariant at the final layer, forcing positional information to be carried by the convolutions themselves, which is the thing being tested.
 
-**Limitations:**
-- Simplicity may underperform compared to more complex models
-- Outcome C (weak CNN) plausible on ~10k peptides
+**Metrics & QC:** Topology fixed; parameter count reported per configuration; no architecture selected after seeing test performance.
 
-**Status:** OPEN — **not frozen.** The benchmarked configuration was chosen to size compute, not preregistered. Must be locked before any confirmatory claim
+**Expected Outcome:** `cnn_config.json` per run, reproducible from the grid alone.
 
-**Next Step:** Observe sequence length distribution, finalize architecture.
+**Limitations:** A simple family may underperform. Outcome C in proposal §21 (weak CNN, strong existing predictors) remains plausible and is a legitimate result, not a failure of the design.
+
+**Status:** **FROZEN** (D026). Topology cannot change; deviation requires a new decision entry and makes any claim exploratory.
+
+**Next Step:** None.
 
 ---
 
 ## § 12. Input Representation
 
-**Purpose:** Define how peptide sequences are converted to numerical form and how variable lengths are handled.
+**Purpose:** Fix how peptides become model input.
 
 **Why this method is needed:** The representation determines what the model can possibly learn, so it is a scientific choice rather than an implementation detail. Changing it after seeing test performance would invalidate the endpoint.
 
-**Input & Sources:**
-- Sequence length range (expected: 8–12)
-- Amino-acid alphabet (20 standard + gaps)
+**Input & Sources:** Union length distribution (run-006): 8-mers 15.47%, 9-mers 27.80%, 10-mers 26.44%, 11-mers 18.67%, 12-mers 11.61%.
 
-**Methodology:**
-- Choose representation: one-hot encoding, embedding vectors, BLOSUM, or learned embedding
-- Choose length handling: padding, truncation, or length-aware layer
-- Freeze representation before evaluating test performance
-- Document exact implementation
+**Methodology — FROZEN 2026-10-06.**
 
-**Metrics & QC:**
-- Representation is deterministic
-- No hyperparameter tuning on test data
-- All sequences transformable without data leakage
+Twenty standard amino acids map to integers 1–20 in alphabetical order of one-letter code; 0 is reserved for padding and is a learnable embedding like any other token. Sequences containing any other character were excluded at dataset construction, so none occurs.
 
-**Expected Outcome:**
-- Input representation scheme documented
-- Example transformed sequences shown
-- Implementation code or reference
+**Peptides are padded to length 12 in the centre, not on the right.** The first four residues occupy positions 1–4 and the last four occupy positions 9–12; padding fills the middle. A 12-mer is unpadded; an 8-mer carries four pad tokens at positions 5–8.
 
-**Limitations:**
-- Fixed-length padding assumes variable-length peptides
-- Representation choice not validated on real data until model training
+This is the one place domain knowledge enters the encoding, and it is declared rather than buried. Class-I binding motifs are anchored at the N-terminal region and at the C-terminus. Right-padding would place the C-terminal residue at a different index for every peptide length, so a convolution would have to learn five separate C-terminal motifs — one per length — from a representation that actively obscures the alignment. Centre-padding costs nothing and removes an artefact. It does not encode which residues matter, only that the two termini are comparable across lengths.
 
-**Status:** OPEN — **not frozen.** Must be locked before any confirmatory claim
+Length is **not** supplied as a separate feature. The pad tokens make it recoverable, and adding it explicitly would let the model exploit any residual length imbalance; the negative set is length-matched exactly, so no such imbalance exists to exploit.
 
-**Next Step:** Finalize representation, document exactly.
+**Metrics & QC:** Encoding deterministic; a round-trip test confirms sequence recovery from the encoding for every length.
+
+**Expected Outcome:** Fixed encoder, shared by every run.
+
+**Limitations:** Centre-padding assumes both termini are the informative regions. That is a strong prior from the biology and would be wrong for a presentation mechanism anchored internally.
+
+**Status:** **FROZEN** (D026).
+
+**Next Step:** None.
 
 ---
 
 ## § 13. Training Protocol
 
-**Purpose:** Specify all hyperparameters and training control before running experiments.
+**Purpose:** Fix every training parameter and the selection rule before fitting.
 
 **Why this method is needed:** Hyperparameters chosen with any sight of the test partition convert a held-out estimate into an optimistic one. Specifying the protocol in advance is what keeps the held-out estimate held out.
 
-**Input & Sources:**
-- Training data (from Phase B split)
-- Validation data (from Phase B split)
-- Preregistration (frozen before model training)
+**Input & Sources:** Frozen dataset and split; measured throughput (run-002); compute gate §14.
 
-**Methodology:**
-- Lock optimizer, learning rate, batch size, epochs, early stopping rule
-- Lock loss function, random seed, class weighting
-- Define hyperparameter search space and cross-validation strategy
-- Model selection criterion uses training/validation only
-- Test set never used for model selection
+**Methodology — FROZEN 2026-10-06.**
 
-**Metrics & QC:**
-- Preregistration document with all parameters locked
-- Seed and date recorded
-- Hyperparameter search bounded (max runs, max epochs)
+| Parameter | Value |
+|---|---|
+| Loss | binary cross-entropy |
+| Optimizer | Adam, learning rate 1e-3, default betas |
+| Batch size | 512 |
+| Max epochs | 100 |
+| Early stopping | patience 10 on validation average precision |
+| Class weighting | none — the classes are 1:1 by construction (D002) |
+| Weight init seed | `seed('model_init', replicate)` (D010) |
 
-**Expected Outcome:**
-- CNN_PREREGISTRATION.md (locked parameters)
-- cnn_seed.json (random seed, date, model selection criterion)
+**Grid — 16 configurations, fixed:**
 
-**Limitations:**
-- Search space bounds may be conservative
-- Early stopping rule may fail on small datasets
+| Hyperparameter | Values |
+|---|---|
+| embedding dim `E` | 16, 32 |
+| filters `C` | 32, 64 |
+| kernel `k` | 3, 5 |
+| dropout `p` | 0.0, 0.3 |
 
-**Status:** OPEN — **not frozen.** Compute gate is resolved; the protocol itself is not
+2 × 2 × 2 × 2 = 16, within the §14 limit of 20. Learning rate, batch size and dense width are fixed rather than searched: each would multiply the grid for a parameter with far less influence on this architecture than the four above.
 
-**Next Step:** Define compute budget, freeze preregistration.
+**Model selection:** mean validation average precision across the five folds, computed on training folds only. The test partition is not read until the selected configuration is fixed and the endpoint computed once.
+
+**Final fit:** the selected configuration, five folds × five initialisation seeds = 25 runs. All 25 are reported; selecting among seeds is prohibited (D010).
+
+**Reduction ladder priority (required by D022).** If compute is exceeded, configurations drop from 16 to 8 by removing the `E = 16` half first, then `p = 0.0`. Order fixed here so it cannot be chosen under pressure.
+
+**Compute check:** 16 × 5 = 80 selection runs plus 25 final = **105 runs**, within the 150 cap. At 8.5 s/epoch and 100 epochs that is **24.7 h** against a 96 h cap, or roughly 10 h with early stopping at typical depth.
+
+**Metrics & QC:** Every run records config, seed, epochs to stop, and per-fold validation AP. No run touches the test partition.
+
+**Expected Outcome:** `CNN_PREREGISTRATION.md` emitted from this specification; `training_log.csv` per run.
+
+**Limitations:** A 16-point grid may miss a better configuration. That is accepted: a larger search increases the chance of selecting on noise, and the endpoint is about whether sequence carries signal, not about the best attainable model.
+
+**Status:** **FROZEN** (D026).
+
+**Next Step:** None. Training may proceed on hardware meeting §14.
 
 ---
 
