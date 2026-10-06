@@ -132,7 +132,7 @@ blocks:
 | D012 | Partial typing: units with fewer recorded alleles than loci are ambiguous between a genuine single-allele locus and incomplete reporting. Imputation is prohibited; the question is whether such units are excluded from allele-stratified analyses or retained with a flag. Raised by `METHODOLOGY.md` M4 | G2 |
 | D013 | S2 retrieval route: the metadata file as deposited in the submission, versus the separately maintained community-annotation repository. Different authorship, version history, and checksum availability, and possibly different contents. Settled by reading the S1 manifest, not by guessing a path. Raised by `DATA_SOURCES.md` | G1 |
 | D014 | Primary endpoint: §25 kept, threshold raised; §18 preregistered secondary. **RATIFIED, RESOLVED** — see entry below. Contingent on D006 | constrains D008 |
-| D015 | Master prompt transcription: the brief as supplied leaves the Mapping Methodology and Validation & QC Gates sections unnumbered (where 3 and 5 would fall), and three lines ("Maintain:", "Each gate is:", "Keep progress updates concise:") introduce content that did not survive into the supplied text. Transcribed verbatim rather than repaired, per the prompt's own rule against silently altering a source. Needs confirmation or replacement by the author | none; blocks nothing, but leaves §-number citations ambiguous |
+| D015 | Master prompt transcription. **CONFIRMED, RESOLVED** — see entry below | closed |
 | D016 | Approximate matching prohibited on every identifier join. **RATIFIED, PERMANENT** — see entry below | standing rule |
 | D017 | Proceeding with run-001 while G1 was failing. **RATIFIED, RESOLVED** — see entry below | closed |
 | D018 | Required field sets omitted from `SECTIONS.md` and `RUN_LOG.md`, then repaired. **RATIFIED, RESOLVED** — see entry below | closed |
@@ -207,6 +207,48 @@ are seen, or it is endpoint switching regardless of how well justified.
 **Ratification note.** Ratified on the author's instruction. The reasoning
 behind it is mine and reversed my own earlier position; the authority for
 adopting it is theirs.
+
+---
+
+## D015 — Master prompt transcription: confirmed
+
+**Date opened:** 2026-10-06 · **Confirmed:** 2026-10-06 by the author
+**Status:** RESOLVED · **Blocks:** nothing
+
+**The question had two halves, and only one was mine to answer.**
+
+**Fidelity — verified, not asserted.** The committed `PROJECT_PROMPT.md` was
+compared line by line against the brief as supplied: 128 content lines, zero
+omissions, zero alterations, order preserved. Done mechanically rather than by
+reading, because reading one's own transcription for errors is the least
+reliable way to find them.
+
+**Completeness — attested by the author, not verifiable by me.** Three lines in
+the supplied text introduce content that does not follow it: "Maintain:" at the
+end of *Data & Provenance*, "Each gate is:" in *Validation & QC Gates*, and
+"Keep progress updates concise:" in *Communication*. Two sections also carry no
+number, where 3 and 5 would fall. I could establish that these are present in
+what was supplied; I could not establish whether the supply was complete. The
+author has confirmed the transcription, so they stand.
+
+**What that commits us to.** The truncated lines impose no requirement. A line
+reading "Maintain:" with nothing after it obliges nothing, and no reader should
+infer an unstated obligation behind it. The unnumbered sections keep their
+positions; references elsewhere name them by title rather than by number, which
+is why the restructure in D019 cites *Mapping Methodology* by name.
+
+**If content was lost after all.** It is supplied as a new entry superseding
+this one, not as an edit to `PROJECT_PROMPT.md`. The governing document stays
+byte-stable so that every "master prompt" citation in this repository keeps
+resolving to the text the work was actually done against.
+
+**Why this was worth an entry rather than a quiet fix.** The tempting move was
+to repair the three lines by inferring what they meant — a list of artifacts to
+maintain, a PASS/FAIL enumeration, an update format. Each inference would have
+been plausible and unfounded, and would have put words in the governing
+document that its author did not write. That is the same failure as imputing a
+genotype or inferring a class from a filename, applied to the project's own
+charter.
 
 ---
 
