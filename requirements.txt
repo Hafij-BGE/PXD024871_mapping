@@ -1,0 +1,11 @@
+# Pinned for reproducibility. These are the versions env-001 resolved to on
+# 2026-10-06; see ENVIRONMENT.md. Phase A (M1-M6) needs only the standard
+# library -- numpy and scipy are for the analysis stages, torch for training.
+numpy==2.4.6
+scipy==1.17.1
+# Training only. Install the build matching the target accelerator:
+#   CPU   : pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   CUDA  : pip install torch           (default wheel carries CUDA)
+# Left unpinned deliberately: the correct build depends on the machine, and
+# pinning one here would silently install the wrong accelerator elsewhere.
+# torch
