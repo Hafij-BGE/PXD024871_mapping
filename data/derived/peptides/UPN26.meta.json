@@ -1,0 +1,29 @@
+{
+ "container": "UPN26_class_I.msf",
+ "unit_id": "UPN26",
+ "internal_run_refs": [
+  "160107_AN_CLL85_pre#1_W_20%_Rep#1_400-650mz_TS3sCIDqisOT@35_7s_msms1.raw",
+  "160107_AN_CLL85_pre#1_W_20%_Rep#2_400-650mz_TS3sCIDqisOT@35_7s_msms2.raw",
+  "160107_AN_CLL85_pre#1_W_20%_Rep#3_400-650mz_TS3sCIDqisOT@35_7s_msms3.raw",
+  "160107_AN_CLL85_pre#1_W_20%_Rep#4_400-650mz_TS3sCIDqisOT@35_7s_msms4.raw",
+  "160107_AN_CLL85_pre#1_W_20%_Rep#5_400-650mz_TS3sCIDqisOT@35_7s_msms5.raw",
+  "160107_AN_CLL85_pre#2_W_20%_Rep#1_400-650mz_TS3sCIDqisOT@35_7s_msms26.raw",
+  "160107_AN_CLL85_pre#2_W_20%_Rep#2_400-650mz_TS3sCIDqisOT@35_7s_msms27.raw",
+  "160107_AN_CLL85_pre#2_W_20%_Rep#3_400-650mz_TS3sCIDqisOT@35_7s_msms28.raw",
+  "160107_AN_CLL85_pre#2_W_20%_Rep#4_400-650mz_TS3sCIDqisOT@35_7s_msms29.raw",
+  "160107_AN_CLL85_pre#2_W_20%_Rep#5_400-650mz_TS3sCIDqisOT@35_7s_msms30.raw",
+  "160107_AN_CLL85_pre#3_W_20%_Rep#1_400-650mz_TS3sCIDqisOT@35_7s_msms51.raw",
+  "160107_AN_CLL85_pre#3_W_20%_Rep#2_400-650mz_TS3sCIDqisOT@35_7s_msms52.raw",
+  "160107_AN_CLL85_pre#3_W_20%_Rep#3_400-650mz_TS3sCIDqisOT@35_7s_msms53.raw",
+  "160107_AN_CLL85_pre#3_W_20%_Rep#4_400-650mz_TS3sCIDqisOT@35_7s_msms54.raw",
+  "160107_AN_CLL85_pre#3_W_20%_Rep#5_400-650mz_TS3sCIDqisOT@35_7s_msms55.raw"
+ ],
+ "n_internal_runs": 15,
+ "psms_total": 412297,
+ "unique_sequences": 198567,
+ "extract_sha256": "ddb97212126ff5cd5b1a4f69a9643d3ac782549c870721054610cb805b68c31d",
+ "length_window": [
+  8,
+  12
+ ]
+}
