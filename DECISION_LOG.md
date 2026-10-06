@@ -166,7 +166,7 @@ blocks:
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
 | D025 | Platform stratification and cross-platform transfer. **RESOLVED** — stratification mandatory; transfer analysis preregistered. Instrument is learnable from composition at AUROC 0.645 vs 0.515 control. See entry below | G6 |
 | D005 | Instrument confound. **RESOLVED — accepted as a limitation**; total confound, cannot be corrected. See entry below | G3, FAIL accepted |
-| D006 | Training-set overlap between the comparison predictors and these peptides; handling rule if overlap exists | G11 |
+| D006 | Predictor training-set overlap. **RESOLVED as a protocol**: no predictor enters §18 without its training list obtained; handling fixed per outcome; §18 may never be promoted while any predictor is UNVERIFIABLE. See entry below | G11 |
 | D007 | Minimum-N gate. **RESOLVED — clears overwhelmingly**: 2,658,972 eligible positives. The confirmatory arm is not data-limited | G4 |
 | D008 | Decision rule for §25. **RESOLVED: reject if the lower bound of a nominal-99% cluster-bootstrap interval exceeds 0.647** (floor 0.597 + 0.05). Nominal 99% because 95% delivers only ~89% actual coverage. See entry below | closed |
 | D009 | Preregistration freeze. **RESOLVED** — annotated signed-content tag pushed to the remote, carrying every artifact checksum. Limits of what it proves stated explicitly. See entry below | G6 |
@@ -480,6 +480,75 @@ their seeds would change published numbers for no benefit. The derivation
 applies from the split onward, which is where it matters.
 
 **PERMANENT** because it governs every future stochastic step, not one choice.
+
+---
+
+## D006 — Predictor training-set overlap · RESOLVED
+
+**Resolved:** 2026-10-06 · **Status:** RESOLVED as a protocol · **Gates:** G11,
+and the D014 revisit
+
+**What is being closed.** D006 asked for a handling rule, not a measurement. The
+measurement cannot be made yet: it depends on which predictors enter §18, which
+is not itself fixed, and on training lists not yet retrieved. What is fixed here
+is the protocol, so the handling cannot be chosen after the overlap is known.
+
+### Admission
+
+**No predictor enters the §18 comparison until its training peptide list has
+been retrieved and registered as an S6 source**, with checksum and version, like
+any other input. A predictor whose outputs are available but whose training data
+is not is not thereby admitted — it is admitted under the `UNVERIFIABLE` rule
+below, and labelled.
+
+### Overlap is measured at sequence level, not dataset level
+
+Exact normalized sequence match against the frozen test partition (M7). **Dataset
+provenance is not a substitute.** This submission was published 2021-09, so a
+predictor released earlier cannot contain *this deposit* — but the same peptides
+are observed across independent studies, and run-006 measured 20.1% of this
+universe recurring across units within one study alone. Absence of the accession
+from a training corpus says nothing about absence of the peptides.
+
+### Handling, fixed per outcome
+
+| Outcome | Handling |
+|---|---|
+| `CLEAN` — zero overlap | Compare on the full test partition |
+| `OVERLAPPING` — overlap quantified | Primary comparison on the non-overlapping subset; full-set comparison reported as secondary with the overlap count stated |
+| `UNVERIFIABLE` — training list unobtainable | Predictor is reported but **labelled**, and excluded from any claim about relative performance |
+
+### The bias has a direction, and that makes one reading survive
+
+Training overlap **flatters the predictor**: it scores peptides it was fit on.
+So the contamination always moves the comparison against the CNN.
+
+That asymmetry is usable. **If the CNN beats an `UNVERIFIABLE` predictor, the
+result is conservative** — contamination could only have made the predictor look
+better than it is, so the CNN's advantage is a lower bound. **If the CNN loses
+to one, the comparison is uninterpretable**, because the gap and the
+contamination are confounded and cannot be separated.
+
+This is the only circumstance in which an unverifiable comparison may be
+reported as evidence, and only in that one direction.
+
+### Bearing on D014
+
+D014 kept §25 primary because §18 rests on this unverifiable dependency, and
+made promotion conditional on D006 resolving. The condition is now explicit:
+**§18 may be promoted to primary only if every admitted predictor is `CLEAN` or
+quantified `OVERLAPPING`. A single `UNVERIFIABLE` predictor blocks promotion**,
+regardless of how favourable the results look — which is the point, since a rule
+that bends when the numbers are good is not a rule.
+
+### What was verified here, and what was not
+
+Reachability only: Zenodo, IEDB and the DTU service host respond from this
+environment; github.com is blocked by the network policy, so training data
+distributed only through it would need another route. **Nothing about any
+specific predictor's training contents has been checked**, and this entry
+asserts nothing about them. Establishing that is G11's work under the protocol
+above.
 
 ---
 
