@@ -65,3 +65,28 @@ is visible rather than assumed away.
 Captured by `scripts/capture_environment.py`. Append to `ENVIRONMENT.md` and
 cite the `env_id` from the run record that used it.
 
+
+## env-003 — captured 2026-10-06
+
+| Item | Value |
+|---|---|
+| `env_id` | env-003 |
+| Captured | 2026-10-06T17:04:29.607364+00:00 |
+| Platform | Linux-6.6.122+-x86_64-with-glibc2.39 |
+| Processor | x86_64 |
+| CPU count | 2 |
+| Memory | 12.7 GiB total |
+| GPU | Tesla T4, 15360 MiB, 580.82.07 |
+| Python | 3.13.15 (/usr/bin/python3) |
+| numpy | 2.1.3 |
+| scipy | 1.16.3 |
+| torch | 2.11.0+cu130; cuda_available=True; threads=1; device=Tesla T4 |
+| git | git version 2.43.0 |
+| curl | curl 8.5.0 (x86_64-pc-linux-gnu) libcurl/8.5.0 OpenSSL/3.0.13 zlib/1.3 brotli/1.1.0 zstd/1.5.5 libidn2/2.3.7 libpsl/0.21.2 (+libidn2/2.3.7) libssh/0.10.6/openssl/zlib nghttp2/1.59.0 librtmp/2.3 OpenLDAP/2.6.10 |
+| Disk free (cwd) | 70.1 GiB |
+| Hostname class | COLAB |
+| Colab release | release-colab-external-images_20261002-060053_RC00 |
+
+Captured by `scripts/capture_environment.py`. Append to `ENVIRONMENT.md` and
+cite the `env_id` from the run record that used it.
+
