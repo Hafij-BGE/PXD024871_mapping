@@ -11,19 +11,69 @@ finding about PXD024871.
 
 ## Introduction
 
-The project asks whether a sequence-based 1D CNN can distinguish experimentally
-observed HLA class-I-associated peptides from constructed negative controls,
-and whether any learned signal generalizes to biological units absent from
-training. The experiment is specified in
-`PXD024871_CNN_Experiment_Proposal.md` (committed unmodified).
+Class-I major histocompatibility complex molecules display short peptides,
+typically eight to twelve residues, on the cell surface, where they are
+available for inspection by cytotoxic T cells. Which peptides a given cell
+displays depends on its MHC allotype: each allele binds a restricted set of
+sequences, so the displayed repertoire differs between individuals. Mass
+spectrometry of peptides eluted from immunoprecipitated complexes yields
+direct observations of that repertoire, and such experiments are deposited
+publicly in increasing numbers.
 
-The CNN is downstream of provenance mapping and is never an input to it: no
-model output may assign a file to a class, a run to a unit, or a peptide to a
-participant (`METHODOLOGY.md`, *Scope constraint*; proposal §1, §28).
+Predicting presentation from peptide sequence is an established task with
+established tools. The question this experiment asks is narrower and more
+specific: whether a deliberately simple convolutional network, trained on one
+publicly deposited immunopeptidomics dataset, can distinguish observed
+class-I-associated peptides from appropriately constructed controls, and whether
+any signal it finds survives evaluation on biological units it never saw in
+training.
 
-Before the experiment can run, the deposited submission must be resolved into
-an analysis-ready peptide table whose every row traces to a deposited file.
-That mapping is the current work.
+**References in this report are deliberately absent.** No publication has been
+retrieved or verified during this work, and the References section records that
+rather than filling itself with citations from memory. Statements of background
+above are at textbook level and are not attributed to any specific source.
+
+### Why this question is harder than it looks
+
+An experiment of this shape has several ways of producing a number that means
+less than it appears to. The negative class is constructed rather than observed,
+so its composition determines how much of any apparent performance reflects
+discrimination rather than an artefact of how the controls were drawn. Peptides
+recur across individuals, so splitting by individual does not by itself prevent
+a model from being tested on sequences it has already seen. Instrument and
+sample preparation leave signatures in which peptides are detected at all, so a
+model held out on unseen individuals may be tested partly on unseen instruments.
+And the quantity that bounds every claim is the number of independent
+individuals, which in a dataset of this kind is small and fixed, however many
+millions of peptides it contains.
+
+Each of these is a known hazard in principle. What this work does is **measure
+them in this dataset** before any model is fit, so that the resulting claim is
+stated with its qualifications attached rather than defended afterwards.
+
+### What this report is
+
+**A design and preregistration report.** It documents the retrieval and
+provenance mapping of the source submission, the construction and freezing of an
+analysis dataset and an evaluation split, the diagnostics that selected the
+negative controls and calibrated the statistical procedure, and the decision rule
+fixed in advance for the primary hypothesis.
+
+**No model has been fit.** There is no result here about the hypothesis. The
+measurements reported are properties of the dataset and the design, and the
+Discussion is explicit that it discusses the design rather than the question.
+
+This ordering is the point. Each of the hazards above was quantified before the
+corresponding design choice was made: the negative construction was selected on a
+composition diagnostic, the per-participant sample size on a precision curve, the
+reporting interval on measured coverage, and the decision threshold on measured
+power. Where a quantity could not be measured in advance, the handling was fixed
+as a protocol so it could not be chosen once the answer was known.
+
+The result of that ordering is a narrower question than the one originally posed,
+with the narrowing documented rather than discovered later. The Discussion sets
+out how much narrower, and the Limitations section states what the study will
+not be able to claim regardless of what the model does.
 
 ## Methods
 
