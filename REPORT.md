@@ -250,27 +250,99 @@ a ~2 GB figure that predated any measurement.
 
 ## Discussion
 
-The design analysis changes the experiment's framing more than its feasibility.
-The proposal is not underpowered; it is mis-specified at two points. Its
-primary hypothesis would pass for a classifier of negligible practical value
-(R1/F1), and its stated precision mechanism — bootstrap replicates — does not
-control precision (R1/F2). Both are correctable by specification rather than by
-collecting more data.
+**This discusses the design, not the hypothesis.** No model has been fit, so
+nothing here is a finding about whether a convolutional network can distinguish
+these peptides. What the work to date establishes is narrower and worth stating
+plainly: what question this dataset can actually answer, and how much narrower
+that is than the question asked.
 
-The more useful finding is R1/F7: pairing removes the between-participant
-variance that bounds the absolute claim, so the comparison against existing
-predictors is the better-powered question at this sample size. That suggests
-the confirmatory endpoint may be in the wrong place. D014 weighed that against
-M7 and was ratified the other way: §25 stays primary because its flaw is a
-missing threshold, which can be written, whereas §18's flaw is an unverifiable
-dependency on the comparison predictors' training data, which cannot be
-resolved from inside this project. §18 is preregistered as secondary and
-reported regardless. A well-specified weaker claim was preferred to a
-better-powered one resting on an unchecked premise.
+### The answerable question is substantially narrower than the proposed one
 
-R1/F4 is a caution about the primary metric itself. AUPRC is not merely
-imprecise at extreme class imbalance; it is biased in the flattering direction,
-and no amount of resampling corrects it.
+The proposal asked whether a sequence CNN can distinguish observed HLA class-I
+peptides from appropriate controls and whether the signal generalizes to unseen
+biological units. Each clause has since acquired a measured qualification.
+
+*Distinguish from controls* now means distinguish from a baseline of 0.597
+average precision, because a linear model on amino-acid composition alone
+reaches that against the chosen negatives. *Generalizes to unseen units* is
+confounded with generalizing across acquisition platforms, at a magnitude large
+enough that a trivial model separates the platforms at 0.645. And the primary
+figure will include 15.99% of test peptides seen verbatim during training,
+because participant-disjoint splitting does not deliver sequence-disjointness in
+a dataset where repertoires overlap.
+
+None of this was apparent from the proposal, and none of it is a defect
+introduced by the analysis. These are properties of the data that the design
+work surfaced. The honest summary is that the study can answer a real question,
+but a more qualified one than it set out to ask.
+
+### The most consequential finding so far is not about the model
+
+It is that **the acquisition instrument is learnable from the peptide sequences
+themselves**. Two platforms, no participant spanning both, and a composition-only
+classifier separating them at AUROC 0.6451 against a 0.5150 control that
+compares random halves of participants. Between-participant variation
+contributes almost nothing; the platform contributes a third of the distance to
+perfect separation.
+
+This matters beyond the present experiment. Any analysis of this dataset that
+holds out participants — and that is the standard design — inherits the same
+confound, whether or not its authors measure it. The finding belongs to the
+dataset, not to this study, and it would be worth reporting even if the CNN work
+were abandoned.
+
+### Interpretation is pre-committed, before any result exists
+
+Mapping the proposal's §21 outcomes onto the measured design, so that the
+reading of each is fixed now rather than negotiated afterwards:
+
+| Result | Reading |
+|---|---|
+| Rejects the null, holds within platform **and** across platform | The strongest reading available: sequence carries signal that survives both unseen participants and unseen instrument conditions. Still bounded to one disease, one tissue, one laboratory |
+| Rejects, but collapses in cross-platform transfer | The signal is substantially instrument, not presentation. §25 would not be supportable as stated |
+| Rejects on the full test partition but not on the leakage-free subset | Memorisation of the 15.99% overlap, not generalization |
+| Fails to reject | **Not** evidence of absent signal. Power is 0.42 at AUROC 0.70, so a real effect below a lift of ~0.14 is more likely to be missed than found |
+| Very high performance with any leakage or control check failing | Not interpretable biologically until resolved, per proposal §21 Outcome E |
+
+### What the design work suggests about design work
+
+Four estimates made before measurement were checked against the outcome, and
+the pattern is informative. The eligible-peptide count was projected 41.8% low.
+The claim that ligandomes overlap heavily between participants sharing alleles —
+which motivated treating cross-split leakage as a serious hazard — was wrong in
+the reassuring direction: overlap is 20.1% and barely tracks shared alleles. The
+conclusion that no GPU was needed was true at the dataset size assumed and false
+at the size the data actually yields. The compute budget was consequently wrong
+twice, both times in the optimistic direction.
+
+The errors ran in both directions, which is the argument for measuring before
+deciding rather than against it. Each was caught because the estimate was
+written down in a form that could later be compared with an outcome; an estimate
+that is never recorded cannot be found wrong, and the design would simply have
+inherited it.
+
+### What would strengthen the study
+
+**External replication is the largest gap.** This is one submission, one
+laboratory, one disease, one tissue. A second dataset with a different
+instrument distribution would do more than any analytic refinement here: it
+would break the platform confound that no split over these participants can
+touch.
+
+**Deeper sampling would settle the undersampling question.** Whether low
+cross-participant overlap reflects distinct repertoires or shallow sampling of a
+far larger presented space changes what "unseen participant" generalization
+means. The testable signature is that overlap should rise with per-participant
+depth, which this dataset cannot provide.
+
+**The comparison with existing predictors remains the better-powered question.**
+Simulation showed the paired comparison detects differences of about 0.05
+average precision where the absolute claim requires 0.14. It was nonetheless
+kept secondary, because its fairness depends on training-set overlap that may
+not be verifiable — a well-specified weaker claim being preferable to a
+better-powered one resting on an unchecked premise. If the comparison predictors'
+training data proves inspectable, that ordering should be revisited, and the
+condition for doing so is fixed in advance.
 
 ## Limitations
 
