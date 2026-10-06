@@ -1,0 +1,637 @@
+# PXD024871 CNN Experiment — Sections with Status
+
+## Section Tracking Template
+
+Each section of the experiment has:
+- **Purpose**: Research question and goal
+- **Input & Sources**: Data needed
+- **Methodology**: How it will be done
+- **Metrics & QC**: Validation criteria
+- **Expected Outcome**: What we're looking for
+- **Limitations**: Known constraints
+- **Status**: OPEN / IN_PROGRESS / RESOLVED / PERMANENT
+- **Next Step**: What unblocks progression
+
+---
+
+## § 1. Purpose & Research Questions
+
+**Purpose:** Define standalone CNN experiment to test sequence-based learning on PXD024871 HLA-I peptides.
+
+**Input & Sources:**
+- CNN Experiment Proposal (doc)
+- T-A4 project context and existing predictors
+
+**Methodology:**
+- Establish primary and secondary research questions
+- Clarify relationship to O9 (7,371 potential sequences)
+- Document CNN's independence from provenance/file mapping
+
+**Metrics & QC:**
+- Questions clearly stated
+- Non-claims documented
+- Scope boundaries defined
+
+**Expected Outcome:**
+- Agreed research questions frozen
+- CNN experiment scope isolated from mapping
+
+**Limitations:**
+- Secondary questions may broaden during analysis
+- CNN performance ceiling depends on upstream data quality
+
+**Status:** OPEN (awaiting Phase A completion)
+
+**Next Step:** Lock questions after Phase A provenance mapping establishes eligible dataset size.
+
+---
+
+## § 5A. Phase A1 — Dataset Inventory
+
+**Purpose:** Obtain and preserve complete PXD024871 file inventory, metadata, and provenance.
+
+**Input & Sources:**
+- PRIDE accession PXD024871
+- SDRF: PXD024871_community_annotated.sdrf.tsv (402 rows)
+- 504 files: 402 RAW, 101 .msf, 1 SDRF
+- Checksums (SHA-1 present except SDRF)
+
+**Methodology:**
+- Download SDRF and file manifest from PRIDE
+- Verify checksums for all files
+- Record retrieval date, accession, version
+- Preserve raw metadata unmodified
+
+**Metrics & QC:**
+- All 504 files inventoried
+- Checksums verified where present
+- Metadata integrity confirmed
+
+**Expected Outcome:**
+- PXD024871_INVENTORY.csv (file listing with hashes)
+- PXD024871_SDRF.tsv (preserved metadata)
+- PROVENANCE_RECORD.json (retrieval details)
+
+**Limitations:**
+- 47.8 GB .msf files require streaming extraction
+- SDRF has 402 rows; 504 files include non-MS-run files
+
+**Status:** OPEN (not yet started)
+
+**Next Step:** Download SDRF, verify file inventory, record metadata.
+
+---
+
+## § 5A2. Phase A2 — File Mapping Table
+
+**Purpose:** Create file-level mapping from raw files to normalized biological units with HLA class and donor context.
+
+**Input & Sources:**
+- SDRF (402 rows, 1 per MS run)
+- characteristics[antibody enrichment] (W6/32 or L243/Tue39)
+- characteristics[individual] (donor ID)
+- characteristics[biological replicate]
+- comment[technical replicate]
+- comment[fraction identifier]
+- **characteristics[mhc typing]** (4-digit HLA alleles, 52 donors typed)
+
+**Methodology:**
+- Parse SDRF into mapping table
+- Extract HLA class from antibody enrichment evidence
+- **[BLOCKER #1] Add hla_genotype column with 4-digit alleles from mhc typing**
+- Normalize unit_id from individual + replicate + fraction
+- Map raw_file → sample_id → unit_id
+
+**Metrics & QC:**
+- 402 rows mapped (1:1 with SDRF)
+- 222 confirmed class-I runs (W6/32 antibody)
+- 52 class-I donors with genotypes
+- No rows missing HLA context
+- Duplicate unit_ids detected and handled
+
+**Expected Outcome:**
+- PXD024871_FILE_MAP.csv (raw_file, sample_id, unit_id, hla_class, hla_genotype, …)
+- Mapping statistics and QC report
+- Unmapped/ambiguous records list
+
+**Limitations:**
+- Class assignment depends on SDRF accuracy
+- 10 donors partially typed (4–5 alleles instead of 6)
+- Some alleles may be hemizygous
+
+**Status:** OPEN (blocked on HLA allotype decision, see DECISION_LOG #1)
+
+**Next Step:** Resolve DECISION_LOG #1, then execute file map.
+
+---
+
+## § 5A3. Phase A3 — Biological Unit Resolution
+
+**Purpose:** Normalize files to independent biological units (donors) for later model splitting.
+
+**Input & Sources:**
+- PXD024871_FILE_MAP.csv (from A2)
+- unit_id assignments
+
+**Methodology:**
+- Group files by unit_id
+- Count runs, replicates, fractions per unit
+- Verify 1:1 or 1:N structure is consistent
+- Document any replicates with conflicting metadata
+
+**Metrics & QC:**
+- All 402 runs assigned to units
+- Unit counts match metadata
+- Conflicts logged and resolved
+- Donor count = 52 confirmed
+
+**Expected Outcome:**
+- PXD024871_UNITS.csv (unit_id, donor_id, run_count, hla_genotype, …)
+- Unit-level summary
+
+**Limitations:**
+- Cannot separate donors with identical allotype + metadata
+
+**Status:** OPEN (depends on A2)
+
+**Next Step:** Execute after A2 complete.
+
+---
+
+## § 6. Phase B — Dataset Definition
+
+**Purpose:** Define positive and negative example sets with quality filtering frozen before CNN training.
+
+**Input & Sources:**
+- 222 class-I MS runs (eligible set)
+- Peptide identifications from .msf files
+- Proteome Discoverer percolator q-values (≤ 0.05, default; may be re-filtered)
+
+**Methodology:**
+- Stream .msf files, extract peptide tables
+- Apply predefined filtering: length 8–12, q ≤ 0.05 (or stricter)
+- **[BLOCKER #2] Select negative-control strategy (A: reference-derived, B: decoy, C: hard negatives)**
+- Generate negatives matching positive properties
+- Remove exact duplicates across splits
+- Freeze filtering rules before any CNN evaluation
+
+**Metrics & QC:**
+- Positive count (unknown; estimate ~10k–100k)
+- Negative count (depends on strategy)
+- Length distribution (should be 8–12 only)
+- No class-I to class-II contamination
+- Overlap check: any peptide in both positive and negative sets flagged
+
+**Expected Outcome:**
+- PXD024871_POSITIVES.csv (peptide, length, source_unit, hla_genotype, …)
+- PXD024871_NEGATIVES.csv (peptide, length, generation_method, …)
+- Filtering log with statistics
+
+**Limitations:**
+- Deposited q ≤ 0.05 may be too lenient; re-filtering changes positive purity
+- Negative strategy choice sets ceiling on all downstream metrics
+- Shared peptides across donors not yet decided (see leakage section)
+
+**Status:** OPEN (blocked on DECISION_LOG #2 and class-ratio lock)
+
+**Next Step:** Resolve #2, lock class ratio, then execute filtering.
+
+---
+
+## § 9. Leakage Prevention
+
+**Purpose:** Prevent data leakage across train/validation/test splits.
+
+**Input & Sources:**
+- PXD024871_POSITIVES.csv (from Phase B)
+- PXD024871_NEGATIVES.csv
+- Biological unit definitions (Phase A3)
+
+**Methodology:**
+- Verify no exact sequence overlap: test peptides not in train unless intentional
+- Check unit-level leakage: no unit contributes to both train and test
+- Derived-sequence leakage: no sequences from test peptides enter training as negatives
+- Preprocessing: all normalization fitted on training data only
+
+**Metrics & QC:**
+- Test set peptides not in train set ✓
+- Test set units disjoint from train units ✓
+- No cross-split negative generation from test peptides ✓
+
+**Expected Outcome:**
+- Leakage audit report
+- Split-definition frozen with verification
+
+**Limitations:**
+- **Shared-peptide ambiguity**: HLA ligandomes overlap between donors sharing alleles. Same sequence can be genuinely positive in both train and test donors. Unresolved handling: drop cross-split duplicates, or allow and report both ways?
+
+**Status:** OPEN (blocked on shared-peptide decision in DECISION_LOG)
+
+**Next Step:** Decide cross-donor duplicate handling.
+
+---
+
+## § 10. Train/Validation/Test Design
+
+**Purpose:** Split data by biological unit to ensure independent generalization test.
+
+**Input & Sources:**
+- 52 class-I donors with run counts (range: 3–15)
+- PXD024871_POSITIVES.csv
+- PXD024871_NEGATIVES.csv
+
+**Methodology:**
+- Primary design: stratified grouped split by donor
+- If donor count sufficient (≥ 8–10): fixed 60/20/20 split
+- If insufficient: grouped k-fold cross-validation
+- Test set locked, untouched during model selection
+- **Allele-disjoint secondary split** (for robustness check: hold out all runs of a specified allele, e.g., HLA-A*02:01, and measure performance)
+
+**Metrics & QC:**
+- Train / validation / test donor counts recorded
+- Peptide counts per split reported
+- Positive:negative ratio consistent across splits
+- Donor stratification verified (no unit in multiple splits)
+
+**Expected Outcome:**
+- PXD024871_TRAIN.csv, PXD024871_VALIDATION.csv, PXD024871_TEST.csv
+- Split statistics (counts, donor breakdown, allele coverage)
+- Primary and secondary split definitions documented
+
+**Limitations:**
+- Small donor count (52) limits stable fixed splits
+- Donor-held-out ≠ allele-held-out: HLA-A*02:01 in 29/52 donors
+- Unbalanced run counts (3–15) mean peptide counts dominated by 15-run donor
+
+**Status:** OPEN (depends on Phase B and shared-peptide decision)
+
+**Next Step:** Lock positive/negative counts and class ratio, then define splits.
+
+---
+
+## § 11. CNN Architecture
+
+**Purpose:** Define simple 1D CNN to test whether sequence-local information provides predictive signal.
+
+**Input & Sources:**
+- Sequence length distribution from Phase B
+- Amino-acid encoding scheme (frozen)
+- Architecture reference: standard 1D CNN with convolutions, pooling, dense layer
+
+**Methodology:**
+- Define embedding or numerical representation per amino acid
+- Specify convolutional blocks (kernel size, filters, stride)
+- Specify pooling (type, size)
+- Specify dense layers and output
+- Keep architecture intentionally simple to isolate sequence signal
+
+**Metrics & QC:**
+- Architecture documented in cnn_config.json
+- Reproducible from configuration alone
+- No data observed during architecture selection
+
+**Expected Outcome:**
+- cnn_config.json (full architecture specification)
+- Architecture diagram or description
+
+**Limitations:**
+- Simplicity may underperform compared to more complex models
+- Outcome C (weak CNN) plausible on ~10k peptides
+
+**Status:** OPEN (depends on Phase B for sequence statistics)
+
+**Next Step:** Observe sequence length distribution, finalize architecture.
+
+---
+
+## § 12. Input Representation
+
+**Purpose:** Define how peptide sequences are converted to numerical form and how variable lengths are handled.
+
+**Input & Sources:**
+- Sequence length range (expected: 8–12)
+- Amino-acid alphabet (20 standard + gaps)
+
+**Methodology:**
+- Choose representation: one-hot encoding, embedding vectors, BLOSUM, or learned embedding
+- Choose length handling: padding, truncation, or length-aware layer
+- Freeze representation before evaluating test performance
+- Document exact implementation
+
+**Metrics & QC:**
+- Representation is deterministic
+- No hyperparameter tuning on test data
+- All sequences transformable without data leakage
+
+**Expected Outcome:**
+- Input representation scheme documented
+- Example transformed sequences shown
+- Implementation code or reference
+
+**Limitations:**
+- Fixed-length padding assumes variable-length peptides
+- Representation choice not validated on real data until model training
+
+**Status:** OPEN (depends on Phase B)
+
+**Next Step:** Finalize representation, document exactly.
+
+---
+
+## § 13. Training Protocol
+
+**Purpose:** Specify all hyperparameters and training control before running experiments.
+
+**Input & Sources:**
+- Training data (from Phase B split)
+- Validation data (from Phase B split)
+- Preregistration (frozen before model training)
+
+**Methodology:**
+- Lock optimizer, learning rate, batch size, epochs, early stopping rule
+- Lock loss function, random seed, class weighting
+- Define hyperparameter search space and cross-validation strategy
+- Model selection criterion uses training/validation only
+- Test set never used for model selection
+
+**Metrics & QC:**
+- Preregistration document with all parameters locked
+- Seed and date recorded
+- Hyperparameter search bounded (max runs, max epochs)
+
+**Expected Outcome:**
+- CNN_PREREGISTRATION.md (locked parameters)
+- cnn_seed.json (random seed, date, model selection criterion)
+
+**Limitations:**
+- Search space bounds may be conservative
+- Early stopping rule may fail on small datasets
+
+**Status:** OPEN (depends on Phase B and compute gate)
+
+**Next Step:** Define compute budget, freeze preregistration.
+
+---
+
+## § 14. Compute Gate
+
+**Purpose:** Define computational budget and ensure experiment fits within resource constraints.
+
+**Input & Sources:**
+- Maximum wall-clock time available
+- Available CPU/GPU
+- Disk space (47.8 GB .msf + intermediate outputs)
+
+**Methodology:**
+- Calculate .msf extraction footprint: stream 1 file at a time (peak ~2 GB, not 48 GB)
+- Set maximum training runs (e.g., 10 random hyperparameter initializations)
+- Set maximum epochs per run (e.g., 100)
+- Set maximum hyperparameter configurations (e.g., 20)
+- Document compute grid: runs × epochs × configs
+- If full design exceeds limit, record reduction and why
+
+**Metrics & QC:**
+- Total estimated compute time < available time
+- Disk footprint verified
+- Reduction (if any) recorded explicitly
+
+**Expected Outcome:**
+- Compute gate specification
+- Peak disk space verified
+- Runtime estimate provided
+
+**Limitations:**
+- Estimate may be inaccurate until first run
+- GPU availability may change
+
+**Status:** OPEN (no numbers yet; needs specification)
+
+**Next Step:** Set actual compute limits, document.
+
+---
+
+## § 15. Primary Endpoint
+
+**Purpose:** Define primary performance metric and secondary metrics for evaluation.
+
+**Input & Sources:**
+- Test set predictions (from trained CNN)
+- Test set labels (positive / negative)
+
+**Methodology:**
+- Primary metric: AUPRC (Area Under Precision-Recall Curve)
+  - Justification: accounts for class imbalance
+  - Baseline = positive prevalence (must be locked in Phase B)
+- Secondary metrics: AUROC, sensitivity, specificity, precision, recall, F1, balanced accuracy, calibration
+
+**Metrics & QC:**
+- Primary metric locked during preregistration
+- Baseline (positive prevalence) recorded
+- Secondary metrics computed for completeness
+
+**Expected Outcome:**
+- AUPRC on test set
+- Full confusion matrix and secondary metrics
+- Uncertainty intervals (via bootstrap, see § 16)
+
+**Limitations:**
+- AUPRC is incomparable across studies with different class ratios
+- Positive prevalence must not change after observing test performance
+
+**Status:** OPEN (blocked on class-ratio decision in DECISION_LOG)
+
+**Next Step:** Lock positive:negative ratio, then freeze primary endpoint.
+
+---
+
+## § 16. Statistical Evaluation
+
+**Purpose:** Distinguish peptide-level from biological-unit-level independence and provide uncertainty intervals.
+
+**Input & Sources:**
+- Test set predictions and labels
+- Unit membership for each test peptide
+- Cluster bootstrap configuration (B=10,000, seed=20261006)
+
+**Methodology:**
+- Report peptide-level performance (e.g., AUPRC on all test peptides)
+- Report donor-level performance (aggregate by donor, report median, range, IQR)
+- Use cluster bootstrap: resample donors (not peptides), compute metric on each bootstrap sample
+- Record resampling unit explicitly (donors, not peptides)
+- Seed = 20261006 (today's date, 2026-10-06; record convention)
+
+**Metrics & QC:**
+- Bootstrap intervals stable (B=10,000)
+- Metric computed identically on each bootstrap sample
+- Donor-level disaggregation shown
+
+**Expected Outcome:**
+- Pooled AUPRC with 95% CI
+- Donor-level summary: median, min, max, IQR
+- Bootstrap distribution plot
+- bootstrap_results.json (all bootstrap replicates)
+
+**Limitations:**
+- Uncertainty capped by donor count (52), not B
+- Tight-looking intervals may hide instability across donors
+
+**Status:** OPEN (depends on test evaluation)
+
+**Next Step:** Execute after model training and test evaluation.
+
+---
+
+## § 17. Donor-Level Evaluation
+
+**Purpose:** Verify generalization across biological individuals, not just pooled peptide counts.
+
+**Input & Sources:**
+- Test set from donors not in training
+- Model trained on training donors only
+
+**Methodology:**
+- For each held-out donor, compute performance separately (if sample size permits)
+- Summarize across donors: median, range, uncertainty interval
+- Flag donors with outlier performance
+
+**Metrics & QC:**
+- Minimum 8–10 held-out donors (depends on primary split)
+- Performance reported per donor
+- No held-out donor in training data
+
+**Expected Outcome:**
+- donor_level_metrics.csv (donor, AUPRC, AUROC, N_peptides, …)
+- Distribution plot (median ± range across donors)
+- Outlier analysis
+
+**Limitations:**
+- Donors with few test peptides have noisy estimates
+
+**Status:** OPEN (depends on test evaluation)
+
+**Next Step:** Compute after model evaluation.
+
+---
+
+## § 18. Comparison With Existing T-A4 Predictors
+
+**Purpose:** Benchmark CNN against existing predictors on identical peptide rows.
+
+**Input & Sources:**
+- Same test-set peptides used for CNN evaluation
+- Existing T-A4 predictors (NetMHCpan, MixMHCpred, or others)
+- IEDB training set membership (to check for contamination)
+
+**Methodology:**
+- Obtain predictions from existing predictors for same test peptides
+- **Contamination check**: Verify test peptides are not in existing predictor training data
+- Compute performance metrics (AUPRC, AUROC, etc.) for all predictors on identical rows
+- No predictor receives a selectively easier dataset
+
+**Metrics & QC:**
+- Same test set for all predictors ✓
+- Test peptides not in T-A4 or IEDB training data ✓
+- Performance metrics comparable (same class ratio, same evaluation protocol)
+
+**Expected Outcome:**
+- comparison_with_predictors.csv (predictor, AUPRC, AUROC, …)
+- Comparison summary and interpretation
+
+**Limitations:**
+- Existing predictors designed for different tasks (binding affinity vs. presence/absence)
+- Fair comparison requires careful setup
+
+**Status:** OPEN (depends on test evaluation)
+
+**Next Step:** Check IEDB overlap, obtain predictor outputs, evaluate.
+
+---
+
+## § 20. Biological Interpretation
+
+**Purpose:** Interpret CNN performance in biological context with appropriate caveats.
+
+**Input & Sources:**
+- CNN performance results (held-out donor evaluation)
+- Leakage checks (passed)
+- Negative-control design
+- Comparison with existing predictors
+
+**Methodology:**
+- Assess whether performance > chance supports reproducible sequence information
+- Distinguish genuine sequence motifs from dataset artifacts, donor effects, technical biases
+- Consider instrument confounds, allele specificity, run imbalance
+- Report robustness across donors, peptide lengths, negative-control designs
+
+**Metrics & QC:**
+- Biological unit generalization verified ✓
+- Leakage checks all passed ✓
+- Confound analysis complete
+
+**Expected Outcome:**
+- CNN_RESULTS.md with interpreted findings
+- Caveats and limitations clearly stated
+- Support for or against primary hypothesis
+
+**Limitations:**
+- Outcome C (weak CNN) plausible; interpretation may be null
+- High performance does not prove experimental binding
+
+**Status:** OPEN (depends on test evaluation and all QC gates)
+
+**Next Step:** Execute after all results are available.
+
+---
+
+## § 25. Primary Hypothesis
+
+**Purpose:** State testable hypothesis with explicit decision threshold.
+
+**Input & Sources:**
+- Preregistered primary metric and test protocol
+- Minimum effect size and sample size
+
+**Methodology:**
+- Primary hypothesis: CNN performs better than chance on held-out donors
+- Decision rule: AUPRC > baseline + [effect size threshold, e.g., 0.10 or 0.05]
+- Alternative: "no reproducible sequence signal detected"
+
+**Metrics & QC:**
+- Hypothesis clearly falsifiable
+- Decision threshold locked before test evaluation
+- Effect size justified or acknowledged as exploratory
+
+**Expected Outcome:**
+- Hypothesis rejected or supported
+- Interpretation consistent with evidence
+
+**Limitations:**
+- "Better than chance" undefined without threshold
+- Small donor count may prevent robust effect estimation
+
+**Status:** OPEN (needs decision threshold specification)
+
+**Next Step:** Preregister exact decision rule (e.g., AUPRC > 0.55 for primary support).
+
+---
+
+## Summary: QC Gate Schedule
+
+```
+G1 — Dataset inventory verified                          § 5A1
+G2 — File map complete with HLA allotypes                § 5A2 [BLOCKER #1]
+G3 — Biological units resolved                           § 5A3
+G4 — Positive/negative sets frozen                       § 6   [BLOCKER #2]
+G5 — Leakage checks passed + confound analysis          § 9
+G6 — Train/validation/test split locked                 § 10
+G7 — CNN architecture & input representation locked     § 11–12
+G8 — Training protocol & compute gate passed            § 13–14
+G9 — CNN training completed                             (training)
+G10 — Test evaluation completed                         § 15–17
+G11 — Predictor comparison completed                    § 18
+G12 — Statistical analysis completed                    § 16
+G13 — Biological interpretation finalized               § 20
+FINAL → Decision on primary hypothesis                  § 25
+```
+
+No gate can be bypassed silently. Record any reduction or deferral.
