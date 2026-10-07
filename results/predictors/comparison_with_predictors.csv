@@ -1,0 +1,10 @@
+row_set,system,n_units,mean_per_unit_ap,ci99_lo,ci99_hi,n_rows,prevalence
+mutually naive (PRIMARY),CNN,10,0.685907,0.670315,0.701943,175524,0.440008
+mutually naive (PRIMARY),MHCflurry 2.0.0,10,0.548131,0.534221,0.564581,175524,0.440008
+mutually naive (PRIMARY),MHCflurry 2.3.0,10,0.551931,0.538216,0.568809,175524,0.440008
+predictor-naive only,CNN,10,0.728528,0.710812,0.749694,187764,0.476513
+predictor-naive only,MHCflurry 2.0.0,10,0.589182,0.573922,0.604201,187764,0.476513
+predictor-naive only,MHCflurry 2.3.0,10,0.593835,0.576299,0.612110,187764,0.476513
+full test partition,CNN,10,0.755081,0.737573,0.771562,199978,0.499945
+full test partition,MHCflurry 2.0.0,10,0.662876,0.629061,0.697302,199978,0.499945
+full test partition,MHCflurry 2.3.0,10,0.667343,0.633221,0.700068,199978,0.499945

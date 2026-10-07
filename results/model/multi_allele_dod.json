@@ -1,0 +1,136 @@
+{
+ "note": "Difference-of-differences, paired by unit. Each allele-exclusive contrast minus the same two arms contrast on (a) class-shared peptides (the neutral training-set quality difference) and (b) the recurrence-matched control.",
+ "part_A": [
+  {
+   "allele": "HLA-A*02:01",
+   "n_units": 19,
+   "exclusive": 0.02782722580593696,
+   "neutral_delta": -0.005890051432123003,
+   "control": -0.0058086267598876805,
+   "excl_minus_neutral": 0.033717277238059964,
+   "ci99": [
+    0.0252313886284103,
+    0.04214399576304074
+   ],
+   "n_positive": 19,
+   "excl_minus_control": 0.03363585256582464,
+   "ci99_control": [
+    0.020613502410765927,
+    0.04725128787663405
+   ],
+   "n_positive_control": 17
+  },
+  {
+   "allele": "HLA-C*07:02",
+   "n_units": 14,
+   "exclusive": 0.006844306353145979,
+   "neutral_delta": -0.009110120021283965,
+   "control": -0.008624816405445268,
+   "excl_minus_neutral": 0.015954426374429946,
+   "ci99": [
+    0.004755774212764747,
+    0.026903255345205067
+   ],
+   "n_positive": 12,
+   "excl_minus_control": 0.015469122758591247,
+   "ci99_control": [
+    0.003109996604509683,
+    0.028083539863228164
+   ],
+   "n_positive_control": 11
+  },
+  {
+   "allele": "HLA-A*01:01",
+   "n_units": 7,
+   "exclusive": 0.02293351680325368,
+   "neutral_delta": 0.01459767767037252,
+   "control": 0.017900451898253306,
+   "excl_minus_neutral": 0.008335839132881162,
+   "ci99": [
+    -0.009971602073123309,
+    0.022599777444275913
+   ],
+   "n_positive": 5,
+   "excl_minus_control": 0.005033064905000376,
+   "ci99_control": [
+    -0.009640984809260995,
+    0.019769561802142368
+   ],
+   "n_positive_control": 5
+  },
+  {
+   "allele": "HLA-A*24:02",
+   "n_units": 6,
+   "exclusive": 0.040776055782646946,
+   "neutral_delta": -0.018456187115992395,
+   "control": -0.014071384146396118,
+   "excl_minus_neutral": 0.05923224289863934,
+   "ci99": [
+    0.043182728540840376,
+    0.073162577414715
+   ],
+   "n_positive": 6,
+   "excl_minus_control": 0.05484743992904306,
+   "ci99_control": [
+    0.001676657279292837,
+    0.09715850208114442
+   ],
+   "n_positive_control": 5
+  },
+  {
+   "allele": "HLA-B*07:02",
+   "n_units": 5,
+   "exclusive": 0.041532126272731104,
+   "neutral_delta": 0.009059622548793712,
+   "control": -0.014911171991376482,
+   "excl_minus_neutral": 0.032472503723937396,
+   "ci99": [
+    -0.008669064519725512,
+    0.07217906612746743
+   ],
+   "n_positive": 4,
+   "excl_minus_control": 0.056443298264107586,
+   "ci99_control": [
+    0.027765862693885236,
+    0.0891933018478089
+   ],
+   "n_positive_control": 5
+  }
+ ],
+ "part_B": [
+  {
+   "stratum": "HLA-A*02:01",
+   "n_units": 9,
+   "raw": 0.04628197337487086,
+   "raw_ci99": [
+    0.029681882439900137,
+    0.06683396329561095
+   ],
+   "neutral_delta": -0.0013271618833267723,
+   "control": 0.0051578034208042845,
+   "adjusted": 0.04760913525819763,
+   "ci99": [
+    0.03140495813096117,
+    0.06263516441287198
+   ],
+   "n_positive": 9
+  },
+  {
+   "stratum": "HLA-C*07:02",
+   "n_units": 6,
+   "raw": -0.008708556995756919,
+   "raw_ci99": [
+    -0.03832506579640865,
+    0.019401883826498063
+   ],
+   "neutral_delta": -0.0037636592426098883,
+   "control": -0.008845490912163634,
+   "adjusted": -0.00494489775314703,
+   "ci99": [
+    -0.03658987360309154,
+    0.02982837694669495
+   ],
+   "n_positive": 3
+  }
+ ]
+}
