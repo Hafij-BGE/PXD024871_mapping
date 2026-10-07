@@ -61,21 +61,13 @@ appears in the contamination table and in no comparison.
 ## Repository layout
 
 ```
-PROJECT_PROMPT.md       the governing document; overrides everything else
 PREREGISTRATION.md      hypotheses, estimand and artifact hashes, committed
                         before any model was trained
-METHODOLOGY.md          what was done, stage by stage
-SECTIONS.md             section and gate status (G1–G13 + FINAL)
-DECISION_LOG.md         D001–D037, every decision and every reversal
-REPORT.md               the findings and their limits  <- start here
+DECISION_LOG.md         D001–D038, every decision and every reversal
 DATA_SOURCES.md         twelve provenance fields per source
 FLOWCHART.md            pipeline shape
-POWER_ANALYSIS.md       why 99% nominal intervals, not 95%
-RUN_LOG.md              what was actually executed, when
 FREEZE_RECORD.md        the freeze and what it verifies
-ENVIRONMENT.md          machines the work ran on
-THIRD_PARTY_NOTICES.md  predictor licences and what they restrict  <- read
-                        before reusing predictor output
+CITATION.cff            how to cite this work
 
 scripts/                29 scripts; the pipeline, the QC, the figures
 data/derived/           the frozen analysis tables
@@ -85,6 +77,30 @@ results/model/          endpoint artifacts and model weights
 notebooks/              Colab runners used for the bulk extraction
 freeze_manifest.json    SHA-256 of every tracked file
 ```
+
+### Documents not published here
+
+Nine documents are part of this project and are **not in this repository**:
+
+`REPORT.md` (the findings) · `METHODOLOGY.md` · `SECTIONS.md` ·
+`POWER_ANALYSIS.md` · `THIRD_PARTY_NOTICES.md` · `PROJECT_PROMPT.md` ·
+`RUN_LOG.md` · `ENVIRONMENT.md` · `HANDOVER.md`
+
+They are withheld at the project owner's decision (D038) — internal working
+documents, and a result held pending submission. References to them elsewhere in
+this repository are left **as written** rather than edited away, so they point at
+this note rather than at nothing.
+
+Two consequences worth stating rather than leaving to be discovered:
+
+- **`scripts/freeze.py --verify` will not run on a clone.** Three of its nine
+  checks read `REPORT.md` and it is not here. It still passes for anyone holding
+  the full tree.
+- **The withheld documents remain in this repository's git history.** Untracking
+  removes a file from the published tree, not from the commits that carried it.
+  Anyone who clones can recover them. This is recorded, not relied upon.
+
+To ask for any of them, open an issue.
 
 ## Verifying and reproducing
 
@@ -116,7 +132,7 @@ from a recorded base (`scripts/seeds.py`), so runs reproduce.
 - **Acquisition payloads and third-party training corpora** — `data/raw/**`.
   Too large, and S5/S6 carry their own terms. Provenance and SHA-256 committed.
 - **Verbatim NetMHCpan and MixMHCpred stdout** — `results/predictors/*_raw/`.
-  See `THIRD_PARTY_NOTICES.md`. The per-peptide scores *are* committed.
+  The per-peptide scores *are* committed.
 - **The T-A4 experiment proposal** — an internal, unpreregistered document.
   Withheld under D037; its title, size and SHA-256 are in the stub beside it,
   so references to it still resolve to something verifiable.
@@ -133,21 +149,21 @@ the record rather than quietly dropped).
 |---|---|
 | `scripts/`, `notebooks/` | MIT — `LICENSE` |
 | Documents, figures, `results/`, `data/derived/` | CC BY 4.0 — `LICENSE-docs` |
-| Predictor output and third-party data | **Not covered by either.** See `THIRD_PARTY_NOTICES.md` |
+| Predictor output and third-party data | **Not covered by either.** See the third-party note below |
 
 Two carve-outs matter and are not negotiable by this repository:
 
 - **MixMHCpred-derived files** are restricted by the Ludwig Institute licence to
   **academic non-commercial** use, which CC BY 4.0 cannot widen.
 - **NetMHCpan 4.1's licence** bars publishing benchmark results to third parties
-  without DTU Health Tech's prior written consent (§7(v)). `THIRD_PARTY_NOTICES.md`
-  §1 sets out what that means, what it does not, and how to resolve it.
+  without DTU Health Tech's prior written consent (§7(v)). Read your own
+  licence grant before republishing the comparison; it is easy to miss.
 
 ## Citation
 
 See `CITATION.cff`, or use GitHub's "Cite this repository". Cite the predictors
-and the underlying deposit as well as this repository — the citations each one
-requires are listed in `THIRD_PARTY_NOTICES.md`.
+and the underlying deposit as well as this repository; `CITATION.cff` lists the
+deposit, its publication, and the three predictor papers.
 
 The data are from PRIDE Archive
 [PXD024871](https://www.ebi.ac.uk/pride/archive/projects/PXD024871). This
@@ -157,6 +173,6 @@ depositors.
 ## Contributing and corrections
 
 Issues and corrections are welcome, particularly on the licence readings in
-`THIRD_PARTY_NOTICES.md` and on the §18 interpretation. If you have a second
+the licence readings and on the §18 interpretation. If you have a second
 immunopeptidomics cohort, the single most useful thing anyone can do with this
 repository is try to break the 0.6852 on data it has never seen.

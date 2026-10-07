@@ -1,4 +1,4 @@
-# FINAL FREEZE  (third anchor — public release)
+# FINAL FREEZE  (fourth anchor — nine documents untracked)
 
 ```
 PXD024871 CNN experiment — public-release freeze
@@ -7,13 +7,16 @@ Every gate is closed. The endpoint was read once, under a rule fixed before
 any model existed, and is not reopened by this record. NO NUMBER CHANGED IN
 THIS FREEZE.
 
-SUPERSEDES 21048535, the second anchor, which superseded b83a741b, the first.
-This re-freeze was opened under D037 to prepare the repository for public
-release. It changes what the repository CONTAINS, not what it found: three
-classes of file were withheld, six standard files were added, and two defects
-were fixed. Each is itemised below and in D037.
+SUPERSEDES the third anchor, which superseded 21048535 and b83a741b. This
+re-freeze was opened under D038: nine internal and working documents were
+untracked at the project owner's instruction. It changes what the repository
+CONTAINS, not what it found. NOTE that untracking does not remove those
+documents from this repository's history -- D038 section 2 states the
+limitation in full -- and that REPORT.md's removal does NOT hold the findings
+back, because DECISION_LOG.md, README.md, this file and results/ still carry
+them. D038 section 3 says so.
 
-files         370 tracked (freeze_manifest.json excluded: it cannot hash itself)
+files         361 tracked (freeze_manifest.json excluded: it cannot hash itself)
 bytes         see freeze_manifest.json -> total_bytes
 frozen        see freeze_manifest.json -> frozen_utc
 parent        see freeze_manifest.json -> parent_commit
@@ -29,6 +32,15 @@ The manifest is the single source for all four values, and this file points at
 it instead of duplicating it.
 
 ## What changed in this freeze, and what did not
+
+**Changed in THIS freeze (D038):** nine documents untracked at the project
+owner's instruction — `METHODOLOGY.md`, `REPORT.md`, `RUN_LOG.md`,
+`SECTIONS.md`, `THIRD_PARTY_NOTICES.md`, `POWER_ANALYSIS.md`,
+`PROJECT_PROMPT.md`, `HANDOVER.md`, `ENVIRONMENT.md`. All nine remain on disk
+and in history. `README.md` gained a section naming them, and the pointers in
+`LICENSE`, `LICENSE-docs` and `README.md` to the now-untracked notices file were
+repaired. The items below this line were the THIRD anchor's changes and are kept
+for the record.
 
 **Did not change:** every result. `POSITIVES.csv`, `NEGATIVES.csv` and
 `SPLIT.csv` carry the same digests they have had since `f7550f54`, and all 44
@@ -68,8 +80,8 @@ all nine checks were clean at the moment it was written:
 | 4 | Every headline number in `REPORT.md` appears verbatim in the artifact it came from | **44 numbers** |
 | 5 | The figures regenerate byte-identically from those artifacts | 7 figures |
 | 6 | Every QC gate passed or carries a recorded unavailability | G1–G13, FINAL |
-| 7 | Every decision resolved, none left OPEN | D001–D037 |
-| 8 | An existing manifest still agrees with the tree, and declares its own exclusion | 370 entries |
+| 7 | Every decision resolved, none left OPEN | D001–D038 |
+| 8 | An existing manifest still agrees with the tree, and declares its own exclusion | 361 entries |
 | 9 | The trainer's own selftest passes | encoder, AP, gradients, overfit |
 
 Anyone can re-run `python3 scripts/freeze.py --verify` against this tree and get
@@ -132,20 +144,17 @@ repository should know is unresolved.**
 
 ## Selected checksums (SHA-256)
 
-The manifest carries all 370. These are the ones a reader is most likely to want
+The manifest carries all 361. These are the ones a reader is most likely to want
 to check by hand. `FREEZE_RECORD.md` is absent from this list for the same
 reason the manifest excludes itself.
 
 ```
   124d9ebbf61b19f5acb1dba2fc38ea31e2db24112d5d9247b929187ff5f5ab76  REPORT.md
-  ed76efe1b6700e4db93dbead22df3a29e78c846e294c7dc2fd3c605b2d7f2298  DECISION_LOG.md
-  557e1ed2fa91a5548b2fcc333df8d60659dd8b6045a263ffde7a3d38df1bf983  SECTIONS.md
-  321649ce047303875acbbfe6cda5d4755de03dd5dde720cf6dd2781f27f54a31  METHODOLOGY.md
+  5c625b143f3e46cfd07a3d774477e6aeb1a929d6aec35a5b39bbbcfdd3d385fe  DECISION_LOG.md
   12cd5607f0def6b377a3e6576ec5152f20c781da3280c703a829218716333959  DATA_SOURCES.md
   cb3e957e8b61d8509cdaa84590815fdc77112309d40fdd98ecf48028132f0324  PROJECT_PROMPT.md
   78fb6d2771ced5e3052b57c9f14aebbf9dd5438ec52268f15b9905808690e35e  PREREGISTRATION.md
-  40b30cd07555e530f8c7886d3ec142a835f248ac20dad99e244cf18e153b1e8b  THIRD_PARTY_NOTICES.md
-  6059a380efa263c3d95112ee7f69a3de880dd380d7b734f9512f9e778c2d7f0b  README.md
+  2d3ecd3827387eeca988aba5a35edd9242942a84f366b1f7691711fa8ef75a98  README.md
   9341941a6252f18f018e5d2a0ffc8acfddbfb14e4207071806f6433fbb1c4c55  LICENSE
   c35d9d8b8bdb44589b37b77d978837d0540211acbd93fd9427f596d7876bbecd  LICENSE-docs
   5591593069557cb775eae8ae787b75371d8beda36e6a314b13a0ebb9f5bec728  CITATION.cff

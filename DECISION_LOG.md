@@ -798,6 +798,79 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
+## D038 — Nine documents untracked at the owner's instruction · RESOLVED
+
+**Opened:** 2026-10-07 · **Requested by the project owner**, explicitly and
+after the limitation in §2 below was put to them twice · **Extends:** D037
+
+**Decision: untrack nine documents so they do not appear in the published tree.
+They remain on disk and in this repository's history; the limitation that
+follows from that is recorded, not worked around.**
+
+### 1. What was untracked
+
+`METHODOLOGY.md` · `REPORT.md` · `RUN_LOG.md` · `SECTIONS.md` ·
+`THIRD_PARTY_NOTICES.md` · `POWER_ANALYSIS.md` · `PROJECT_PROMPT.md` ·
+`HANDOVER.md` · `ENVIRONMENT.md`
+
+Internal and working documents, plus the findings. Of the nine, one contains
+material that is personal rather than scientific: `HANDOVER.md` records the
+project's cloud spend and a credential workflow. The rest are withheld as
+internal, or as a result held pending submission.
+
+### 2. What this does not do, stated plainly
+
+**Untracking removes a file from the published tree. It does not remove it from
+the repository.** Thirty-three commits carry `REPORT.md` with the primary
+endpoint in it; every one of the nine is recoverable with `git log -p` or
+`git cat-file -p <commit>:<path>` by anyone who clones. The published tree is a
+closed door, not a locked one.
+
+This was put to the project owner before the change and again after, with the
+two alternatives that do close it: a fresh repository with no shared history, or
+rewriting this one's history with `git filter-repo`. The second was advised
+against here, because it invalidates `f7550f54`, `b83a741b`, `21048535` and the
+other commit anchors cited throughout these documents — the preregistration's
+"committed before any model was trained" claim rests on exactly those SHAs.
+
+The owner chose untracking knowing this. **That is a legitimate choice** — most
+readers of a public repository never open its history — and it is recorded here
+so that no future reader mistakes the published tree for the whole repository.
+
+A fresh-history public tree **was** built in parallel and verified (171 files:
+the frozen dataset, 28 scripts and a reduced verifier, no results). It was not
+pushed: the credential for the destination repository was never granted to the
+session. It is not part of this repository.
+
+### 3. What stays published, and still carries the findings
+
+`REPORT.md` is untracked, but `DECISION_LOG.md` — this file — along with
+`README.md`, `FREEZE_RECORD.md`, `CITATION.cff` and the whole of `results/`
+remain tracked, and all of them quote the primary endpoint and the §18
+comparison. The owner was told this. **Untracking `REPORT.md` therefore does not
+hold the findings back**, and nothing in this entry should be read as claiming
+it does. It removes nine documents from the tree; that is its whole effect.
+
+### 4. Consequences handled
+
+- `scripts/freeze.py --verify` reads `REPORT.md` (checks 3 and 4) and
+  `SECTIONS.md` (check 6) **from disk**, so it still passes for anyone holding
+  the full tree, and fails on a clone. `README.md` says so rather than leaving
+  it to be discovered.
+- References to the nine from still-published files were **left as written**.
+  Editing a methods document to erase its siblings is the quiet repair §2 of the
+  master prompt forbids. `README.md` carries a "Documents not published here"
+  section instead, so the references resolve to an explanation.
+- `LICENSE`, `LICENSE-docs` and `README.md` pointed at `THIRD_PARTY_NOTICES.md`
+  for the predictor licences. Those pointers were repaired in place and the
+  predictor citations now route through `CITATION.cff`, which carries all three.
+
+**As RESOLVED, this fixes what the published tree contains.** It changes no
+number, no artifact and no conclusion. The preregistered digests are unmoved.
+
+---
+
+
 ## D037 — Public release: what is withheld, and one licence clause that is not resolved · RESOLVED
 
 **Opened:** 2026-10-07, when the project owner decided to make the repository
