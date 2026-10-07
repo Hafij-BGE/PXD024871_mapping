@@ -9,6 +9,7 @@ derived per D010.
   --mode cv         grid search over the 5 folds; never reads the test partition
   --mode final      fit the selected config, 5 folds x 5 seeds
   --mode test       read the held-out partition ONCE and compute the endpoint
+  --mode transfer   cross-platform transfer (D025) with the matched control (D028)
 
 The test partition is guarded: --mode test refuses to run unless a completed
 selection record exists naming the configuration, so the endpoint cannot be
@@ -203,9 +204,321 @@ def selftest(device):
     print("\nALL SELFTESTS PASS")
 
 
+
+# ----------------------------------------------------------------- D025 / D028
+
+def composition(seqs):
+    """20-dim amino-acid frequency, as scripts/negative_diagnostic.py computes it."""
+    C = np.zeros((len(seqs), 20), dtype=np.float64)
+    for i, s in enumerate(seqs):
+        for ch in s:
+            j = IDX.get(ch)
+            if j is not None:
+                C[i, j-1] += 1.0
+        C[i] /= max(len(s), 1)
+    return C
+
+
+def lda_scores(Ctr, ytr, Cte):
+    """Closed-form LDA direction, as D002's diagnostic used. Optimal linear rule
+    under equal covariance, so a low score is evidence about the data rather
+    than about an optimiser having failed."""
+    m1, m0 = Ctr[ytr == 1].mean(0), Ctr[ytr == 0].mean(0)
+    S = np.cov(Ctr.T) + 1e-8*np.eye(20)
+    w = np.linalg.solve(S, m1 - m0)
+    return Cte @ w
+
+
+def cluster_ci(vals, rng, B=10000, nominal=0.99):
+    """Nominal-99% cluster bootstrap over units (D008). Units are the clusters."""
+    v = np.asarray(vals, float)
+    reps = v[rng.integers(0, v.size, size=(B, v.size))].mean(axis=1)
+    a = (1.0 - nominal) / 2 * 100
+    lo, hi = np.percentile(reps, [a, 100-a])
+    return float(lo), float(hi)
+
+
+def paired_ci(d, rng, B=10000, nominal=0.99):
+    """Paired cluster bootstrap on per-unit differences (contrast B, D028)."""
+    d = np.asarray(d, float)
+    reps = d[rng.integers(0, d.size, size=(B, d.size))].mean(axis=1)
+    a = (1.0 - nominal) / 2 * 100
+    lo, hi = np.percentile(reps, [a, 100-a])
+    return float(lo), float(hi)
+
+
+def transfer(rows, split, device, max_epochs, want_arms, replicates):
+    """D025 as preregistered, plus the D028 matched control.
+
+    Nothing here is chosen after a number is seen: halves, validation holdouts
+    and weights all come from derived seeds, and the arm list is fixed below.
+    """
+    import random
+    by_plat = {}
+    for u, r in sorted(split.items()):
+        by_plat.setdefault(r['platform'], []).append(u)
+    assert set(by_plat) == {'LTQ', 'Lumos'}, by_plat
+
+    rng_h = random.Random(seed('transfer_halves'))
+    half = {}
+    for p in ('LTQ', 'Lumos'):
+        us = list(by_plat[p]); rng_h.shuffle(us)
+        h = (len(us) + 1) // 2
+        half[p] = (sorted(us[:h]), sorted(us[h:]))        # (A = train pool, B = test half)
+
+    rng_v = random.Random(seed('transfer_valsplit'))
+
+    def hold_out(pool, n_train):
+        """n_train units train; the rest of the pool is the early-stopping set.
+        Unit-disjoint, so the stopping epoch is never chosen on rows that share
+        a participant with the training rows."""
+        us = list(pool); rng_v.shuffle(us)
+        return sorted(us[:n_train]), sorted(us[n_train:])
+
+    LTQ, LUM = by_plat['LTQ'], by_plat['Lumos']
+    LA, LB = half['LTQ']
+    MA, MB = half['Lumos']
+
+    arms = []
+    # --- preregistered (D025), verbatim: train one platform, test the other ---
+    for src, tgt, sname, tname in (('LTQ', 'Lumos', 'LTQ', 'Lumos'),
+                                   ('Lumos', 'LTQ', 'Lumos', 'LTQ')):
+        pool = by_plat[src]
+        n_val = max(3, round(0.2*len(pool)))
+        tr, va = hold_out(pool, len(pool) - n_val)
+        arms.append({'id': f'P_{sname}_to_{tname}', 'kind': 'preregistered-D025',
+                     'train_platform': src, 'train_units': tr, 'val_units': va,
+                     'evals': [{'label': f'across: all {len(by_plat[tgt])} {tgt} units',
+                                'rel': 'across', 'platform': tgt,
+                                'units': by_plat[tgt]}]})
+    # --- matched control (D028): 10 training units each, both B halves scored ---
+    for src, pool, own_B, other_B, other in (('LTQ', LA, LB, MB, 'Lumos'),
+                                             ('Lumos', MA, MB, LB, 'LTQ')):
+        tr, va = hold_out(pool, 10)
+        arms.append({'id': f'M_{src}', 'kind': 'matched-D028',
+                     'train_platform': src, 'train_units': tr, 'val_units': va,
+                     'evals': [{'label': f'within: {src} held-out half',
+                                'rel': 'within', 'platform': src, 'units': own_B},
+                               {'label': f'across: {other} held-out half',
+                                'rel': 'across', 'platform': other, 'units': other_B}]})
+
+    if want_arms:
+        keep = set(want_arms.split(','))
+        arms = [a for a in arms if a['id'] in keep]
+
+    cfg = json.loads((RES/'selection.json').read_text())['selected']['config']
+    print(f"config {cfg} (frozen by selection; not re-tuned here)")
+    print(f"halves: LTQ A={len(LA)} B={len(LB)}   Lumos A={len(MA)} B={len(MB)}")
+    for a in arms:
+        print(f"  {a['id']:<16} train {len(a['train_units'])} {a['train_platform']} units, "
+              f"val {len(a['val_units'])}, evals " +
+              "; ".join(f"{e['label']} ({len(e['units'])})" for e in a['evals']))
+    print()
+
+    seqs = [s for s, _, _ in rows]
+    X = encode(seqs)
+    y = np.array([l for _, _, l in rows])
+    uarr = np.array([u for _, u, _ in rows])
+    where = {}
+    for i, u in enumerate(uarr):
+        where.setdefault(u, []).append(i)
+    where = {u: np.array(v) for u, v in where.items()}
+    def rowsof(units):
+        return np.concatenate([where[u] for u in units])
+
+    C = composition(seqs)                     # for the arm-specific floors
+
+    if max_epochs != MAX_EPOCHS or replicates != 5:
+        print(f"*** SHORTENED RUN (max_epochs={max_epochs}, replicates={replicates}). "
+              f"Results go to transfer.PARTIAL.json and are not a result. ***\n")
+    full = (max_epochs == MAX_EPOCHS and replicates == 5)
+    outfile = RES/('transfer.json' if full else 'transfer.PARTIAL.json')
+    # Shortened runs keep their own checkpoint namespace, so a plumbing test can
+    # never be silently picked up as a cached model by the real run.
+    tag = '' if full else f'.e{max_epochs}r{replicates}'
+    out = {'config': cfg, 'replicates': replicates, 'max_epochs': max_epochs,
+           'halves': {'LTQ': {'A': LA, 'B': LB}, 'Lumos': {'A': MA, 'B': MB}},
+           'seeds': {'halves': seed('transfer_halves'),
+                     'valsplit': seed('transfer_valsplit'),
+                     'bootstrap': seed('transfer_bootstrap')},
+           'arms': []}
+    prev = outfile
+    if prev.exists():
+        old = json.loads(prev.read_text())
+        out['arms'] = [a for a in old.get('arms', [])
+                       if a['id'] not in {x['id'] for x in arms}]
+
+    rng = np.random.default_rng(seed('transfer_bootstrap'))
+    per_unit_by_arm = {}
+
+    for ai, arm in enumerate(arms):
+        tri, vai = rowsof(arm['train_units']), rowsof(arm['val_units'])
+        print(f"=== {arm['id']} ({arm['kind']}) ===", flush=True)
+        print(f"  train rows {len(tri):,}  val rows {len(vai):,}", flush=True)
+        models, fitlog = [], []
+        for r_ in range(replicates):
+            sd = seed('transfer_init', ai*10 + r_)
+            path = RES/f"transfer_{arm['id']}_s{r_}{tag}.pt"
+            if path.exists():
+                ck = torch.load(path, map_location='cpu', weights_only=False)
+                # A checkpoint fitted under a SHORTENED budget must never be
+                # reused by a full run: it is a plumbing test, not a result.
+                # Mixing the two is how a partial run gets reported as complete.
+                if ck.get('max_epochs') != max_epochs or ck.get('cfg') != cfg:
+                    sys.exit(f"REFUSING to reuse {path.name}: it was fitted at "
+                             f"max_epochs={ck.get('max_epochs')} cfg={ck.get('cfg')}, "
+                             f"this run is max_epochs={max_epochs} cfg={cfg}. "
+                             f"Delete it or match the budget.")
+                m = CNN(**cfg).to(device); m.load_state_dict(ck['state']); m.eval()
+                models.append(m)
+                fitlog.append({'replicate': r_, 'seed': sd, 'val_ap': ck['val_ap'],
+                               'epochs': ck['epochs'], 'file': path.name, 'cached': True})
+                print(f"  seed {r_}: cached (val AP {ck['val_ap']:.4f})", flush=True)
+                continue
+            t0 = time.time()
+            m, vap, ep = fit(cfg, (X[tri], y[tri]), (X[vai], y[vai]), sd, device, max_epochs)
+            torch.save({'state': m.state_dict(), 'cfg': cfg, 'seed': sd,
+                        'arm': arm['id'], 'replicate': r_, 'val_ap': vap, 'epochs': ep,
+                        'max_epochs': max_epochs,
+                        'train_units': arm['train_units'], 'val_units': arm['val_units']},
+                       path)
+            m.eval(); models.append(m)
+            fitlog.append({'replicate': r_, 'seed': sd, 'val_ap': vap, 'epochs': ep,
+                           'file': path.name, 'cached': False})
+            print(f"  seed {r_}: val AP {vap:.4f} ({ep} epochs, {time.time()-t0:.0f}s)",
+                  flush=True)
+
+        rec = {'id': arm['id'], 'kind': arm['kind'],
+               'train_platform': arm['train_platform'],
+               'train_units': arm['train_units'], 'val_units': arm['val_units'],
+               'n_train_units': len(arm['train_units']), 'fits': fitlog, 'evals': []}
+
+        for ev in arm['evals']:
+            tei = rowsof(ev['units'])
+            Xte = torch.from_numpy(X[tei]).to(device)
+            S = []
+            for m in models:
+                with torch.no_grad():
+                    S.append(torch.cat([m(Xte[i:i+8192])
+                                        for i in range(0, len(Xte), 8192)]).cpu().numpy())
+            S = np.vstack(S)
+            yte, ute = y[tei], uarr[tei]
+            # arm-specific floor: composition-only LDA, same train and test rows
+            fl = lda_scores(C[tri], y[tri], C[tei])
+            pu, puf = {}, {}
+            for u in ev['units']:
+                k = ute == u
+                if k.sum() == 0 or yte[k].sum() == 0:
+                    continue
+                pu[u] = float(np.mean([average_precision(yte[k], S[j][k])
+                                       for j in range(S.shape[0])]))   # D027
+                puf[u] = average_precision(yte[k], fl[k])
+            us = sorted(pu)
+            v = np.array([pu[u] for u in us])
+            vf = np.array([puf[u] for u in us])
+            lo, hi = cluster_ci(v, rng)
+            flo, fhi = cluster_ci(vf, rng)
+            dlo, dhi = paired_ci(v - vf, rng)
+            print(f"  {ev['label']}")
+            print(f"    units {v.size}  mean per-unit AP {v.mean():.4f}  "
+                  f"CI99 [{lo:.4f}, {hi:.4f}]  range {v.min():.4f}-{v.max():.4f}")
+            print(f"    arm floor (composition-only LDA) {vf.mean():.4f}  "
+                  f"CI99 [{flo:.4f}, {fhi:.4f}]")
+            print(f"    lift over own floor {v.mean()-vf.mean():+.4f}  "
+                  f"CI99 [{dlo:+.4f}, {dhi:+.4f}]", flush=True)
+            rec['evals'].append({
+                'label': ev['label'], 'rel': ev['rel'], 'platform': ev['platform'],
+                'n_units': int(v.size), 'mean_ap': float(v.mean()),
+                'ci99': [lo, hi], 'min': float(v.min()), 'max': float(v.max()),
+                'floor_mean_ap': float(vf.mean()), 'floor_ci99': [flo, fhi],
+                'lift_over_floor': float(v.mean()-vf.mean()), 'lift_ci99': [dlo, dhi],
+                'per_unit': {u: pu[u] for u in us},
+                'per_unit_floor': {u: puf[u] for u in us}})
+            per_unit_by_arm[(arm['id'], ev['rel'])] = {u: pu[u] for u in us}
+        out['arms'].append(rec)
+        print()
+        out['arms'].sort(key=lambda a: a['id'])
+        json.dump(out, open(outfile, 'w'), indent=1)
+
+    # ---- contrasts (D028). Only computable when both matched arms are present.
+    out['contrasts'] = []
+    idx = {a['id']: a for a in out['arms']}
+
+    def ev_of(arm_id, rel):
+        a = idx.get(arm_id)
+        if not a:
+            return None
+        for e in a['evals']:
+            if e['rel'] == rel:
+                return e
+        return None
+
+    # Contrast A: one model, own-platform held-out units vs other-platform units.
+    for arm_id in ('M_LTQ', 'M_Lumos'):
+        w, ac = ev_of(arm_id, 'within'), ev_of(arm_id, 'across')
+        if not (w and ac):
+            continue
+        vw = np.array([w['per_unit'][u] for u in sorted(w['per_unit'])])
+        va = np.array([ac['per_unit'][u] for u in sorted(ac['per_unit'])])
+        B = 10000
+        rw = vw[rng.integers(0, vw.size, (B, vw.size))].mean(1)
+        ra = va[rng.integers(0, va.size, (B, va.size))].mean(1)
+        lo, hi = np.percentile(rw - ra, [0.5, 99.5])
+        out['contrasts'].append({
+            'contrast': 'A — same model, test platform moves', 'arm': arm_id,
+            'within_mean': float(vw.mean()), 'across_mean': float(va.mean()),
+            'difference': float(vw.mean() - va.mean()),
+            'ci99': [float(lo), float(hi)], 'paired': False,
+            'note': 'unpaired: the two test sets are different units'})
+
+    # Contrast B: one test half, own-platform model vs other-platform model.
+    for half_name, own_arm, other_arm in (('LTQ held-out half', 'M_LTQ', 'M_Lumos'),
+                                          ('Lumos held-out half', 'M_Lumos', 'M_LTQ')):
+        a_own, a_oth = ev_of(own_arm, 'within'), ev_of(other_arm, 'across')
+        if not (a_own and a_oth):
+            continue
+        us = sorted(set(a_own['per_unit']) & set(a_oth['per_unit']))
+        if not us:
+            continue
+        d = np.array([a_own['per_unit'][u] - a_oth['per_unit'][u] for u in us])
+        lo, hi = paired_ci(d, rng)
+        out['contrasts'].append({
+            'contrast': 'B — same test units, training platform moves',
+            'test_set': half_name, 'n_units': len(us),
+            'own_platform_model_mean': float(np.mean([a_own['per_unit'][u] for u in us])),
+            'other_platform_model_mean': float(np.mean([a_oth['per_unit'][u] for u in us])),
+            'difference': float(d.mean()), 'ci99': [lo, hi], 'paired': True,
+            'n_units_degraded': int((d > 0).sum())})
+
+    if out['contrasts']:
+        print("="*68)
+        for c in out['contrasts']:
+            print(f"  {c['contrast']}" + (f"  [{c.get('arm') or c.get('test_set')}]"))
+            if c['paired']:
+                print(f"    own-platform model {c['own_platform_model_mean']:.4f}   "
+                      f"other-platform model {c['other_platform_model_mean']:.4f}")
+                print(f"    paired difference {c['difference']:+.4f}  "
+                      f"CI99 [{c['ci99'][0]:+.4f}, {c['ci99'][1]:+.4f}]  "
+                      f"({c['n_units_degraded']}/{c['n_units']} units degraded)")
+            else:
+                print(f"    within {c['within_mean']:.4f}   across {c['across_mean']:.4f}")
+                print(f"    difference {c['difference']:+.4f}  "
+                      f"CI99 [{c['ci99'][0]:+.4f}, {c['ci99'][1]:+.4f}] (unpaired)")
+        print("="*68)
+        print("  A collapse is attributable to platform only when BOTH contrasts")
+        print("  agree: A controls for the model, B controls for the test set.")
+        print("="*68)
+
+    json.dump(out, open(outfile, 'w'), indent=1)
+    print(f"\nwrote {outfile}")
+
+
 def main():
     ap_ = argparse.ArgumentParser()
-    ap_.add_argument('--mode', required=True, choices=['selftest', 'cv', 'final', 'test'])
+    ap_.add_argument('--mode', required=True,
+                     choices=['selftest', 'cv', 'final', 'test', 'transfer'])
+    ap_.add_argument('--arms', default='', help='comma-separated arm ids; default all')
+    ap_.add_argument('--replicates', type=int, default=5)
     ap_.add_argument('--limit-configs', type=int, default=0)
     ap_.add_argument('--max-epochs', type=int, default=MAX_EPOCHS)
     a = ap_.parse_args()
@@ -394,6 +707,16 @@ def main():
                    'bootstrap': {'B': 10000, 'nominal': 0.99, 'unit': 'participant'}},
                   open(RES/'endpoint.json', 'w'), indent=1)
         print(f"\nwrote {RES/'endpoint.json'}")
+
+    if a.mode == 'transfer':
+        if not (RES/'selection.json').exists():
+            sys.exit("REFUSING: --mode transfer needs the frozen configuration from "
+                     "results/model/selection.json; it does not tune its own.")
+        if not (RES/'endpoint.json').exists():
+            sys.exit("REFUSING: --mode transfer trains on units that fall inside the "
+                     "primary test partition. It must not run before the single "
+                     "preregistered endpoint read (results/model/endpoint.json).")
+        transfer(rows, split, device, a.max_epochs, a.arms, a.replicates)
 
 
 if __name__ == '__main__':
