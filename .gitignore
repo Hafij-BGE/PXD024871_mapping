@@ -1,4 +1,21 @@
 # ---------------------------------------------------------------------------
+# Internal and working documents, not published (D038)
+# ---------------------------------------------------------------------------
+# Withheld at the project owner's instruction when the repository was prepared
+# for public release. All nine remain on disk and in this repository's history;
+# untracking removes them from the published tree, not from a clone. That is
+# recorded in D038 rather than left as an assumption.
+METHODOLOGY.md
+REPORT.md
+RUN_LOG.md
+SECTIONS.md
+THIRD_PARTY_NOTICES.md
+POWER_ANALYSIS.md
+PROJECT_PROMPT.md
+HANDOVER.md
+ENVIRONMENT.md
+
+# ---------------------------------------------------------------------------
 # Withheld on public release (D037)
 # ---------------------------------------------------------------------------
 # The T-A4 experiment proposal is an internal document that was "not yet
