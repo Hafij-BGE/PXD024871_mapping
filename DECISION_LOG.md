@@ -163,6 +163,7 @@ blocks:
 | D023 | Provenance cannot depend on the downloader surviving: a completed transfer whose writer died left an unrecorded, truncated file. **RESOLVED** — reconciler added. See entry below | G1 |
 | D026 | Architecture, input representation and training protocol frozen. Closes the preregistration gap found while writing Methods: these were carried past the freeze unlocked. See entry below | before training |
 | D027 | How the 25 final models yield one endpoint value. §13 required all 25 be reported but never said how they combine. **RESOLVED before the test partition was read.** See entry below | before --mode test |
+| D028 | Cross-platform transfer design: D025 run as preregistered, plus a matched within-platform control, because the preregistered form alone confounds platform with training-set size. Logged before the run. See entry below | before transfer |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -740,6 +741,90 @@ about memorisation.
 
 **Rejected: dropping from training instead.** It discards real observations and
 still leaves the test set's composition altered relative to the universe.
+
+---
+
+## D028 — Cross-platform transfer: the preregistered form is kept, and a matched control is added · RESOLVED
+
+**Opened and resolved:** 2026-10-07 · **Before any transfer result was visible**
+**Depends on:** D025 (preregistration), D005 (the confound), D027 (model → value)
+
+**Decision: run D025 exactly as preregistered, and add a matched
+within-platform control, because the preregistered form on its own cannot
+distinguish a platform effect from a smaller-training-set effect.**
+
+**What D025 preregistered.** "Train on the 25 LTQ units and test on the 27
+Lumos units, then the reverse. ... If performance holds within platform and
+collapses across, the §25 claim is substantially about instrument rather than
+biology."
+
+**The gap.** The preregistered text names the across-platform arms but never
+names what "holds within platform" is measured against. The obvious candidate —
+the primary endpoint, 0.7551 — is **not** a valid comparator: it was produced by
+models trained on 42 units spanning *both* platforms and evaluated on 10 units
+spanning both. An across-platform arm trained on ~20 single-platform units
+differs from it in training size, training diversity *and* platform. If the
+transfer number comes out lower, the preregistered design cannot say which of
+the three caused it. Reporting the comparison anyway would be the error D025
+was written to avoid: a confound measured against a yardstick that carries the
+same confound.
+
+**The addition.** Each platform's units are split in half by
+`seed('transfer_halves')` = 952257691:
+
+| | train half (A) | test half (B) |
+|---|---|---|
+| LTQ | 13 units | 12 units |
+| Lumos | 14 units | 13 units |
+
+Ten units are drawn from each A half for training (equalised, so the two
+matched arms differ in platform and nothing else); the remainder of A is the
+early-stopping validation set. Each trained model is then evaluated on **both**
+B halves. That yields two contrasts from the same two trainings:
+
+- **Contrast A — same model, different test platform.** One model, evaluated on
+  held-out units of its own platform and of the other. Training is held
+  identical; only the test platform moves.
+- **Contrast B — same test units, different model platform.** One set of test
+  units, scored by a model trained on its own platform and by one trained on the
+  other. The test set is held identical; only the training platform moves. This
+  contrast is **paired per unit**, so the interval is a paired cluster bootstrap
+  and between-unit variance cancels.
+
+Contrast A controls for the model, contrast B for the test set. Agreement
+between them is what makes a collapse attributable to platform.
+
+**Arm-specific floors replace the global 0.597.** The D002 floor was measured on
+pooled data. Platform shifts composition (D025: 12-mers are 11.69% of LTQ
+positives against 9.85% of Lumos), so the composition-only separability of a
+cross-platform test set is not the pooled figure. Each arm therefore carries its
+own floor: a composition-only LDA fitted on that arm's training rows and scored
+on that arm's test rows, by exactly the D002 method. Lift is measured against
+the arm's own floor, never against 0.597.
+
+**Why this is an addition and not a substitution.** The preregistered arms are
+run and reported first, with their numbers, whatever they are. The matched
+control is labelled as added after preregistration and before any result was
+seen — the ordering is in the commit history, and this entry was committed
+before the run. It cannot select a favourable answer because it fixes the design
+by seed and leaves no choice to make afterwards.
+
+**What this analysis is not.** It does not remove the confound. No unit spans
+both platforms (D005), so platform and participant stay perfectly nested and
+nothing here recovers a platform-free estimate. It measures the confound's size.
+
+**Seeds.** `seed('transfer_halves')` for the halves,
+`seed('transfer_valsplit')` for the early-stopping holdouts,
+`seed('transfer_init', i)` for weights (a new purpose string, so no collision
+with the cv or final-fit seeds), `seed('transfer_bootstrap')` for the intervals.
+Five replicate seeds per arm, matching D027; per-unit AP is the mean across
+them, as D027 fixed.
+
+**Accepted cost.** The matched arms train on 10 units against the primary fit's
+42, and all four arms train on units that fall inside the primary test
+partition. Both are stated rather than worked around: these models are used for
+this analysis only and never for the §25 endpoint, which was read once and is
+closed.
 
 ---
 
