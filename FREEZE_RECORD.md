@@ -6,23 +6,23 @@ PXD024871 CNN experiment — final freeze
 Every gate is closed. The endpoint was read once, under a rule fixed before
 any model existed, and is not reopened by this record.
 
-files         348 tracked
-bytes         93,948,128
-frozen        2026-10-07T09:50:56Z
+files         349 tracked (freeze_manifest.json excluded: it cannot hash itself)
+bytes         93,959,584
+frozen        2026-10-07T09:53:10Z
 branch        claude/mapping-research-project-prompt-glsess
-parent        d371a6a6598b058e4a649f356e52cb87e20d9e5f
+parent        c10af2d1985ed0e359a34f60d12ade7f7f328f28
 ```
 
 **The anchor is the commit that adds `freeze_manifest.json`, not the parent
 above.** A manifest cannot contain the hash of the commit that carries it. The
 parent is recorded so the pair is unambiguous: the anchor is the single child of
-`d371a6a6598b` that introduces the manifest.
+`c10af2d1985e` that introduces the manifest.
 
 ## What the freeze asserts
 
 `scripts/freeze.py --write` refuses to write the manifest unless
 `scripts/freeze.py --verify` passes first, so this record exists only because
-all eight checks were clean at the moment it was written:
+all nine checks were clean at the moment it was written:
 
 | # | Check | Result |
 |---|---|---|
@@ -33,10 +33,11 @@ all eight checks were clean at the moment it was written:
 | 5 | The figures regenerate byte-identically from those artifacts | 7 figures |
 | 6 | Every QC gate passed or carries a recorded unavailability | G1–G13, FINAL |
 | 7 | Every decision resolved, none left OPEN | D001–D033 |
-| 8 | The trainer's own selftest passes | encoder, AP, gradients, overfit |
+| 8 | An existing manifest still agrees with the tree, and declares its own exclusion | 349 entries |
+| 9 | The trainer's own selftest passes | encoder, AP, gradients, overfit |
 
 Anyone can re-run `python3 scripts/freeze.py --verify` against this tree and get
-the same eight lines. That is what the freeze is for: not that the files have
+the same nine blocks. That is what the freeze is for: not that the files have
 hashes, but that the hashes were taken of a tree that had been checked.
 
 ## The results this freezes
@@ -75,7 +76,7 @@ step and states what a reader who rejects it should conclude instead.
 
 ## Selected checksums (SHA-256)
 
-The manifest carries all 348. These are the ones a reader is most
+The manifest carries all 349. These are the ones a reader is most
 likely to want to check by hand:
 
 ```
@@ -107,6 +108,13 @@ bad = [f['path'] for f in m['files']
 print('changed since the freeze:', bad or 'nothing')
 EOF
 ```
+
+**One file is not covered: `freeze_manifest.json` itself.** A manifest cannot
+contain its own digest — hashing it and then overwriting it stores the previous
+version's hash. The first attempt at this freeze did exactly that, and the
+verification command printed above caught it on the next run. The manifest now
+declares the exclusion in its `excludes` field, and check 8 refuses a manifest
+that does not.
 
 No tag was published. One was attempted and the remote refused it, as it
 refused the preregistration tag for the same reason (D009); the commit is the
