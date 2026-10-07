@@ -438,6 +438,27 @@ The ensembled figure is higher than the primary and is reported as the
 *flattering* framing, which is why D027 made the per-model average primary
 before the partition was read.
 
+**Per-length decomposition** (`endpoint_by_length.json`, added for §20's
+robustness requirement). The same 200,000 rows and the same 25 models, split by
+peptide length; the pooled value reproduces at 0.7551 exactly. **Not a second
+reading** — every length is reported, none is selected, and the primary decision
+is fixed:
+
+| Length | rows | mean per-unit AP | CI99 |
+|---|---|---|---|
+| 8-mer | 31,474 | 0.7649 | [0.7393, 0.7914] |
+| 9-mer | 64,954 | 0.7660 | [0.7379, 0.7890] |
+| 10-mer | 50,922 | 0.7297 | [0.7029, 0.7565] |
+| 11-mer | 33,244 | 0.7421 | [0.7176, 0.7627] |
+| 12-mer | 19,406 | 0.7850 | [0.7582, 0.8047] |
+
+Spread 0.0553, and **every length's lower bound clears the 0.647 threshold**:
+the result is not carried by one length. One caveat in the unflattering
+direction: the best length is the 12-mer, and 12-mers are also the most
+platform-discriminative length D025 found (11.69% of LTQ positives against 9.85%
+of Lumos). R10 bounds how much of the signal that can be, but the coincidence is
+recorded rather than omitted.
+
 ### R10 — Cross-platform transfer
 
 D025 preregistered this before training; D028 added a matched within-platform
@@ -717,6 +738,49 @@ frequencies alone, and a disappointing transfer number would have been easy to
 reinterpret after the fact. Because the reading was fixed first, the favourable
 outcome is as constrained as an unfavourable one would have been: the second row
 does not apply, and the first row's limiting clause applies in full.
+
+### §20 — the biological reading, and its exact boundary
+
+G13 was held through R10, R11 and R12, and released on 2026-10-07 when the
+project owner accepted D032's narrowing of a release criterion that required
+significance from a 6-unit arm. §20 is written to D032's wording verbatim:
+
+> The model learns sequence features linked to donor genotype. For HLA-A\*02:01
+> this is demonstrated allele-specifically: a model trained on carriers ranks
+> peptides exclusive to carriers above a model trained on carriers of a
+> different allele, on held-out participants, by 0.048 average precision
+> (nominal-99% CI 0.031–0.063, 9 of 9 units), with memorisation, peptide
+> recurrence and training-set quality each measured at zero on the same units.
+> The direction reproduces across five alleles. It is not demonstrated for
+> HLA-C\*07:02. The effect is a few hundredths of average precision on strata
+> comprising 0.5–5% of each ligandome.
+
+**And the boundary, carried from D032 so it cannot widen by paraphrase.** §20
+does not state that the primary endpoint's lift is presentation biology; nor
+that the restricting allele is identified, since no deconvolution was done and
+linkage is uncontrolled; nor anything generalizing beyond this cohort, disease,
+tissue and laboratory; nor anything about HLA-C.
+
+§20 required that the alternatives to a biological reading be excluded
+explicitly. Each was, by measurement rather than argument: memorisation by the
+leakage-free endpoint and by a zero seen-fraction on all 21 multi-allele row
+sets; instrument by the cross-platform transfer, which does not collapse;
+training-set quality by a direct neutral estimate in every comparison, which
+caught a false positive at A\*01:01 that would otherwise have counted as a
+replication; peptide recurrence by a recurrence-matched control; composition by
+an arm-specific floor on every single arm. Robustness across lengths is
+reported above. Robustness across negative-control designs is **structurally
+unavailable** — the dataset was frozen with set C alone — and is recorded as a
+permanent limitation of the frozen design rather than as work outstanding.
+
+**What the released gate is worth.** The claim is narrow and the number is
+small: a few hundredths of average precision on a few percent of each
+ligandome. What makes it worth stating is not its size but that it is the one
+result in this project where a specific biological mechanism was isolated from
+every alternative the design could measure. The primary endpoint's 0.158 lift
+remains, as the Limitations section says it would, a measurement whose
+biological content is bounded above by the confounds no split in this dataset
+can break.
 
 ### What the design work suggests about design work
 

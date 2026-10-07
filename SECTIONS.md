@@ -696,9 +696,68 @@ Re-check the projection once more units are extracted.
 - Outcome C (weak CNN) plausible; interpretation may be null
 - High performance does not prove experimental binding
 
-**Status:** OPEN (depends on test evaluation and all QC gates)
+**Status:** **RESOLVED 2026-10-07 — G13 PASSED** under the criterion narrowed by
+D032 and accepted by the project owner. The planning fields above are left as
+written before any result existed; the finding follows.
 
-**Next Step:** Execute after all results are available.
+### Finding (the wording accepted in D032, verbatim)
+
+> The model learns sequence features linked to donor genotype. For HLA-A\*02:01
+> this is demonstrated allele-specifically: a model trained on carriers ranks
+> peptides exclusive to carriers above a model trained on carriers of a
+> different allele, on held-out participants, by 0.048 average precision
+> (nominal-99% CI 0.031–0.063, 9 of 9 units), with memorisation, peptide
+> recurrence and training-set quality each measured at zero on the same units.
+> The direction reproduces across five alleles. It is not demonstrated for
+> HLA-C\*07:02. The effect is a few hundredths of average precision on strata
+> comprising 0.5–5% of each ligandome.
+
+### §20 may NOT state (carried from D032, so the narrowing cannot widen by paraphrase)
+
+- that the primary endpoint's lift is presentation biology;
+- that the restricting allele is identified — no deconvolution was done and
+  linkage is uncontrolled;
+- anything generalizing beyond this cohort, disease, tissue and laboratory;
+- anything about HLA-C.
+
+### The alternatives this section was required to exclude, and how each was excluded
+
+| Alternative | Excluded by | Result |
+|---|---|---|
+| Memorisation of shared sequences | leakage-free subset (D003) at the endpoint; `SEEN` fraction on all 21 multi-allele row sets (D030) | endpoint rejects null leakage-free too (0.7056, CI99 [0.6926, 0.7184]); 0.00% seen in every allele comparison |
+| Instrument / platform | cross-platform transfer (D025, D028) | does not collapse; platform costs 0.04–0.06 AP of a 0.10 lift |
+| Donor effects generally | participant-disjoint splitting throughout; per-unit clustering in every interval | endpoint per-unit range 0.7102–0.7911 across 10 held-out participants |
+| One training set simply being better | direct neutral estimate on class-shared peptides, every comparison | −0.0013 in Part B; caught a false positive at A\*01:01 (+0.0146) |
+| Peptide recurrence rather than allele class | recurrence-matched control, same units | +0.0052 in Part B; difference-of-differences +0.0279 in D030's correction |
+| Amino-acid composition | arm-specific composition-only LDA floor on every single arm | lifts of +0.08 to +0.12 over each arm's own floor |
+
+**Robustness across peptide lengths — reported.** Decomposing the already-read
+endpoint over the same rows and models (`endpoint_by_length.json`; the pooled
+value reproduces at 0.7551): 8-mer 0.7649, 9-mer 0.7660, 10-mer 0.7297, 11-mer
+0.7421, 12-mer 0.7850. Spread 0.0553, and **every length's nominal-99% lower
+bound clears the 0.647 threshold**. The result is not carried by one length.
+
+**One caveat on that, stated because it cuts against the reading.** The
+best-performing length is the 12-mer (0.7850), and 12-mers are also the length
+D025 found most platform-discriminative — 11.69% of LTQ positives against 9.85%
+of Lumos. The length that performs best is the length carrying the most
+instrument signature. R10 bounds how much of the signal that can be, but the
+coincidence is in the unflattering direction and is recorded rather than left
+out.
+
+**Robustness across negative-control designs — DEFERRED, structurally
+unavailable.** D002 selected set C and the dataset was frozen with set C alone:
+`NEGATIVES.csv` holds 520,000 set-C rows with no alternative, so evaluating
+sets A or B would mean rebuilding a frozen dataset. Recorded per the gate
+schedule's rule against silent reduction. The composition diagnostic that chose
+set C (A 0.6120, B 0.5000, C 0.6085) is the only evidence on this axis, and it
+is a property of the data rather than of the model.
+
+**Next Step:** None for this dataset. The symmetric multi-allele test cannot be
+replicated here — no second allele pair has ≥14 units on both sides (D031's pair
+table) — so strengthening the allele claim requires a second cohort, which is
+outside this project's scope. §18 remains blocked by D006 and is the only
+analysis still outstanding.
 
 ---
 
@@ -751,7 +810,7 @@ G9 — CNN training completed                             (training)
 G10 — Test evaluation completed                         § 15-17  [PASSED 2026-10-07]
 G11 — Predictor comparison completed                    § 18     [BLOCKED by D006]
 G12 — Statistical analysis completed                    § 16     [PART: transfer done]
-G13 — Biological interpretation finalized               § 20     [HELD for D001]
+G13 — Biological interpretation finalized               § 20     [PASSED 2026-10-07]
 FINAL -> Decision on primary hypothesis                  § 25    [null REJECTED]
 ```
 
@@ -774,13 +833,18 @@ No gate can be bypassed silently. Record any reduction or deferral.
   carrier-exclusive stratum shows +0.0335 (14/14 units) but the preregistered
   sign test is inconclusive. G12 as a whole is **not** passed: §18 is blocked by
   D006.
-- **G13 HELD, pending D032** — the symmetric multi-allele test has now run
-  (`QC_G12_multi_allele.md`). An allele-specific effect is **established for
-  HLA-A\*02:01** (+0.0476, CI99 [+0.0314, +0.0626], 9/9 units, with
-  memorisation, recurrence and training-set quality each measured at zero on the
-  same units) and **not demonstrated for HLA-C\*07:02**. Three of D031's four
-  release conditions are met; the fourth required significance from a 6-unit arm
-  and was close to unattainable by construction. **D032 proposes narrowing the
-  criterion and is OPEN for the project owner** — G13 stays held until it is
-  answered, and §20 stays unwritten. D032 carries the exact §20 wording a
-  release would license and the case against releasing.
+- **G13 PASSED 2026-10-07** — `QC_G12_multi_allele.md`. An allele-specific
+  effect is **established for HLA-A\*02:01** (+0.0476, CI99 [+0.0314, +0.0626],
+  9/9 units, with memorisation, recurrence and training-set quality each measured
+  at zero on the same units) and **not demonstrated for HLA-C\*07:02**. Three of
+  D031's four release conditions were met; the fourth required significance from
+  a 6-unit arm and was unattainable by construction, so **D032 narrowed it to one
+  direction and the project owner accepted**. §20 is written to D032's wording
+  verbatim, with D032's "may not state" list carried into it. Two §20 robustness
+  items were handled rather than skipped: peptide length is now reported (all
+  five lengths clear the threshold), and negative-control design is recorded as
+  structurally unavailable under the dataset freeze.
+
+**Remaining open: G11 / §18 only**, blocked by D006 because no predictor's
+training-set membership list was obtainable. Every other gate has passed or is
+recorded as structurally unavailable.

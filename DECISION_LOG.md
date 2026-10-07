@@ -167,7 +167,7 @@ blocks:
 | D029 | The `allele_disjoint_partition` split holds out ONE allele, not a disjoint set: only 5 of 36 test alleles are absent from training and 21.7% of a test unit's repertoire is unseen, so the design is attenuated ~5x. D001 run verbatim, renamed dominant-allele-held-out, plus a matched pair and a validated allele-enriched stratum. Logged before the run | before G13 |
 | D030 | The D029 allele stratum was defined as "in M_AM's pool, not in M_AD's", so M_AM had memorised 97.93% of it and M_AD 0.00%. Its +0.0660 is void; corrected to +0.0335 on row sets neither arm saw. Second instance of the TEST_LEAKFREE failure mode, so a standing check is added | voids a result |
 | D031 | Multi-allele test preregistered: five-allele replication plus the one symmetric allele PAIR (A*02:01 vs C*07:02), where a sign reversal between the two exclusive strata is the signature D029's contrast II could not deliver. Also finds that PARTIAL typing under-reports a locus, so 2 of D001's 23 non-carriers are not certain | may release G13 |
-| D032 | **OPEN — needs the project owner.** G13's release criterion (D031) requires both Part B directions to be significant; the 6-unit C*07:02 arm could probably never supply that, which is my error. Proposes narrowing to one direction, with the exact S20 wording it would license. Not actioned; G13 stays held | blocks G13, S20 |
+| D032 | **ACCEPTED by the project owner, 2026-10-07.** G13's D031 criterion required both Part B directions to be significant; the 6-unit C*07:02 arm could not supply that. Narrowed to one direction. **G13 RELEASED, §20 written to the accepted wording** | G13 passed |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -748,10 +748,11 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
-## D032 — G13: a proposal to narrow the release criterion, for the owner to decide · OPEN
+## D032 — G13: narrowing the release criterion · ACCEPTED
 
-**Opened:** 2026-10-07, after `QC_G12_multi_allele.md` · **Status: OPEN — awaiting
-the project owner.** Not actioned. G13 stays held until it is answered.
+**Opened:** 2026-10-07, after `QC_G12_multi_allele.md`
+**Status: ACCEPTED by the project owner, 2026-10-07** — "accept the narrowing".
+**G13 RELEASED. §20 written to the wording below, unchanged.**
 **Depends on:** D031 (the criterion), D029, D030
 
 **This entry proposes relaxing a criterion I wrote and am now failing. That is
@@ -854,6 +855,39 @@ failed was unattainable by construction and the surviving evidence is strong in
 the direction the design can measure — but only with the §20 wording above,
 which is narrower than the criterion change might seem to permit. I hold the
 recommendation lightly: refusing is defensible and costs nothing but a section.
+
+### Resolution
+
+**The project owner accepted the narrowing on 2026-10-07.** The operative
+criterion for G13 is therefore: *sign reversal in Part B, **one** direction's
+interval excluding zero, both neutral estimates near zero, and Part A's
+contrasts consistent in direction.* Met.
+
+**What was done on acceptance.** §20 was written using the wording in this
+entry **verbatim**, and the "may not state" list above was carried into it as an
+explicit block, so the narrowing cannot widen by paraphrase later. The case
+against narrowing stays in this entry unaltered; it is the record of what the
+acceptance overrode.
+
+**Two §20 items were not satisfied by the acceptance and are recorded as
+deferrals, not bypassed** (the gate schedule forbids silent reduction):
+
+1. **Robustness across peptide lengths — now DONE**, and it was not before.
+   `scripts/endpoint_by_length.py` decomposes the already-read endpoint by
+   length over the same 200,000 rows and the same 25 models. The pooled value
+   reproduces at 0.7551 exactly. All five lengths clear the D008 threshold:
+   8-mer 0.7649, 9-mer 0.7660, 10-mer 0.7297, 11-mer 0.7421, 12-mer 0.7850,
+   spread 0.0553. Not a second reading — every length is reported, none is
+   selected, and the primary decision is fixed and unchanged.
+2. **Robustness across negative-control designs — STRUCTURALLY UNAVAILABLE.**
+   §20's methodology asks for it, but D002 selected set C and the dataset was
+   frozen with set C alone: `NEGATIVES.csv` holds 520,000 set-C rows and no
+   alternative. Evaluating sets A or B would mean rebuilding a frozen dataset,
+   which the freeze forbids. The composition diagnostic that chose set C
+   (`negative_diagnostic.json`: A 0.6120, B 0.5000, C 0.6085) is the only
+   evidence on this axis and it is a property of the data, not of the model.
+   Recorded as a permanent limitation of the frozen design rather than as work
+   outstanding.
 
 ---
 
