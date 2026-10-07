@@ -44,7 +44,7 @@ def git(*a):
                           capture_output=True, text=True).stdout.strip()
 
 
-def verify():
+def verify(writing=False):
     print("1. working tree")
     ok(git('status', '--porcelain') == '', 'clean, nothing untracked')
 
@@ -144,8 +144,15 @@ def verify():
                                                 '\n'.join(b.splitlines()[:8]))]
     ok(not openq, 'no decision left OPEN', '' if not openq else f'OPEN: {openq}')
 
-    man = REPO/'freeze_manifest.json'
-    if man.exists():
+    # Check 8 is for a reader checking a frozen tree. During --write it would
+    # self-block: the manifest about to be replaced is stale precisely because
+    # the tree has moved on. The post-write re-hash is the stronger guarantee
+    # there, so this check belongs to --verify alone.
+    man = REPO/MANIFEST
+    if writing and man.exists():
+        print("\n8. existing manifest  —  skipped: it is being replaced; the "
+              "post-write re-hash below is the check that applies")
+    if man.exists() and not writing:
         print("\n8. existing manifest agrees with the tree")
         mj = json.loads(man.read_text())
         drift = [f['path'] for f in mj['files']
@@ -218,7 +225,7 @@ def write_manifest():
 
 if __name__ == '__main__':
     mode = sys.argv[1] if len(sys.argv) > 1 else '--verify'
-    good = verify()
+    good = verify(writing=(mode == '--write'))
     if mode == '--write':
         if not good:
             sys.exit("\nREFUSING to freeze: verification failed. A checksum manifest "
