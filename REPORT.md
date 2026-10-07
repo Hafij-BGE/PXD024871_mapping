@@ -73,10 +73,11 @@ reporting interval on measured coverage, and the decision threshold on measured
 power. Where a quantity could not be measured in advance, the handling was fixed
 as a protocol so it could not be chosen once the answer was known.
 
-The result of that ordering is a narrower question than the one originally posed,
-with the narrowing documented rather than discovered later. The Discussion sets
-out how much narrower, and the Limitations section states what the study will
-not be able to claim regardless of what the model does.
+The result of that ordering is a narrower question than the one originally
+posed, with the narrowing documented rather than discovered later. The
+Discussion sets out how much narrower, and the Limitations section states what
+the study cannot claim — written before any model existed, and unchanged by what
+the model turned out to do.
 
 ## Methods
 
@@ -245,14 +246,80 @@ average precision across the five folds. The preregistration is now complete:
 any deviation requires a new decision entry and renders the affected claim
 exploratory.
 
+### Secondary analyses
+
+Four were run after the endpoint, each preregistered in a decision entry before
+its numbers existed, and each trained on units inside the primary test partition
+— stated rather than worked around, since none serves §25.
+
+**Cross-platform transfer** (D025, D028). Train on one instrument platform's
+units, evaluate on the other's. The preregistered form alone confounds platform
+with training-set size, so a matched control halves each platform by seed, trains
+ten units from each half, and scores both models on both held-out halves. That
+gives two contrasts: one holds the model fixed and moves the test platform, the
+other holds the test units fixed and moves the training platform.
+
+**Dominant-allele-held-out transfer** (D001, D029, D030). The frozen
+`allele_disjoint_partition` holds out one allele rather than a disjoint set —
+only 5 of 36 test alleles are absent from training, and 21.7% of a test unit's
+repertoire — so it is reported as dominant-allele-held-out and a real effect
+arrives attenuated roughly fivefold.
+
+**Multi-allele test** (D031). Five alleles in the per-allele design, plus the one
+allele pair whose mutually exclusive groups are both large enough, where both
+arms are carrier-trained and a sign reversal between the two exclusive strata is
+the signature. Non-carriage is required to be **locus-certain**: a unit counts as
+a non-carrier only if it reports two alleles at that locus and neither is the
+allele in question, because PARTIAL typing under-reports a locus.
+
+**Three controls run on every comparison**, because each catches a distinct
+alternative. An arm-specific composition-only LDA floor, fitted on that arm's own
+training rows — the pooled floor misleads, since arm floors range 0.59–0.66. A
+recurrence-matched control, equally recurrent and equally unseen but not
+exclusive to one class. And a direct estimate of the training-set quality
+difference on class-shared peptides, which caught a false positive at A\*01:01
+that no symmetry argument would have.
+
+**Every evaluation subset reports what each compared model had already seen in
+training** (D030). This was added after a stratum turned out to be 97.93%
+memorised by one arm and 0.00% by the other, making its effect a memorisation
+measurement. A subset whose definition references one model's training units is
+void until that fraction is shown equal across the models compared.
+
+### Predictor comparison
+
+Admission follows D006, fixed before any predictor ran: no predictor enters §18
+until its training peptide list is retrieved and registered as an S6 source with
+checksum and version, and overlap is measured by exact sequence match against
+the frozen test partition — provenance is not a substitute.
+
+Both MHCflurry release lines were admitted. The authoritative training list is
+the one each **model bundle** ships per component, not the curated release the
+line declares: release 2.3.0 pairs 2026 models with a 2023 curated file, so the
+declared file would only have bounded the overlap below.
+
+The comparison runs on rows naive to **both** systems (D033). D006's literal
+"non-overlapping subset" removes only the predictor's 8–9% and would leave the
+CNN's measured 15.99% in place — a selectively easier dataset, which §18 forbids
+in those words. The predictor-naive-only and full-partition versions are
+reported alongside. Peptides are scored against their own participant's recorded
+alleles; 22 rows carrying ambiguity codes are excluded from both systems so the
+rows stay identical.
+
 ### Software and environment
 
 Phase A and dataset construction use only the Python standard library. The
-design analyses use numpy 2.4.6 and scipy 1.17.1. Environments are recorded in
-`ENVIRONMENT.md`: `env-001` (4-core cloud container, no GPU) for analysis,
-`env-002` (Colab, 2 cores) for extraction. Measured training throughput for the
-benchmarked configuration is 122,648 peptides/second on `env-001`, from which
-the compute budget derives and to which it does not port.
+design analyses use numpy 2.4.6 and scipy 1.17.1; the network uses torch 2.14.1.
+Environments are recorded in `ENVIRONMENT.md`: `env-001` (4-core cloud
+container, no GPU) for analysis, `env-002` (Colab, 2 cores) for extraction.
+Measured training throughput for the benchmarked configuration is 122,648
+peptides/second on `env-001`, from which the compute budget derives and to which
+it does not port.
+
+The selection grid and final fit ran on a Colab T4; every secondary analysis and
+the endpoint read ran on `env-001` CPU. MHCflurry 2.3.13 and its TensorFlow
+dependency live in a separate virtualenv, which is why scoring and comparing are
+two scripts — neither environment carries the other's dependencies.
 
 ## Results
 
@@ -745,6 +812,14 @@ introduced by the analysis. These are properties of the data that the design
 work surfaced. The honest summary is that the study can answer a real question,
 but a more qualified one than it set out to ask.
 
+**Written before the model ran; here is how each qualification resolved.** The
+0.597 floor held and the endpoint cleared it by 0.158. The platform confound
+turned out to cost 0.04–0.06 AP rather than to dominate, so "generalizes to
+unseen units" survives the instrument but is not free of it (R10). The 15.99%
+leakage inflated the primary by 0.0495 and the leakage-free subset rejected the
+null on its own (R9). Every qualification was real and none was fatal — which is
+the outcome that the qualifications being *measured first* made legible.
+
 ### The most consequential finding so far is not about the model
 
 It is that **the acquisition instrument is learnable from the peptide sequences
@@ -896,6 +971,15 @@ better-powered one resting on an unchecked premise. If the comparison predictors
 training data proves inspectable, that ordering should be revisited, and the
 condition for doing so is fixed in advance.
 
+**It proved inspectable, and the ordering was not revisited.** Each MHCflurry
+model bundle ships its own training data, so both lines were admitted as
+quantified `OVERLAPPING` and D014's promotion condition is now met (R13). D014
+equally bars a switch after seeing results, and §25 was read and closed before
+any predictor score existed. The better-powered question stays secondary. The
+paragraph above is left as written because it set the condition, and the point
+of setting a condition in advance is that meeting it does not by itself license
+the change.
+
 ## Limitations
 
 Grouped by what they prevent the study from claiming. Those marked **measured**
@@ -938,6 +1022,13 @@ equally consistent with a real effect below the detectable range. This follows
 from 10 held-out participants, which the data fixes and no analytic choice can
 improve (D008).
 
+*As it happened the observed lift was 0.158, just above the reliably detectable
+range, so this limitation did not bite on the primary endpoint.* It bites hard
+everywhere else: it is why the 6-unit arm in D031 could not satisfy the release
+criterion D031 itself set, and why the allele effect at HLA-C\*07:02 is
+undetermined rather than absent. **Having enough power once is not having
+enough power.**
+
 **Nominal intervals under-cover — measured.** Nominal 95% cluster-bootstrap
 intervals achieve 0.884–0.890 actual coverage at this participant count.
 Reporting is at nominal 99% to deliver approximately 95%; any figure quoted at
@@ -945,12 +1036,22 @@ nominal 95% elsewhere would overstate precision by that margin.
 
 ### Limitations of the data itself
 
-**Negative labels are not evidence of non-presentation.** Negatives are peptides
-not observed, and non-observation conflates genuine absence with detection
-limits. The repertoires are deeply undersampled — redundancy across participants
-is 1.45× and the 52nd participant added was still 55% novel — so the negative
-class is contaminated at an unknown rate. This biases measured performance
-**downward** and is inherent to any construction built on absence.
+**Negative labels are not evidence of non-presentation — now measured, from
+outside this project.** Negatives are peptides not observed, and non-observation
+conflates genuine absence with detection limits. The repertoires are deeply
+undersampled — redundancy across participants is 1.45× and the 52nd participant
+added was still 55% novel — so the negative class is contaminated at an unknown
+rate. This biases measured performance **downward** and is inherent to any
+construction built on absence.
+
+The rate is no longer entirely unknown. An independently trained presentation
+predictor ranks **11.78% of the 100,000 test negatives as strong presenters**
+(percentile ≤ 2) and gives **9.11%** a predicted affinity ≤ 500 nM (R13). Roughly
+one negative in nine looks presentable to a model that never saw this cohort.
+That is not a count of mislabelled rows — a presentable peptide may still
+genuinely not be presented — but it is the first external bound on the
+contamination, and it sets the direction: **every performance figure in this
+report, the endpoint included, is depressed by it.**
 
 **Low cross-participant overlap may be sampling, not biology.** Only 20.1% of
 the union occurs in more than one participant, and overlap barely tracks shared
@@ -986,10 +1087,62 @@ Attribution rests on container filenames, corroborated one-to-one against the
 52 metadata participants but not independently verifiable. A misnamed container
 at deposition would be undetectable from inside this pipeline.
 
-**Fourteen of 52 participants are incompletely typed** and are excluded from
-analyses keyed on the full allele complement. The allele-disjoint secondary
-split is also costly: holding out the 29 carriers of the most common allele
-leaves 23 for training.
+**Fourteen of 52 participants are incompletely typed, and what that means was
+characterised only late.** D012 recorded the count; D031 found the mechanism.
+Each of those units reports **one** allele at one or two loci instead of two,
+which makes homozygosity and an untyped second allele indistinguishable in the
+source metadata. A unit reporting one HLA-A allele that is not A\*02:01 may
+still carry it. Non-carriage is therefore certain only where the locus is fully
+typed, and **2 of the 23 units used as A\*02:01 non-carriers in D001 and D029
+are not certain** — 8.7% contamination, in the direction that weakens an allele
+effect rather than manufacturing one. The multi-allele test requires
+locus-certainty throughout; the two earlier analyses did not, and are reported
+with that caveat rather than rerun.
+
+The allele-disjoint secondary split is also costly: holding out the 29 carriers
+of the most common allele leaves 23 for training.
+
+**The positives contain 181 rows with amino-acid ambiguity codes, and the
+encoder accepted them silently.** X, B (Asx) and Z (Glx) appear in 0.035% of
+frozen positives and no negatives. The CNN's encoder maps an unknown character
+to the **pad token**, so those peptides were encoded with internal pads rather
+than rejected or flagged, and the selftest covers only standard residues. 22 are
+in the test partition — 0.011% of its rows — so the endpoint is unaffected at any
+decimal that matters. It was found only because MHCflurry refused one of them.
+The defect is the same shape as the encoder bug that once discarded the middle of
+every peptide longer than eight residues: input accepted that should have been
+refused.
+
+### Limitations that bound the secondary claims
+
+**The allele result covers one allele.** HLA-A\*02:01 is demonstrated
+allele-specifically on a symmetric design; HLA-C\*07:02 is not, and HLA-C is
+untested as a locus. The symmetric test **cannot be replicated in this cohort** —
+no second allele pair has ≥14 units on both sides — so strengthening it requires
+a second cohort. The effect is also small in absolute terms: a few hundredths of
+average precision on strata comprising 0.5–5% of each ligandome. And
+"A\*02:01-exclusive" means exclusive to *carriers* of A\*02:01, which includes
+peptides restricted by alleles in linkage with it; no deconvolution was done, so
+the restricting allele is not identified (§20, D032).
+
+**The predictor comparison cannot separate architecture from cohort-specific
+training.** The CNN trained on 42 participants of this cohort — same laboratory,
+same two instruments, same protocol, same negative construction over this
+cohort's own expressed proteins — and MHCflurry never saw it. R10 bounds the
+instrument part of that head start at 0.04–0.06 AP; the rest is unquantified.
+The task itself is largely shared, not mismatched: MHCflurry's processing model
+trains on observed-versus-unobserved discrimination at 1:1 with 65% same-protein
+decoys, which is nearly the set-C construction. **An earlier draft of
+`QC_G11.md` claimed a task mismatch and was wrong in this project's favour**;
+the correction is recorded there. §18 shows the CNN adds information on this
+cohort's task. It does not show the CNN is a better model of HLA presentation.
+
+**Two predictors named in §18's own input list were never obtained.** NetMHCpan
+4.1 sits behind a per-user academic licence form at the DTU host, which is not
+scriptable and not mine to accept on the owner's behalf. MixMHCpred is
+distributed through `raw.githubusercontent.com`, which this environment's proxy
+refuses while allowing release assets. The comparison rests on one predictor
+family, in two release lines.
 
 ### Limitations of the process
 
@@ -1013,6 +1166,39 @@ rest on a binormal score model with an assumed between-participant variance that
 cannot be measured until the model runs. The figures bound the design; they do
 not describe it.
 
+**Two preregistered reading rules were written so that their own designs could
+not satisfy them, and one was narrowed after it failed.** D029 required a
+symmetric confirmation from two groups that are not symmetric — carriers share
+an allele, non-carriers share only its absence and span 41 alleles, a figure
+printed in D029's own table. D031 then required a nominal-99% interval from a
+6-unit arm, whose size D031 also printed. The second was narrowed by D032 and
+the narrowing was **accepted by the project owner**, with the §20 wording fixed
+in the same entry and the case against narrowing left in place unaltered. That
+is the most reader-dependent step in this report: a criterion that bends after
+it fails is not a criterion, and the only defences are that the failing
+condition was unattainable by construction, that the narrowing was decided by
+the owner rather than the author, and that the commit history carries the order.
+**A reader who rejects those defences should treat §20 as unsupported and the
+allele result as it stood before D032 — suggestive, not established.**
+
+**One reported result was void and is kept in the repository.** D029's
+allele-enriched stratum was defined as "observed in one arm's training pool and
+absent from the other's", which guaranteed that one arm had memorised it: 97.93%
+of its rows against 0.00%. Its +0.0660 was the largest number that run
+produced. It is superseded by +0.0335 on rows neither arm saw, and D030 records
+it rather than deleting it. It was the second instance of one failure mode — the
+first `TEST_LEAKFREE` mask selected a subset with no negatives and returned a
+perfect 1.0000 — and **both times the broken version produced the most
+flattering number available.** The standing check D030 added exists because that
+pattern is not a coincidence.
+
+**One run previewed a preregistered result before the real run.** Validating the
+multi-allele code required executing Part B end to end, which computed its
+contrasts: the direction was visible at 2 epochs and one seed before the full
+run started. Disclosed in D031. Nothing remained to choose — every parameter was
+fixed and committed first — but a reader must take the commit order on trust.
+The practice that avoids it is to validate plumbing on scrambled group labels.
+
 **Estimates made during this work were checked against outcomes, and one was
 badly wrong.** The eligible-peptide count was projected at 1.55M from five
 participants and measured at 2,658,972 — an error of −41.8%, in the direction
@@ -1023,65 +1209,170 @@ how much weight the remaining simulation-based figures should carry.
 
 ## Conclusion
 
-**The experiment is specified, frozen and ready to run. It has not been run, and
-nothing here indicates whether its hypothesis is true.**
+**The null is rejected. A small convolutional network distinguishes observed
+HLA class-I peptides from unobserved peptides of the same source proteins, in
+participants it never saw, at a mean per-participant average precision of
+0.7551 — nominal-99% interval [0.7368, 0.7721] against a preregistered
+threshold of 0.647.** The partition was read once, under a rule fixed before any
+model existed.
 
-What the work established is a dataset and a design whose properties are
-measured rather than assumed. A public immunopeptidomics submission was mapped
-to 52 independent participants with complete provenance and no unresolved joins;
-2,658,972 unique peptides were extracted with every container verified against
-its publisher checksum; and an analysis dataset and evaluation split were built
-from decisions fixed in advance and recorded with checksums.
+Three preregistered checks then bounded what that number means, and the pattern
+across them is the result worth carrying.
 
-Three measurements constrain what any eventual result can mean, and all three
-were unknown when the experiment was proposed. Performance must be read against
-a composition-only floor of **0.597**, not against chance. The primary test
-partition contains **15.99%** of peptides seen verbatim in training, because
-splitting by participant does not deliver splitting by sequence. And the
-acquisition instrument is separable from the peptide sequences alone at AUROC
-**0.645**, against **0.515** for a control, so a held-out-participant result is a
-joint statement about unseen individuals and unseen instrument conditions.
+**It is not memorisation.** 15.99% of test positives appear verbatim in
+training, and removing them leaves 0.7056 with a lower bound of 0.6926 — still
+clearing the threshold. Leakage inflates the estimate by 0.0495 and does not
+carry it.
 
-The design is also honestly underpowered for a modest effect: at the
-preregistered rule, power is 0.42 at a true AUROC of 0.70. A failure to reject
-will not be evidence that sequence carries no signal.
+**It is not the instrument.** Trained on one mass spectrometer and tested on the
+other, performance does not collapse: 0.6959 and 0.7108, roughly 0.10 above each
+pairing's own composition floor. A matched control puts the platform's cost at
+**0.04–0.06 AP**, from four estimates across two designs with no interval
+containing zero. The confound D005 accepted as irreducible is real, measured,
+and smaller than the signal.
 
-**One finding stands independent of the experiment.** That the instrument is
-learnable from the peptides is a property of this dataset, not of this analysis.
-Any study holding out participants in it inherits the same confound, measured or
-not, and that is worth reporting whether or not the model is ever trained.
+**Part of it is allele-specific, for one allele.** A model trained on carriers
+of HLA-A\*02:01 ranks peptides exclusive to carriers above a model trained on
+carriers of a different allele, by **0.048** average precision (nominal-99% CI
+0.031–0.063) in **9 of 9** held-out participants, with memorisation, peptide
+recurrence and training-set quality each measured at zero on the same units. The
+direction reproduces across five alleles. It is not demonstrated for
+HLA-C\*07:02, and the symmetric test cannot be replicated in this cohort.
 
-The clearest change is to the hypothesis itself. As proposed, §25 asked whether
-the network beats chance — a test simulation showed passes at AUROC 0.60 with
-certainty, and which therefore could not have failed. It now asks whether the
-network beats a measured floor by a specified margin, on an interval calibrated
-to its actual coverage, at a threshold chosen for power. **The question is finally
-capable of coming out the other way**, which is the precondition for the answer
-being worth having.
+**And it exceeds an off-the-shelf predictor on this task.** On rows neither
+system has seen, the CNN leads MHCflurry by 0.134–0.138 average precision in all
+ten held-out participants — a margin that survives the strictest subsetting and
+is largest where contamination is smallest. It is not a verdict on
+architectures: the CNN trained on this cohort's own instruments and negative
+construction, and MHCflurry did not.
 
-What remains is execution: training hardware beyond the environment used here,
-the 105 preregistered runs, and a single reading of a test partition that has
-not been touched.
+### What the design work established, independent of the result
+
+A public submission was mapped to 52 participants with complete provenance and
+no unresolved joins; 2,658,972 unique peptides were extracted with every
+container verified against its publisher checksum; and the dataset, split,
+endpoint and decision rule were fixed in advance with checksums.
+
+**Three measurements constrain what any result on this dataset can mean, and all
+three were unknown when the experiment was proposed.** Performance must be read
+against a composition-only floor of **0.597**, not chance. Participant-disjoint
+splitting delivers **15.99%** sequence leakage. And the acquisition instrument is
+separable from the peptide sequences alone at AUROC **0.645** against **0.515**
+for a control.
+
+**That last one stands independent of this experiment entirely.** Any analysis of
+this dataset holding out participants — the standard design — inherits the same
+confound, measured or not. It belongs to the dataset, not to this study.
+
+**A fourth measurement arrived from outside.** An independently trained
+predictor ranks 11.78% of this study's negatives as strong presenters. The
+negative class is contaminated at roughly one in nine, which depresses every
+figure above, the endpoint included.
+
+### What changed most
+
+**The hypothesis.** As proposed, §25 asked whether the network beats chance — a
+test simulation showed it passing at AUROC 0.60 with certainty, so it could not
+have failed. It was rewritten to ask whether the network beats a measured floor
+by a specified margin, on an interval calibrated to its actual coverage, at a
+threshold chosen for power. **The question became capable of coming out the
+other way, and then it came out this way.** That ordering is the only reason the
+answer is worth having.
+
+### What this still cannot claim
+
+Not that the 0.158 lift is presentation biology: the confounds both platforms
+and both allele groups *share* — source-protein abundance, detectability bias,
+the negative construction itself — are untouched by every analysis here. Not
+that the restricting allele is identified, since no deconvolution was done. Not
+anything beyond one submission, one laboratory, one disease, one tissue, with no
+external replication anywhere in the design. And not §20 at all, for a reader
+who declines the criterion narrowing that D032 records and the Limitations
+section flags as this report's most reader-dependent step.
+
+**External replication remains the largest gap, and it is the same gap the
+design work identified before the model ran.** A second dataset with a different
+instrument distribution would do more than any analytic refinement here: it
+would break the platform confound that no split over these participants can
+touch, and it is the only route to the symmetric allele test this cohort cannot
+supply.
 
 ## References
 
-| ID | Reference | Status |
-|---|---|---|
-| — | PXD024871 submission, PRIDE Archive | Not retrieved (S1–S4) |
-| — | Dataset publication | Not retrieved (S7) |
-| — | Allele nomenclature specification | Required for M4 validation; not retrieved |
-| — | Comparison predictor publications | Required for §18; not retrieved (S6) |
+According to PubMed, one reference has been retrieved and verified:
 
-No reference has been retrieved or verified. Citations will be added as sources
-are acquired; none is asserted from memory.
+| Reference | Identifiers | Role |
+|---|---|---|
+| O'Donnell TJ, Rubinsteyn A, Laserson U. *MHCflurry 2.0: Improved Pan-Allele Prediction of MHC Class I-Presented Peptides by Incorporating Antigen Processing.* Cell Syst. 2020;11(1):42–48.e7 | [DOI 10.1016/j.cels.2020.06.010](https://doi.org/10.1016/j.cels.2020.06.010) · PMID 32711842 | §18 comparison predictor (S6) |
+
+Retrieved via PubMed and used to correct `QC_G11.md` §4: the paper states the
+processing model is trained to discriminate observed mass-spec ligands from
+unobserved peptides, which withdrew a task-mismatch caveat this report had been
+making in its own favour. An earlier provenance record in
+`data/raw/S6/provenance.jsonl` carries this citation **without the `.e7` page
+extension**, because it was written from memory before being checked; the row
+above is the verified form.
+
+Still not retrieved:
+
+| Reference | Status |
+|---|---|
+| PXD024871 submission description / dataset publication (S7) | **not retrieved.** The submission's own files are retrieved (S1–S3, S5); the accompanying publication is not, and is not asserted from memory |
+| Allele nomenclature specification | **not retrieved.** Required for M4 validation; allele strings are used as the SDRF reports them, normalized but not validated against the specification |
+| NetMHCpan 4.1, MixMHCpred publications | **not retrieved**, because neither predictor was obtained |
+
+No other citation appears anywhere in this report. Where a factual claim about
+the wider literature would have been needed, it was either verified as above or
+left out.
 
 ## Tables and Figures
 
+### Design, written before any model ran
+
 | ID | Title | Source | Generated by |
 |---|---|---|---|
-| T1 | Design resolution grid, 91 rows | `results/power/power_grid.csv` | `scripts/power_analysis.py` (run-001) |
-| T2 | Run parameters and reconstruction note | `results/power/power_params.json` | `scripts/power_analysis.py` (run-001) |
-| T3 | Measured throughput and derived grid cost | `results/compute/benchmark.json` | `scripts/benchmark_compute.py` (run-002) |
+| T1 | Design resolution grid, 91 rows | `results/power/power_grid.csv` | `power_analysis.py` (run-001) |
+| T2 | Run parameters and reconstruction note | `results/power/power_params.json` | `power_analysis.py` (run-001) |
+| T3 | Measured throughput and derived grid cost | `results/compute/benchmark.json` | `benchmark_compute.py` (run-002) |
+| T4 | Per-unit cap precision curve | `results/power/subsample_curve.json` | `subsample_curve.py` |
+| T5 | Interval coverage and power at the adopted rule | `results/power/decision_rule.json` | `calibrate_decision_rule.py` |
+| T6 | Negative-set composition diagnostic, sets A/B/C | `results/qc/negative_diagnostic.json` | `negative_diagnostic.py` |
+| T7 | Leakage audit over 2,000 random splits | `results/qc/leakage_audit.json` | `leakage_audit.py` |
+| T8 | Peptide-universe statistics | `results/qc/union_stats.json` | `union_analysis.py` |
+
+### Results
+
+| ID | Title | Source | Generated by |
+|---|---|---|---|
+| T9 | Selection grid, 16 configurations × 5 folds | `results/model/cv_results.json` | `train_cnn.py --mode cv` |
+| T10 | Final fit, 25 models | `results/model/final.json` | `train_cnn.py --mode final` |
+| T11 | **Primary endpoint**, per-unit and pooled | `results/model/endpoint.json` | `train_cnn.py --mode test` |
+| T12 | Endpoint decomposed by peptide length | `results/model/endpoint_by_length.json` | `endpoint_by_length.py` |
+| T13 | Cross-platform transfer, 4 arms + 4 contrasts | `results/model/transfer.json` | `train_cnn.py --mode transfer` |
+| T14 | Transfer post-hoc: CNN vs composition penalty | `results/model/transfer_posthoc.json` | inline, recorded in QC_G12 |
+| T15 | Dominant-allele-held-out, 3 arms | `results/model/allele.json` | `train_cnn.py --mode allele` |
+| T16 | The same, corrected for memorisation | `results/model/allele_leakfree.json` | `allele_leakfree.py` |
+| T17 | Neutral training-set-quality estimate | `results/model/allele_neutral.json` | inline, recorded in QC_G12 |
+| T18 | Multi-allele test, 5 alleles + the symmetric pair | `results/model/multi_allele.json` | `multi_allele.py` |
+| T19 | Multi-allele difference-of-differences | `results/model/multi_allele_dod.json` | inline, recorded in QC_G12 |
+| T20 | Predictor contamination, both release lines | `results/qc/predictor_contamination.json` | `predictor_contamination.py` |
+| T21 | **§18 comparison**, 3 row sets × 3 systems | `results/predictors/comparison_with_predictors.csv` | `compare_predictors.py` |
+| T22 | Negative-class contamination, measured externally | `results/qc/predictor_task_mismatch.json` | inline, corrected 2026-10-07 |
+
+### Figures
+
+| ID | Title | Source | Generated by |
+|---|---|---|---|
 | F1–F6 | Methodology flowcharts: pipeline, mapping dataflow, status resolution, gate handling, decision order, scope constraint | `FLOWCHART.md` | Hand-authored; Mermaid grammar validated |
 
-No figure has been generated from project data, because no project data exists.
+**No figure is plotted from project data.** Every quantitative result in this
+report is a table, and each one names the artifact and the script that produced
+it. That is a presentational gap, not a missing analysis: the numbers are in
+`results/` with their provenance, and a reader who wants a plot has the inputs.
+
+### QC gate records
+
+`results/qc/` carries `QC_G1`–`QC_G6`, `QC_G3_pilot`, `QC_G4_prep`, `QC_G5`,
+`QC_G7_cv`, `QC_G10_endpoint`, `QC_G11`, `QC_G12_transfer`, `QC_G12_allele` and
+`QC_G12_multi_allele`. Each states what passed, what was reduced or deferred and
+why, and the gate schedule in `SECTIONS.md` forbids silent reduction.

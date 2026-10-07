@@ -108,16 +108,47 @@ proteins — **a small CNN trained on 42 participants of this cohort outperforms
 an off-the-shelf presentation predictor by about 0.134 average precision, on
 rows neither system has seen, in every one of 10 held-out participants.**
 
-## 4. Why this is not a fair test of predictor quality
+## 4. How fair the comparison is — corrected
 
-**§18's own Limitations field anticipated this**: *"Existing predictors designed
-for different tasks (binding affinity vs. presence/absence)."* It can now be
-quantified rather than asserted.
+**An earlier draft of this section claimed MHCflurry was "being asked the wrong
+question", on the strength of §18's own Limitations field: *"Existing predictors
+designed for different tasks (binding affinity vs. presence/absence)."* Checking
+the predictor's publication and its bundled training data shows that framing was
+wrong, and it was wrong in the direction that flattered this project's result.**
 
-**MHCflurry is being asked the wrong question.** It predicts whether a peptide
-*can be presented*. Our label records whether a peptide *was observed*. Set-C
-negatives are peptides from the same source proteins that were never detected —
-and many of them are perfectly plausible binders:
+According to PubMed, MHCflurry 2.0's antigen-processing model is *"trained to
+discriminate published mass spectrometry-identified MHC class I ligands from
+unobserved peptides"* — O'Donnell, Rubinsteyn and Laserson, *Cell Systems* 2020;
+11(1):42–48.e7, [DOI 10.1016/j.cels.2020.06.010](https://doi.org/10.1016/j.cels.2020.06.010),
+PMID 32711842. Its bundled training table confirms the construction: **399,392
+rows at exactly 1:1 hits to decoys, one decoy per hit, and 65.1% of decoys drawn
+from the same protein as their hit** (`same_protein_match = True` in 260,086 of
+399,392 rows), matched by sample, length and predicted affinity.
+
+**That is substantially our task and nearly our negative construction.** Set C is
+"same source proteins, unobserved", 1:1 (D002, D024). So the comparison is
+*fairer* than the earlier draft claimed, which makes the CNN's +0.134 more
+meaningful rather than less. The correction is recorded rather than quietly
+applied because it reverses a caveat that was working in this project's favour.
+
+**What the composite score does contain that our task does not** is the binding
+model, trained on affinity measurements, which the presentation score combines
+with processing. So the quantity MHCflurry reports is not purely an
+observed-versus-unobserved discrimination; it contains one.
+
+**The remaining advantage to the CNN is real but smaller than "different task".**
+It trained on 42 participants of this cohort — same laboratory, same two
+instruments, same protocol, same negative construction over this cohort's own
+expressed proteins. R10 measured the instrument component of that at 0.04–0.06
+AP. MHCflurry never saw this cohort. That is a substantial head start on a
+largely shared task, and the margin should be read as the value of
+cohort-specific training rather than as a verdict on either architecture.
+
+### What the negative-set numbers actually show
+
+With the task-mismatch reading withdrawn, these figures support a different and
+more useful claim — the first external measurement of negative-class
+contamination:
 
 | MHCflurry 2.3.0 call | positives | **negatives** |
 |---|---|---|
@@ -126,24 +157,20 @@ and many of them are perfectly plausible binders:
 | predicted affinity ≤ 500 nM | 26.07% | **9.11%** |
 | predicted affinity ≤ 50 nM | 10.67% | 1.56% |
 
-**11,778 of 100,000 set-C negatives are ranked as strong presenters.** Every one
-is a peptide our labels call negative because it went unobserved and the
-predictor calls presentable. Those are counted as the predictor's errors. Some
-of them are the predictor being right and the label being a detection artefact.
+**11,778 of 100,000 set-C negatives are ranked as strong presenters**, and 9,110
+have predicted affinity ≤ 500 nM. The Limitations section has always said the
+negative class is contaminated at an unknown rate because non-observation
+conflates absence with detection limits — **this is the first number put on it,
+and it comes from outside this project.** Roughly one negative in nine looks
+presentable to an independently trained model. Some fraction of those are
+genuine ligands that went undetected, which biases every performance figure in
+this report *downward*, including the endpoint.
 
-**The CNN also has an advantage that has nothing to do with modelling
-presentation.** It was trained on 42 participants from this cohort — same
-laboratory, same two instruments, same protocol, same negative construction. R10
-measured the instrument component of that at 0.04–0.06 AP. MHCflurry has never
-seen this cohort. A model trained on the task, distribution and technical
-artefacts of the test set beating a model that was not is close to tautological,
-and the margin here should be read as the value of task-specific training rather
-than as a verdict on either architecture.
-
-**So the defensible reading is narrow:** the CNN adds information over an
-off-the-shelf predictor *for this task on this cohort*. §18 does not establish
-that the CNN is a better model of HLA class-I presentation, and nothing here
-should be cited as if it did.
+**So the defensible reading is narrow, for a different reason than the earlier
+draft gave:** the CNN adds information over an off-the-shelf predictor on a
+largely shared task, with a cohort-specific head start it cannot be separated
+from. §18 does not establish that the CNN is a better model of HLA class-I
+presentation, and nothing here should be cited as if it did.
 
 ## 5. Not promoted
 
@@ -166,8 +193,9 @@ invoked.
    `raw.githubusercontent.com`, which returns 404 through this proxy even though
    release assets return 200. Both are absent and neither is reported. §18's
    input list named "NetMHCpan, MixMHCpred, or others"; this is "others".
-2. **The task mismatch in §4 is the dominant limitation**, larger than anything
-   the subsetting corrects.
+2. **The CNN's cohort-specific training advantage is the dominant limitation**,
+   larger than anything the subsetting corrects. §4 records that an earlier
+   draft overstated this as a task mismatch and why that was wrong.
 3. **22 rows carry ambiguity codes** (X, B = Asx, Z = Glx) and are excluded from
    both systems, so the rows stay identical. MHCflurry refuses them; the CNN's
    encoder silently maps an unknown character to the pad token, so those

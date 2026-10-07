@@ -1,5 +1,5 @@
 {
- "note": "Measures the task mismatch S18 Limitations anticipated. MHCflurry is asked whether a peptide is presentable; our label asks whether it was OBSERVED. Set-C negatives are unobserved peptides from the same source proteins, so plausible binders among them are scored high and counted wrong.",
+ "note": "CORRECTED. An earlier note here claimed a task mismatch: that MHCflurry is asked whether a peptide is presentable while our label asks whether it was observed. That was wrong. MHCflurry 2.0 trains its processing model to discriminate observed mass-spec ligands from unobserved peptides, 1:1, with 65.1% of decoys from the same protein as their hit -- substantially our task and nearly our set-C construction. These figures therefore do NOT excuse the predictor; they are the first external measurement of contamination in OUR negative class: ~1 negative in 9 looks presentable to an independently trained model, which biases every figure in this report downward.",
  "strong_presenter_pct_le_2": {
   "positives": 0.30045610034207526,
   "negatives": 0.11778,
@@ -8,5 +8,21 @@
  "affinity_le_500nM": {
   "positives": 0.26071735781872013,
   "negatives": 0.09113
+ },
+ "correction_date": "2026-10-07",
+ "mhcflurry_processing_training": {
+  "rows": 399392,
+  "hits": 199696,
+  "decoys": 199696,
+  "decoys_per_hit": 1,
+  "same_protein_match_frac": 0.6512048313436424,
+  "matching_policy": "sample-length-affinity-random-without-replacement-v2"
+ },
+ "reference": {
+  "citation": "O'Donnell TJ, Rubinsteyn A, Laserson U. MHCflurry 2.0. Cell Syst. 2020;11(1):42-48.e7",
+  "doi": "10.1016/j.cels.2020.06.010",
+  "pmid": "32711842",
+  "verified_via": "PubMed",
+  "verified_date": "2026-10-07"
  }
 }
