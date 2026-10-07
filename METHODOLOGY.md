@@ -21,8 +21,15 @@ seen for what they are:
   anything specific to it. This is a compression of the prompt's structure, not
   a departure from it, and it is flagged here rather than done quietly.
 
-The experiment served is `PXD024871_CNN_Experiment_Proposal.md`, committed
-unmodified. Figures are **verified from the retrieved sources** as of 2026-10-06 (S1 and
+The experiment served is the T-A4 CNN experiment proposal. It was committed
+unmodified for the whole working life of the project, and was **withheld on
+public release** under D037: it is an internal, unpreregistered document, and
+publishing it beside the preregistered work it became invites the reading that
+the two are one artifact. Its title, size and SHA-256 are recorded in
+`PXD024871_CNN_Experiment_Proposal.STUB.md`, so this reference still resolves
+to something a reader can verify. Nothing in it is load-bearing for a result;
+`PREREGISTRATION.md` is the binding document, and it was committed before any
+model was trained (D009). Figures are **verified from the retrieved sources** as of 2026-10-06 (S1 and
 S2; see `results/qc/QC_G1.md` to `QC_G3.md`). Anything still unverified is
 marked **[provisional]** and now concerns only the identification containers,
 which are not yet retrieved.
@@ -540,6 +547,6 @@ Rejected and failed outputs are retained with the reason for rejection.
 
 ## See also
 
-`PROJECT_PROMPT.md` (governing) · `PXD024871_CNN_Experiment_Proposal.md` ·
+`PROJECT_PROMPT.md` (governing) · `PXD024871_CNN_Experiment_Proposal.STUB.md` ·
 `SECTIONS.md` · `DECISION_LOG.md` · `DATA_SOURCES.md` · `FLOWCHART.md` ·
 `REPORT.md` · `POWER_ANALYSIS.md`

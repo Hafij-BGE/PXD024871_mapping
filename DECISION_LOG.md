@@ -798,6 +798,126 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
+## D037 — Public release: what is withheld, and one licence clause that is not resolved · RESOLVED
+
+**Opened:** 2026-10-07, when the project owner decided to make the repository
+public · **Requested by the project owner** · **Status: RESOLVED as to what this
+repository does; one external consent is OUTSTANDING and is recorded as such.**
+
+**Decision: prepare the repository for public release by withholding exactly
+three classes of file, adding the standard files a public repository needs, and
+recording — rather than quietly accepting — a licence clause that the §18
+benchmark may breach.**
+
+### 1. What is withheld, and why
+
+| Withheld | Reason | What replaces it |
+|---|---|---|
+| `PXD024871_CNN_Experiment_Proposal.md` | Internal T-A4 document, headed "not yet preregistered or executed". Publishing it beside the preregistered work it became invites the reading that the two are one artifact. | `...STUB.md`: title, size, SHA-256 `56b690ad…`, last content commit `4350e280`, and the one constraint from it that shaped the repository's structure. |
+| `results/predictors/netmhcpan_raw/`, `mixmhcpred_raw/` (37 MB) | Verbatim stdout of two academically licensed tools. Of everything here, republishing a tool's literal output comes closest to redistributing the tool. | The per-peptide **score** CSVs stay committed: they are the evidence behind §18 and are ordinary derived results. |
+| `data/derived/TEST_PREDICTOR_OVERLAP_2_0_0.csv`, `..._2_3_0.csv` | Superseded duplicates of the five-predictor-era names, **byte-identical** — `eb1d22e2…` and `100816504c…` respectively. | The surviving `..._MHCflurry_2_0_0.csv` and `..._MHCflurry_2_3_0.csv`, hash-for-hash. |
+
+Nothing was deleted from disk. All three classes remain in the working tree,
+gitignored with the reason stated inline in `.gitignore`. §6 of the master
+prompt forbids deleting rejected analyses; it does not require publishing an
+internal proposal, and the distinction is the stub.
+
+### 2. The licence clause this does not fix
+
+The NetMHCpan 4.1 academic licence, §7, states that the licensee may not
+"publish any results of benchmark tests run on the Product to a third party
+without HEALTH's prior written consent." **§18 is a benchmark of NetMHCpan 4.1
+and reports its average precision.** On a plain reading, making this repository
+public is publishing that benchmark to third parties.
+
+This was found by reading `netMHCpan-4.1_license.txt` as shipped with the
+package — which is also the licence check that `DATA_SOURCES.md` S6 says must
+precede any predictor output entering the repository. **That check had not been
+performed when the output was committed.** The provenance records in
+`data/raw/S6/provenance.jsonl` carried a one-line licence summary per file, but
+no clause-level reading. The gap is recorded here rather than backdated.
+
+Three things are true at once and all three belong on the record:
+
+1. The clause says what it says.
+2. Publishing NetMHCpan benchmarks is near-universal practice, including in the
+   MHCflurry 2.0 paper, which benchmarks against NetMHCpan 4.0 in its abstract.
+   That bears on whether the clause is enforced. It does not establish consent,
+   and no consent has been sought.
+3. The same licence's §10 requires that references to the software "for
+   crystallographic computations" cite the manual — boilerplate from an
+   unrelated package. The document is generic, which is evidence about its
+   drafting and not a permission.
+
+**Not resolved by analysis.** `health-software@dtu.dk` is the contact named on
+the service page. The options — ask first, publish the other four arms, or
+proceed on practice with the notice on the record — are set out in
+`THIRD_PARTY_NOTICES.md` §1 and belong to the project owner, not to this entry.
+
+A second carve-out **is** resolved: MixMHCpred's licence §2.1 permits providing
+results "for academic non-commercial purposes only", which CC BY 4.0 cannot
+widen. The MixMHCpred-derived files are therefore excluded from this
+repository's CC BY grant, stated in `THIRD_PARTY_NOTICES.md` and in `README.md`.
+MHCflurry is Apache-2.0 and carries no such restriction.
+
+### 3. Licensing and standard files
+
+MIT for `scripts/` and `notebooks/`; CC BY 4.0 for the documents, figures and
+derived tables, at the project owner's election. The CC BY legal code in
+`LICENSE-docs` was **retrieved** from creativecommons.org on 2026-10-07
+(SHA-256 `9ba9550a…`) and embedded verbatim rather than reconstructed from
+memory, because a licence written from memory is not a licence.
+
+Added: `README.md`, `LICENSE`, `LICENSE-docs`, `CITATION.cff`,
+`THIRD_PARTY_NOTICES.md`, `.gitattributes`.
+
+Every citation in `CITATION.cff` and `THIRD_PARTY_NOTICES.md` was verified
+against PubMed or the PRIDE API, which caught a fabrication in the first draft:
+the PXD024871 deposit title had been written from memory and was **wrong**. The
+PRIDE API gives "Immunopeptidomics-guided warehouse design for peptide-based
+immunotherapy in chronic lymphocytic leukemia", submitter Annika Nelde, and
+names the dataset publication — Nelde et al., Front Immunol 2021;12:705974,
+doi 10.3389/fimmu.2021.705974. **That incidentally supplies S7, which
+`DATA_SOURCES.md` has carried as never retrieved for the whole project.**
+
+### 4. Two defects fixed in passing
+
+**`.gitattributes` nearly broke the freeze for everyone but me.** The first
+draft set `* text=auto eol=lf`. Python's `csv` module writes CRLF, so 67 derived
+tables and score files are genuinely CRLF and were hashed that way; converting
+them on checkout would have made `freeze.py --verify` fail on every clone while
+passing on the machine that wrote the manifest. The committed file sets `* -text`
+and says why. **This is the third instance of the project's recurring failure
+mode** — a check that passes locally for a reason that does not travel — after
+`TEST_LEAKFREE` and D029/D030. The standing lesson from D030 generalises:
+verify on a fresh clone, not only in place.
+
+**`FILE_MAP_REJECTS.csv` was 0 bytes, with no header.** A reader could not tell
+"no rejects" from "this stage crashed", while M1's gate line asserted the
+emptiness the file itself could not evidence. `phase_a_mapping.py`'s `write()`
+took its header from `rows[0]` and wrote nothing when there were no rows. Fixed
+at the source — `write()` now takes explicit `fields` — and the artifact
+rewritten to exactly what the patched script produces, so script and artifact
+agree. Zero rejects remains the correct and recorded result.
+
+### 5. Verified before release
+
+No secret, token, key or personal email address appears in any tracked file;
+the `AKIA`-prefixed hits a scanner reports are peptide sequences. The three
+predictor binaries live outside the repository tree and none is redistributed.
+Participant identifiers, HLA genotypes and peptide sequences are reproduced only
+as the public PRIDE deposit publishes them; `THIRD_PARTY_NOTICES.md` §3 notes
+that genotype and immunopeptidome data are individually distinguishing in
+principle, and that this repository adds nothing identifying and attempts no
+re-identification.
+
+**As RESOLVED, this fixes what the public repository contains.** The outstanding
+item is external: DTU's answer, or the project owner's decision to proceed
+without it. Neither changes a number.
+
+---
+
+
 ## D036 — Two more predictors, and how the §18 row sets must change · RESOLVED
 
 **Opened:** 2026-10-07, **before any MixMHCpred or NetMHCpan 4.2 score existed**
