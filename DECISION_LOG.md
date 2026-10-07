@@ -823,7 +823,8 @@ So `--write` runs `--verify` first and refuses on any failure. Eight checks:
 | 5 | Figures regenerate byte-identically from the artifacts | 7 figures |
 | 6 | Every QC gate passed or carries a recorded unavailability | G1–G13, FINAL |
 | 7 | Every decision resolved, none left OPEN | D001–D033 |
-| 8 | The trainer's selftest passes | pass |
+| 8 | An existing manifest still agrees with the tree and declares its own exclusion | 349 entries |
+| 9 | The trainer's selftest passes | pass |
 
 **Check 2 is the one that matters most.** It proves the frozen dataset and split
 are byte-identical to what the preregistration committed to, so every result in
@@ -836,11 +837,18 @@ artifacts that are themselves derived from the dataset. A figure that cannot be
 regenerated is a figure whose relationship to the data is unverifiable, and
 regenerating them is cheap.
 
-**The verifier's own first run failed, and the verifier was wrong, not the log.**
-Check 7 initially read only entry headings and reported six resolved decisions
-as open, because D001, D014, D015, D020, D022 and D023 carry their status in the
-body. Recorded because a verification tool that has never produced a failure has
-not been tested, and this one's first failure was its own.
+**The verifier found two defects, both in itself or in the freeze rather than in
+the work.** Check 7 initially read only entry headings and reported six resolved
+decisions as open, because D001, D014, D015, D020, D022 and D023 carry their
+status in the body — the log was right and the check was wrong. Then the first
+manifest listed **itself** with a stale hash, because hashing a file and then
+overwriting it stores the previous version's digest; the verification command
+printed in `FREEZE_RECORD.md` caught it on the next run. The manifest now
+excludes itself and declares the exclusion, and check 8 was added so the failure
+is caught before a commit rather than after one.
+
+Both are recorded because a verification tool that has never produced a failure
+has not been tested, and this one's first two failures were its own.
 
 ### The anchor
 
@@ -848,6 +856,10 @@ not been tested, and this one's first failure was its own.
 contain the hash of the commit that carries it, so the manifest records its
 parent and `FREEZE_RECORD.md` states the pair: the anchor is the single child of
 that parent which introduces the manifest.
+
+**One superseded anchor.** `cc0a6217` carried the self-inconsistent manifest and
+is left in history rather than rewritten, since the branch was already pushed.
+The live anchor is the later commit that adds the corrected manifest.
 
 **No tag, again.** One was attempted and the remote refused it, exactly as it
 refused the preregistration tag (D009) — the session credential is scoped to
