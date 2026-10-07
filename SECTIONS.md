@@ -81,7 +81,7 @@ Each section of the experiment has:
 - Identification containers total 107.53 GiB over 101 files (verified); largest single container 9.25 GiB, so streaming is required
 - SDRF has 402 rows; 504 files include non-MS-run files
 
-**Status:** OPEN (not yet started)
+**Status:** RESOLVED — executed, G1 passed (run-003)
 
 **Next Step:** Download SDRF, verify file inventory, record metadata.
 
@@ -126,7 +126,7 @@ Each section of the experiment has:
 - 10 donors partially typed (4–5 alleles instead of 6)
 - Some alleles may be hemizygous
 
-**Status:** OPEN (blocked on HLA allotype decision, see DECISION_LOG #1)
+**Status:** RESOLVED — D001 resolved; file map built, G2 passed (run-003)
 
 **Next Step:** Resolve DECISION_LOG #1, then execute file map.
 
@@ -161,7 +161,7 @@ Each section of the experiment has:
 **Limitations:**
 - Cannot separate donors with identical allotype + metadata
 
-**Status:** OPEN (depends on A2)
+**Status:** RESOLVED — 52 class-I units resolved, G3 passed (run-003)
 
 **Next Step:** Execute after A2 complete.
 
@@ -203,7 +203,7 @@ Each section of the experiment has:
 - Negative strategy choice sets ceiling on all downstream metrics
 - Shared peptides across donors not yet decided (see leakage section)
 
-**Status:** OPEN (blocked on DECISION_LOG #2 and class-ratio lock)
+**Status:** RESOLVED — D002 and D024 resolved; dataset frozen, G4 passed (run-009)
 
 **Next Step:** Resolve #2, lock class ratio, then execute filtering.
 
@@ -238,7 +238,7 @@ Each section of the experiment has:
 **Limitations:**
 - **Shared-peptide ambiguity**: HLA ligandomes overlap between donors sharing alleles. Same sequence can be genuinely positive in both train and test donors. Unresolved handling: drop cross-split duplicates, or allow and report both ways?
 
-**Status:** OPEN (blocked on shared-peptide decision in DECISION_LOG)
+**Status:** RESOLVED — D003 resolved; G5 audited, two failures declared with mandated handling (run-010)
 
 **Next Step:** Decide cross-donor duplicate handling.
 
@@ -278,7 +278,7 @@ Each section of the experiment has:
 - Donor-held-out ≠ allele-held-out: HLA-A*02:01 in 29/52 donors
 - Unbalanced run counts (3–15) mean peptide counts dominated by 15-run donor
 
-**Status:** OPEN (depends on Phase B and shared-peptide decision)
+**Status:** RESOLVED — split frozen, G6 passed (run-011)
 
 **Next Step:** Lock positive/negative counts and class ratio, then define splits.
 
@@ -286,111 +286,118 @@ Each section of the experiment has:
 
 ## § 11. CNN Architecture
 
-**Purpose:** Define simple 1D CNN to test whether sequence-local information provides predictive signal.
+**Purpose:** Define the network family, fixed before any model is fit.
 
-**Why this method is needed:** A deliberately simple architecture is what makes the result interpretable: if a minimal model finds signal, the signal is in local sequence. A larger model that performed well would leave the source of its performance unidentifiable.
+**Why this method is needed:** A deliberately simple architecture is what makes the result interpretable: if a minimal model finds signal, the signal is in local sequence. A larger model performing well would leave the source of its performance unidentifiable.
 
-**Input & Sources:**
-- Sequence length distribution from Phase B
-- Amino-acid encoding scheme (frozen)
-- Architecture reference: standard 1D CNN with convolutions, pooling, dense layer
+**Input & Sources:** Length distribution from run-006; throughput from run-002; compute gate §14.
 
-**Methodology:**
-- Define embedding or numerical representation per amino acid
-- Specify convolutional blocks (kernel size, filters, stride)
-- Specify pooling (type, size)
-- Specify dense layers and output
-- Keep architecture intentionally simple to isolate sequence signal
+**Methodology — FROZEN 2026-10-06.** Fixed topology; only the bracketed values vary, and only within the §13 grid.
 
-**Metrics & QC:**
-- Architecture documented in cnn_config.json
-- Reproducible from configuration alone
-- No data observed during architecture selection
+```
+input  (12,) integer-encoded          §12
+  -> embedding, dim E                 [E]
+  -> conv1d, kernel k, C filters      [k] [C]  -> ReLU
+  -> max-pool, size 2
+  -> conv1d, kernel k, C filters      [k] [C]  -> ReLU
+  -> global max-pool                  -> (C,)
+  -> dropout p                        [p]
+  -> dense 64 -> ReLU
+  -> dense 1  -> sigmoid
+```
 
-**Expected Outcome:**
-- cnn_config.json (full architecture specification)
-- Architecture diagram or description
+Two convolutional blocks, not more: the receptive field after two kernel-3 blocks with one pooling step already spans the full 12-residue input, so depth beyond this cannot see more of the peptide and would only add capacity. Global max-pooling is used rather than flattening so the representation is position-invariant at the final layer, forcing positional information to be carried by the convolutions themselves, which is the thing being tested.
 
-**Limitations:**
-- Simplicity may underperform compared to more complex models
-- Outcome C (weak CNN) plausible on ~10k peptides
+**Metrics & QC:** Topology fixed; parameter count reported per configuration; no architecture selected after seeing test performance.
 
-**Status:** OPEN (depends on Phase B for sequence statistics)
+**Expected Outcome:** `cnn_config.json` per run, reproducible from the grid alone.
 
-**Next Step:** Observe sequence length distribution, finalize architecture.
+**Limitations:** A simple family may underperform. Outcome C in proposal §21 (weak CNN, strong existing predictors) remains plausible and is a legitimate result, not a failure of the design.
+
+**Status:** **FROZEN** (D026). Topology cannot change; deviation requires a new decision entry and makes any claim exploratory.
+
+**Next Step:** None.
 
 ---
 
 ## § 12. Input Representation
 
-**Purpose:** Define how peptide sequences are converted to numerical form and how variable lengths are handled.
+**Purpose:** Fix how peptides become model input.
 
 **Why this method is needed:** The representation determines what the model can possibly learn, so it is a scientific choice rather than an implementation detail. Changing it after seeing test performance would invalidate the endpoint.
 
-**Input & Sources:**
-- Sequence length range (expected: 8–12)
-- Amino-acid alphabet (20 standard + gaps)
+**Input & Sources:** Union length distribution (run-006): 8-mers 15.47%, 9-mers 27.80%, 10-mers 26.44%, 11-mers 18.67%, 12-mers 11.61%.
 
-**Methodology:**
-- Choose representation: one-hot encoding, embedding vectors, BLOSUM, or learned embedding
-- Choose length handling: padding, truncation, or length-aware layer
-- Freeze representation before evaluating test performance
-- Document exact implementation
+**Methodology — FROZEN 2026-10-06.**
 
-**Metrics & QC:**
-- Representation is deterministic
-- No hyperparameter tuning on test data
-- All sequences transformable without data leakage
+Twenty standard amino acids map to integers 1–20 in alphabetical order of one-letter code; 0 is reserved for padding and is a learnable embedding like any other token. Sequences containing any other character were excluded at dataset construction, so none occurs.
 
-**Expected Outcome:**
-- Input representation scheme documented
-- Example transformed sequences shown
-- Implementation code or reference
+**Peptides are padded to length 12 in the centre, not on the right.** The first four residues occupy positions 1–4 and the last four occupy positions 9–12; padding fills the middle. A 12-mer is unpadded; an 8-mer carries four pad tokens at positions 5–8.
 
-**Limitations:**
-- Fixed-length padding assumes variable-length peptides
-- Representation choice not validated on real data until model training
+This is the one place domain knowledge enters the encoding, and it is declared rather than buried. Class-I binding motifs are anchored at the N-terminal region and at the C-terminus. Right-padding would place the C-terminal residue at a different index for every peptide length, so a convolution would have to learn five separate C-terminal motifs — one per length — from a representation that actively obscures the alignment. Centre-padding costs nothing and removes an artefact. It does not encode which residues matter, only that the two termini are comparable across lengths.
 
-**Status:** OPEN (depends on Phase B)
+Length is **not** supplied as a separate feature. The pad tokens make it recoverable, and adding it explicitly would let the model exploit any residual length imbalance; the negative set is length-matched exactly, so no such imbalance exists to exploit.
 
-**Next Step:** Finalize representation, document exactly.
+**Metrics & QC:** Encoding deterministic; a round-trip test confirms sequence recovery from the encoding for every length.
+
+**Expected Outcome:** Fixed encoder, shared by every run.
+
+**Limitations:** Centre-padding assumes both termini are the informative regions. That is a strong prior from the biology and would be wrong for a presentation mechanism anchored internally.
+
+**Status:** **FROZEN** (D026).
+
+**Next Step:** None.
 
 ---
 
 ## § 13. Training Protocol
 
-**Purpose:** Specify all hyperparameters and training control before running experiments.
+**Purpose:** Fix every training parameter and the selection rule before fitting.
 
 **Why this method is needed:** Hyperparameters chosen with any sight of the test partition convert a held-out estimate into an optimistic one. Specifying the protocol in advance is what keeps the held-out estimate held out.
 
-**Input & Sources:**
-- Training data (from Phase B split)
-- Validation data (from Phase B split)
-- Preregistration (frozen before model training)
+**Input & Sources:** Frozen dataset and split; measured throughput (run-002); compute gate §14.
 
-**Methodology:**
-- Lock optimizer, learning rate, batch size, epochs, early stopping rule
-- Lock loss function, random seed, class weighting
-- Define hyperparameter search space and cross-validation strategy
-- Model selection criterion uses training/validation only
-- Test set never used for model selection
+**Methodology — FROZEN 2026-10-06.**
 
-**Metrics & QC:**
-- Preregistration document with all parameters locked
-- Seed and date recorded
-- Hyperparameter search bounded (max runs, max epochs)
+| Parameter | Value |
+|---|---|
+| Loss | binary cross-entropy |
+| Optimizer | Adam, learning rate 1e-3, default betas |
+| Batch size | 512 |
+| Max epochs | 100 |
+| Early stopping | patience 10 on validation average precision |
+| Class weighting | none — the classes are 1:1 by construction (D002) |
+| Weight init seed | `seed('model_init', replicate)` (D010) |
 
-**Expected Outcome:**
-- CNN_PREREGISTRATION.md (locked parameters)
-- cnn_seed.json (random seed, date, model selection criterion)
+**Grid — 16 configurations, fixed:**
 
-**Limitations:**
-- Search space bounds may be conservative
-- Early stopping rule may fail on small datasets
+| Hyperparameter | Values |
+|---|---|
+| embedding dim `E` | 16, 32 |
+| filters `C` | 32, 64 |
+| kernel `k` | 3, 5 |
+| dropout `p` | 0.0, 0.3 |
 
-**Status:** OPEN (depends on Phase B and compute gate)
+2 × 2 × 2 × 2 = 16, within the §14 limit of 20. Learning rate, batch size and dense width are fixed rather than searched: each would multiply the grid for a parameter with far less influence on this architecture than the four above.
 
-**Next Step:** Define compute budget, freeze preregistration.
+**Model selection:** mean validation average precision across the five folds, computed on training folds only. The test partition is not read until the selected configuration is fixed and the endpoint computed once.
+
+**Final fit:** the selected configuration, five folds × five initialisation seeds = 25 runs. All 25 are reported; selecting among seeds is prohibited (D010). **Endpoint (D027):** per-unit average precision is computed under each model and averaged across the 25; the estimand is the mean of those per-unit values, bootstrapped over units. Score-ensembling is reported as a secondary figure, since an ensemble answers a more flattering question than §25 asks.
+
+**Reduction ladder priority (required by D022).** If compute is exceeded, configurations drop from 16 to 8 by removing the `E = 16` half first, then `p = 0.0`. Order fixed here so it cannot be chosen under pressure.
+
+**Compute check:** 16 × 5 = 80 selection runs plus 25 final = **105 runs**, within the 150 cap. At 8.5 s/epoch and 100 epochs that is **24.7 h** against a 96 h cap, or roughly 10 h with early stopping at typical depth.
+
+**Metrics & QC:** Every run records config, seed, epochs to stop, and per-fold validation AP. No run touches the test partition.
+
+**Expected Outcome:** `CNN_PREREGISTRATION.md` emitted from this specification; `training_log.csv` per run.
+
+**Limitations:** A 16-point grid may miss a better configuration. That is accepted: a larger search increases the chance of selecting on noise, and the endpoint is about whether sequence carries signal, not about the best attainable model.
+
+**Status:** **FROZEN** (D026).
+
+**Next Step:** None. Training may proceed on hardware meeting §14.
 
 ---
 
@@ -542,7 +549,7 @@ Re-check the projection once more units are extracted.
 - AUPRC is incomparable across studies with different class ratios
 - Positive prevalence must not change after observing test performance
 
-**Status:** OPEN (blocked on class-ratio decision in DECISION_LOG)
+**Status:** RESOLVED — AUPRC primary at 1:1; floor is the measured 0.597, not prevalence (D002, D008)
 
 **Next Step:** Lock positive:negative ratio, then freeze primary endpoint.
 
@@ -651,9 +658,61 @@ Re-check the projection once more units are extracted.
 - Existing predictors designed for different tasks (binding affinity vs. presence/absence)
 - Fair comparison requires careful setup
 
-**Status:** OPEN (depends on test evaluation)
+**Status:** **RESOLVED 2026-10-07 — G11 PASSED** (`results/qc/QC_G11.md`,
+D033). The planning fields above are left as written; the finding follows.
 
-**Next Step:** Resolve D006 first — the contamination check in M7 gates both the fairness of this comparison and any future promotion of it to primary. Then obtain predictor outputs and evaluate. Better powered than §25 at every participant count tested (run-001, F7), but not promotable post hoc: a switch after seeing results is endpoint switching regardless of the power argument.
+### Finding
+
+Both MHCflurry release lines were admitted under D006 as quantified
+`OVERLAPPING` — training lists retrieved from the model bundles themselves and
+registered as S6 sources with sha256. Overlap with the test partition: 8.29% of
+positives for 2.0.0, 9.11% for 2.3.0, against 1.20% and 1.16% of negatives, a
+~7:1 bias toward positives.
+
+On rows naive to **both** systems (D033 — removing only the predictor's overlap
+would hand the CNN a selectively easier dataset, which the Methodology above
+forbids):
+
+| System | mean per-unit AP | CI99 |
+|---|---|---|
+| **CNN** | **0.6859** | [0.6703, 0.7019] |
+| MHCflurry 2.0.0 | 0.5481 | [0.5342, 0.5646] |
+| MHCflurry 2.3.0 | 0.5519 | [0.5382, 0.5688] |
+
+CNN − 2.0.0 = **+0.1378** (CI99 [+0.1151, +0.1583], 10/10 units);
+CNN − 2.3.0 = **+0.1340** (CI99 [+0.1126, +0.1505], 10/10 units). The advantage
+is largest where contamination is smallest, so it is not memorisation.
+
+### §18 may NOT state
+
+- **that the CNN is a better model of HLA class-I presentation.** The comparison
+  is not a fair test of predictor quality. MHCflurry predicts whether a peptide
+  *can* be presented; our label records whether it *was observed*. **11.78% of
+  set-C negatives are ranked strong presenters** (percentile ≤ 2) and 9.11% have
+  predicted affinity ≤ 500 nM — counted as the predictor's errors, though some
+  are the predictor being right and the label being a detection artefact.
+- **that the margin reflects architecture.** The CNN trained on 42 participants
+  of this cohort — same laboratory, same two instruments, same protocol, same
+  negative construction, whose instrument component R10 put at 0.04–0.06 AP.
+  MHCflurry never saw this cohort. Read the margin as the value of
+  task-specific training.
+- anything about NetMHCpan or MixMHCpred, neither of which was obtained.
+
+**Not promoted.** D014's promotion condition — every admitted predictor `CLEAN`
+or quantified `OVERLAPPING` — is now met, and D014's bar on post-hoc switching
+is unchanged. §25 was read and closed before any predictor score existed.
+
+**Updated 2026-10-07 (D035, D036).** Both predictors this section said were
+unobtainable have been obtained and scored. The MixMHCpred reason was simply
+false — `raw.githubusercontent.com` is not refused — and the NetMHCpan reason
+conflated licence-gated software with open training data. The comparison now
+spans four predictors; see `results/qc/QC_G11_four_predictors.md`. On rows no
+system has seen, the CNN leads by **+0.1373 to +0.1418**, 10/10 units, and **the
+four predictors agree with each other to within 0.0046** — which strengthens the
+reading that the lead is cohort-specific training rather than architecture.
+
+**Next Step:** None reachable here. NetMHCpan **4.2** needs a second licence
+submission; its training data is registered but it is scored in no comparison.
 
 ---
 
@@ -689,9 +748,68 @@ Re-check the projection once more units are extracted.
 - Outcome C (weak CNN) plausible; interpretation may be null
 - High performance does not prove experimental binding
 
-**Status:** OPEN (depends on test evaluation and all QC gates)
+**Status:** **RESOLVED 2026-10-07 — G13 PASSED** under the criterion narrowed by
+D032 and accepted by the project owner. The planning fields above are left as
+written before any result existed; the finding follows.
 
-**Next Step:** Execute after all results are available.
+### Finding (the wording accepted in D032, verbatim)
+
+> The model learns sequence features linked to donor genotype. For HLA-A\*02:01
+> this is demonstrated allele-specifically: a model trained on carriers ranks
+> peptides exclusive to carriers above a model trained on carriers of a
+> different allele, on held-out participants, by 0.048 average precision
+> (nominal-99% CI 0.031–0.063, 9 of 9 units), with memorisation, peptide
+> recurrence and training-set quality each measured at zero on the same units.
+> The direction reproduces across five alleles. It is not demonstrated for
+> HLA-C\*07:02. The effect is a few hundredths of average precision on strata
+> comprising 0.5–5% of each ligandome.
+
+### §20 may NOT state (carried from D032, so the narrowing cannot widen by paraphrase)
+
+- that the primary endpoint's lift is presentation biology;
+- that the restricting allele is identified — no deconvolution was done and
+  linkage is uncontrolled;
+- anything generalizing beyond this cohort, disease, tissue and laboratory;
+- anything about HLA-C.
+
+### The alternatives this section was required to exclude, and how each was excluded
+
+| Alternative | Excluded by | Result |
+|---|---|---|
+| Memorisation of shared sequences | leakage-free subset (D003) at the endpoint; `SEEN` fraction on all 21 multi-allele row sets (D030) | endpoint rejects null leakage-free too (0.7056, CI99 [0.6926, 0.7184]); 0.00% seen in every allele comparison |
+| Instrument / platform | cross-platform transfer (D025, D028) | does not collapse; platform costs 0.04–0.06 AP of a 0.10 lift |
+| Donor effects generally | participant-disjoint splitting throughout; per-unit clustering in every interval | endpoint per-unit range 0.7102–0.7911 across 10 held-out participants |
+| One training set simply being better | direct neutral estimate on class-shared peptides, every comparison | −0.0013 in Part B; caught a false positive at A\*01:01 (+0.0146) |
+| Peptide recurrence rather than allele class | recurrence-matched control, same units | +0.0052 in Part B; difference-of-differences +0.0279 in D030's correction |
+| Amino-acid composition | arm-specific composition-only LDA floor on every single arm | lifts of +0.08 to +0.12 over each arm's own floor |
+
+**Robustness across peptide lengths — reported.** Decomposing the already-read
+endpoint over the same rows and models (`endpoint_by_length.json`; the pooled
+value reproduces at 0.7551): 8-mer 0.7649, 9-mer 0.7660, 10-mer 0.7297, 11-mer
+0.7421, 12-mer 0.7850. Spread 0.0553, and **every length's nominal-99% lower
+bound clears the 0.647 threshold**. The result is not carried by one length.
+
+**One caveat on that, stated because it cuts against the reading.** The
+best-performing length is the 12-mer (0.7850), and 12-mers are also the length
+D025 found most platform-discriminative — 11.69% of LTQ positives against 9.85%
+of Lumos. The length that performs best is the length carrying the most
+instrument signature. R10 bounds how much of the signal that can be, but the
+coincidence is in the unflattering direction and is recorded rather than left
+out.
+
+**Robustness across negative-control designs — DEFERRED, structurally
+unavailable.** D002 selected set C and the dataset was frozen with set C alone:
+`NEGATIVES.csv` holds 520,000 set-C rows with no alternative, so evaluating
+sets A or B would mean rebuilding a frozen dataset. Recorded per the gate
+schedule's rule against silent reduction. The composition diagnostic that chose
+set C (A 0.6120, B 0.5000, C 0.6085) is the only evidence on this axis, and it
+is a property of the data rather than of the model.
+
+**Next Step:** None for this dataset. The symmetric multi-allele test cannot be
+replicated here — no second allele pair has ≥14 units on both sides (D031's pair
+table) — so strengthening the allele claim requires a second cohort, which is
+outside this project's scope. §18 remains blocked by D006 and is the only
+analysis still outstanding.
 
 ---
 
@@ -723,9 +841,9 @@ Re-check the projection once more units are extracted.
 - "Better than chance" undefined without threshold
 - Small donor count may prevent robust effect estimation
 
-**Status:** OPEN — remains the primary endpoint per D014 (ratified); the threshold itself is still unspecified and blocked on D002
+**Status:** RESOLVED — primary endpoint per D014; decision rule fixed by D008: reject if the lower bound of a nominal-99% cluster-bootstrap interval exceeds 0.647 (composition floor 0.597 + 0.05). Nominal 99% because 95% delivers only ~89% actual coverage at 10 test units
 
-**Next Step:** Preregister the decision rule in the form D014 fixes — a lift over prevalence, tested on the interval's lower bound. The magnitude cannot be set until D002 fixes the class ratio, since prevalence follows from it. Run-001 indicates ~0.10 AP is cleanly resolvable at ten held-out participants and ~0.04 is marginal.
+**Next Step:** None. The rule is preregistered. Note its limitation: power is 0.42 at AUROC 0.70, so the minimum reliably detectable effect is a lift of ~0.14 AP (AUROC ≈ 0.75). Failure to reject is not evidence of no signal.
 
 ---
 
@@ -741,11 +859,60 @@ G6 — Train/validation/test split locked                 § 10
 G7 — CNN architecture & input representation locked     § 11–12
 G8 — Training protocol & compute gate passed            § 13–14
 G9 — CNN training completed                             (training)
-G10 — Test evaluation completed                         § 15–17
-G11 — Predictor comparison completed                    § 18
-G12 — Statistical analysis completed                    § 16
-G13 — Biological interpretation finalized               § 20
-FINAL → Decision on primary hypothesis                  § 25
+G10 — Test evaluation completed                         § 15-17  [PASSED 2026-10-07]
+G11 — Predictor comparison completed                    § 18     [PASSED 2026-10-07]
+G12 — Statistical analysis completed                    § 16     [PASSED 2026-10-07]
+G13 — Biological interpretation finalized               § 20     [PASSED 2026-10-07]
+FINAL -> Decision on primary hypothesis                  § 25    [null REJECTED]
 ```
 
 No gate can be bypassed silently. Record any reduction or deferral.
+
+**Gate status, 2026-10-07.**
+
+- **G10 PASSED** — `results/qc/QC_G10_endpoint.md`. The endpoint was read once
+  under the D008 rule: primary 0.7551, CI99 [0.7368, 0.7721] against a threshold
+  of 0.647. Null rejected, and rejected again on the leakage-free subset
+  (0.7056, CI99 [0.6926, 0.7184]).
+- **G11 PASSED 2026-10-07** — `results/qc/QC_G11.md`. Both MHCflurry lines
+  admitted as quantified `OVERLAPPING` (8.29% / 9.11% of test positives, ~7:1
+  biased toward positives). On rows naive to both systems the CNN leads by
+  **+0.1378** and **+0.1340** AP, 10/10 participants, and the lead is largest
+  where contamination is smallest. **The earlier status here — "the input does
+  not exist" — was wrong**: D006 had measured github.com's bare domain rather
+  than its release assets, and each model bundle ships its own training data.
+  §18 is not promoted (D014). The comparison is not a fair test of predictor
+  quality: 11.78% of set-C negatives are ranked strong presenters, so the task
+  differs from the predictor's.
+- **G12 PASSED 2026-10-07** — `QC_G12_transfer.md` and `QC_G12_allele.md`. Both
+  preregistered secondary analyses are complete. Cross-platform transfer (D025,
+  D028): performance does not collapse, platform effect 0.04-0.06 AP.
+  Dominant-allele-held-out (D001, D029, D030): holding out the cohort's most
+  common allele costs nothing visible (+0.0072, CI99 [-0.0015, +0.0162]); the
+  carrier-exclusive stratum shows +0.0335 (14/14 units) but the preregistered
+  sign test is inconclusive. The multi-allele test (D031) then settled it for
+  A\*02:01. **G12 now PASSED**, with §18 complete under G11.
+- **G13 PASSED 2026-10-07** — `QC_G12_multi_allele.md`. An allele-specific
+  effect is **established for HLA-A\*02:01** (+0.0476, CI99 [+0.0314, +0.0626],
+  9/9 units, with memorisation, recurrence and training-set quality each measured
+  at zero on the same units) and **not demonstrated for HLA-C\*07:02**. Three of
+  D031's four release conditions were met; the fourth required significance from
+  a 6-unit arm and was unattainable by construction, so **D032 narrowed it to one
+  direction and the project owner accepted**. §20 is written to D032's wording
+  verbatim, with D032's "may not state" list carried into it. Two §20 robustness
+  items were handled rather than skipped: peptide length is now reported (all
+  five lengths clear the threshold), and negative-control design is recorded as
+  structurally unavailable under the dataset freeze.
+
+**All gates are now closed.** G1–G13 and FINAL have each either passed or
+carry an explicitly recorded, structurally unavailable component:
+
+| Recorded as unavailable | Why |
+|---|---|
+| §20 robustness across negative-control designs | the dataset was frozen with set C alone; sets A and B would need the freeze broken |
+| §18 NetMHCpan 4.1 | per-user academic licence form at the DTU host, not scriptable |
+| §18 MixMHCpred | distributed via `raw.githubusercontent.com`, refused by this proxy |
+| the symmetric multi-allele test beyond one pair | no second allele pair has ≥14 units on both sides in this cohort |
+| S4 acquisitions | never retrieved; recorded in `DATA_SOURCES.md` |
+
+Nothing is outstanding that this dataset and environment could supply.

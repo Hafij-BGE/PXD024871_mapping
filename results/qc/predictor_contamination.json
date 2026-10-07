@@ -1,0 +1,160 @@
+{
+ "test_partition": {
+  "n_units": 10,
+  "distinct_positives": 97567,
+  "distinct_negatives": 100000
+ },
+ "release_lines": {
+  "2.0.0": {
+   "training_source": "model bundle train_data (authoritative)",
+   "per_component": {
+    "train_data.csv.bz2": 71427,
+    "affinity_predictor_train_data.csv.bz2": 371953,
+    "processing_predictor_train_data.csv.bz2": 297548,
+    "processing_predictor_no_flank_train_data.csv.bz2": 297548
+   },
+   "n_training_peptides": 605189,
+   "curated_cross_check": {
+    "release": "curated2020",
+    "n_human_hla": 395160,
+    "overlap_positives": 7043
+   },
+   "overlap_positives": 8093,
+   "overlap_negatives": 1199,
+   "overlap_positives_frac": 0.0829481279530989,
+   "overlap_negatives_frac": 0.01199,
+   "overlap_positives_any_species": 7043,
+   "per_unit": {
+    "UPN01": {
+     "n_pos": 10000,
+     "overlap": 577,
+     "frac": 0.0577
+    },
+    "UPN08": {
+     "n_pos": 10000,
+     "overlap": 489,
+     "frac": 0.0489
+    },
+    "UPN14": {
+     "n_pos": 10000,
+     "overlap": 514,
+     "frac": 0.0514
+    },
+    "UPN22": {
+     "n_pos": 10000,
+     "overlap": 888,
+     "frac": 0.0888
+    },
+    "UPN24": {
+     "n_pos": 10000,
+     "overlap": 683,
+     "frac": 0.0683
+    },
+    "UPN27": {
+     "n_pos": 10000,
+     "overlap": 1332,
+     "frac": 0.1332
+    },
+    "UPN31": {
+     "n_pos": 10000,
+     "overlap": 1542,
+     "frac": 0.1542
+    },
+    "UPN38": {
+     "n_pos": 10000,
+     "overlap": 495,
+     "frac": 0.0495
+    },
+    "UPN46": {
+     "n_pos": 10000,
+     "overlap": 1315,
+     "frac": 0.1315
+    },
+    "UPN51": {
+     "n_pos": 10000,
+     "overlap": 942,
+     "frac": 0.0942
+    }
+   },
+   "n_sources": 535,
+   "sources_naming_deposit": {},
+   "m7_verdict": "OVERLAPPING",
+   "overlapping_positive_sequences": []
+  },
+  "2.3.0": {
+   "training_source": "model bundle train_data (authoritative)",
+   "per_component": {
+    "affinity_predictor_train_data.csv.bz2": 462828,
+    "processing_predictor_with_flanks_train_data.csv.bz2": 288288,
+    "processing_predictor_no_flank_train_data.csv.bz2": 288288
+   },
+   "n_training_peptides": 666025,
+   "curated_cross_check": {
+    "release": "curated2023",
+    "n_human_hla": 464709,
+    "overlap_positives": 8250
+   },
+   "overlap_positives": 8893,
+   "overlap_negatives": 1157,
+   "overlap_positives_frac": 0.09114762163436407,
+   "overlap_negatives_frac": 0.01157,
+   "overlap_positives_any_species": 8250,
+   "per_unit": {
+    "UPN01": {
+     "n_pos": 10000,
+     "overlap": 626,
+     "frac": 0.0626
+    },
+    "UPN08": {
+     "n_pos": 10000,
+     "overlap": 544,
+     "frac": 0.0544
+    },
+    "UPN14": {
+     "n_pos": 10000,
+     "overlap": 522,
+     "frac": 0.0522
+    },
+    "UPN22": {
+     "n_pos": 10000,
+     "overlap": 953,
+     "frac": 0.0953
+    },
+    "UPN24": {
+     "n_pos": 10000,
+     "overlap": 749,
+     "frac": 0.0749
+    },
+    "UPN27": {
+     "n_pos": 10000,
+     "overlap": 1429,
+     "frac": 0.1429
+    },
+    "UPN31": {
+     "n_pos": 10000,
+     "overlap": 1788,
+     "frac": 0.1788
+    },
+    "UPN38": {
+     "n_pos": 10000,
+     "overlap": 557,
+     "frac": 0.0557
+    },
+    "UPN46": {
+     "n_pos": 10000,
+     "overlap": 1496,
+     "frac": 0.1496
+    },
+    "UPN51": {
+     "n_pos": 10000,
+     "overlap": 994,
+     "frac": 0.0994
+    }
+   },
+   "n_sources": 676,
+   "sources_naming_deposit": {},
+   "m7_verdict": "OVERLAPPING",
+   "overlapping_positive_sequences": []
+  }
+ }
+}

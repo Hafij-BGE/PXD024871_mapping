@@ -1,0 +1,124 @@
+{
+ "test_partition": {
+  "n_units": 10,
+  "positives": 97567,
+  "negatives": 100000
+ },
+ "predictors": {
+  "MHCflurry 2.0.0": {
+   "train_positive": 556234,
+   "train_negative": 50315,
+   "train_union": 605189,
+   "overlap_positives": 8093,
+   "overlap_negatives": 1199,
+   "overlap_positives_frac": 0.0829481279530989,
+   "overlap_negatives_frac": 0.01199,
+   "bias_pos_over_neg": 6.918109086997406,
+   "per_unit_positive_overlap": {
+    "UPN01": 0.0577,
+    "UPN08": 0.0489,
+    "UPN14": 0.0514,
+    "UPN22": 0.0888,
+    "UPN24": 0.0683,
+    "UPN27": 0.1332,
+    "UPN31": 0.1542,
+    "UPN38": 0.0495,
+    "UPN46": 0.1315,
+    "UPN51": 0.0942
+   },
+   "m7_verdict": "OVERLAPPING"
+  },
+  "MHCflurry 2.3.0": {
+   "train_positive": 514286,
+   "train_negative": 181294,
+   "train_union": 666025,
+   "overlap_positives": 8893,
+   "overlap_negatives": 1157,
+   "overlap_positives_frac": 0.09114762163436407,
+   "overlap_negatives_frac": 0.01157,
+   "bias_pos_over_neg": 7.877927539703031,
+   "per_unit_positive_overlap": {
+    "UPN01": 0.0626,
+    "UPN08": 0.0544,
+    "UPN14": 0.0522,
+    "UPN22": 0.0953,
+    "UPN24": 0.0749,
+    "UPN27": 0.1429,
+    "UPN31": 0.1788,
+    "UPN38": 0.0557,
+    "UPN46": 0.1496,
+    "UPN51": 0.0994
+   },
+   "m7_verdict": "OVERLAPPING"
+  },
+  "NetMHCpan 4.1": {
+   "train_positive": 387475,
+   "train_negative": 11693931,
+   "train_union": 12081069,
+   "overlap_positives": 8997,
+   "overlap_negatives": 3316,
+   "overlap_positives_frac": 0.09221355581292855,
+   "overlap_negatives_frac": 0.03316,
+   "bias_pos_over_neg": 2.7808671837433216,
+   "per_unit_positive_overlap": {
+    "UPN01": 0.0671,
+    "UPN08": 0.0577,
+    "UPN14": 0.0648,
+    "UPN22": 0.097,
+    "UPN24": 0.0809,
+    "UPN27": 0.145,
+    "UPN31": 0.1592,
+    "UPN38": 0.0617,
+    "UPN46": 0.1407,
+    "UPN51": 0.0957
+   },
+   "m7_verdict": "OVERLAPPING"
+  },
+  "NetMHCpan 4.2": {
+   "train_positive": 440390,
+   "train_negative": 12741099,
+   "train_union": 13101003,
+   "overlap_positives": 20232,
+   "overlap_negatives": 16196,
+   "overlap_positives_frac": 0.20736519519919644,
+   "overlap_negatives_frac": 0.16196,
+   "bias_pos_over_neg": 1.2803482044899757,
+   "per_unit_positive_overlap": {
+    "UPN01": 0.183,
+    "UPN08": 0.1812,
+    "UPN14": 0.179,
+    "UPN22": 0.2068,
+    "UPN24": 0.1958,
+    "UPN27": 0.2559,
+    "UPN31": 0.2689,
+    "UPN38": 0.1798,
+    "UPN46": 0.2516,
+    "UPN51": 0.2186
+   },
+   "m7_verdict": "OVERLAPPING"
+  },
+  "MixMHCpred 3.0": {
+   "train_positive": 354675,
+   "train_negative": 2018404,
+   "train_union": 2364378,
+   "overlap_positives": 10110,
+   "overlap_negatives": 3333,
+   "overlap_positives_frac": 0.10362110139698874,
+   "overlap_negatives_frac": 0.03333,
+   "bias_pos_over_neg": 3.1089439363032927,
+   "per_unit_positive_overlap": {
+    "UPN01": 0.0796,
+    "UPN08": 0.0677,
+    "UPN14": 0.0701,
+    "UPN22": 0.1116,
+    "UPN24": 0.0864,
+    "UPN27": 0.1408,
+    "UPN31": 0.1845,
+    "UPN38": 0.0716,
+    "UPN46": 0.1617,
+    "UPN51": 0.113
+   },
+   "m7_verdict": "OVERLAPPING"
+  }
+ }
+}

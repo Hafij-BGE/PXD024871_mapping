@@ -1,0 +1,24 @@
+{
+ "selected": {
+  "config_index": 0,
+  "config": {
+   "E": 16,
+   "C": 32,
+   "k": 3,
+   "p": 0.0
+  },
+  "fold_val_ap": [
+   0.7447937959447233,
+   0.7524827866712115,
+   0.758759843506171,
+   0.7543165966898274,
+   0.7523139472642705
+  ],
+  "mean_val_ap": 0.7525333940152408,
+  "device": "cuda",
+  "torch": "2.11.0+cu130"
+ },
+ "grid_size": 16,
+ "criterion": "mean validation average precision across 5 folds",
+ "max_epochs": 100
+}
