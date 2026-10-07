@@ -144,7 +144,19 @@ def verify():
                                                 '\n'.join(b.splitlines()[:8]))]
     ok(not openq, 'no decision left OPEN', '' if not openq else f'OPEN: {openq}')
 
-    print("\n8. trainer selftest")
+    man = REPO/'freeze_manifest.json'
+    if man.exists():
+        print("\n8. existing manifest agrees with the tree")
+        mj = json.loads(man.read_text())
+        drift = [f['path'] for f in mj['files']
+                 if (REPO/f['path']).exists() and sha(REPO/f['path']) != f['sha256']]
+        gone = [f['path'] for f in mj['files'] if not (REPO/f['path']).exists()]
+        ok(not drift and not gone, f"{len(mj['files'])} manifest entries match",
+           '' if not (drift or gone) else f'drift {drift} missing {gone}')
+        ok(mj.get('excludes') == [MANIFEST],
+           'manifest excludes itself, the one file it cannot hash')
+
+    print("\n9. trainer selftest")
     r = subprocess.run([sys.executable, str(REPO/'scripts'/'train_cnn.py'),
                         '--mode', 'selftest'], capture_output=True, text=True)
     ok('ALL SELFTESTS PASS' in r.stdout, 'encoder, AP, gradients, overfit')
@@ -157,8 +169,16 @@ def verify():
     return True
 
 
+MANIFEST = 'freeze_manifest.json'
+
+
 def write_manifest():
-    files = [f for f in git('ls-files').splitlines() if f]
+    # The manifest cannot carry its own hash: hashing it and then overwriting it
+    # stores the PREVIOUS version's digest, which makes the file disagree with
+    # itself. The first run of this script did exactly that, and the documented
+    # verification command reported freeze_manifest.json as changed. It is the
+    # one file the manifest cannot cover, so it is excluded and said so.
+    files = [f for f in git('ls-files').splitlines() if f and f != MANIFEST]
     rows, total = [], 0
     for f in sorted(files):
         p = REPO/f
@@ -172,9 +192,11 @@ def write_manifest():
            'branch': git('rev-parse', '--abbrev-ref', 'HEAD'),
            'parent_commit': git('rev-parse', 'HEAD'),
            'n_files': len(rows), 'total_bytes': total,
+           'excludes': [MANIFEST],
            'note': 'parent_commit is the commit BEFORE this manifest was committed. '
                    'The anchor is the commit that ADDS this file; a manifest cannot '
-                   'contain the hash of the commit that carries it.',
+                   'contain the hash of the commit that carries it, nor its own '
+                   'digest, so freeze_manifest.json is the one file excluded.',
            'files': rows}
     (REPO/'freeze_manifest.json').write_text(json.dumps(man, indent=1))
     print(f"wrote freeze_manifest.json: {len(rows)} files, {total/1e6:.1f} MB")
