@@ -326,7 +326,13 @@ def main():
         X = encode([s for s, _, _ in test_rows])
         y = np.array([l for _, _, l in test_rows])
         unit_of = np.array([u for _, u, _ in test_rows])
-        clean = np.array([s in leakfree for s, _, _ in test_rows])
+        # The leakage-free subset is leakage-free POSITIVES plus ALL test
+        # negatives. TEST_LEAKFREE.csv lists only positives by construction, so
+        # masking on membership alone selects a set containing no negatives, and
+        # average precision on an all-positive set is 1.0 trivially. That is an
+        # artefact, not a clean result, and it is exactly what the first run
+        # produced before this was corrected.
+        clean = np.array([(l == 0) or (s in leakfree) for s, _, l in test_rows])
         Xt = torch.from_numpy(X).to(device)
 
         scores = []
