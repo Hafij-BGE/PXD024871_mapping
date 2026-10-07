@@ -1,0 +1,38 @@
+# ---------------------------------------------------------------------------
+# NO line-ending conversion anywhere. This is deliberate and load-bearing.
+# ---------------------------------------------------------------------------
+# freeze_manifest.json records the SHA-256 of every tracked file, and
+# scripts/freeze.py --verify re-hashes the working tree against it. Any
+# checkout-time rewriting of bytes makes that check fail -- not for a real
+# reason, but because git handed the verifier different bytes than were
+# committed.
+#
+# That is not hypothetical here. Python's csv module writes CRLF, so 67 of the
+# derived tables and predictor score files are genuinely CRLF on disk and were
+# hashed that way. The first draft of this file said `* text=auto eol=lf`,
+# which would have silently converted every one of them on clone and broken
+# verification for every person who cloned the repository, while verifying
+# perfectly on the machine that wrote it. `-text` is what keeps the manifest
+# true on someone else's machine.
+#
+# Do not "tidy" this into eol=lf without re-freezing.
+* -text
+
+# Explicitly binary: no diff, no conversion.
+*.pt    binary
+*.gz    binary
+*.bz2   binary
+*.tar   binary
+*.pdf   binary
+
+# ---------------------------------------------------------------------------
+# GitHub language statistics
+# ---------------------------------------------------------------------------
+# Without these, 52 MB of derived CSV and two Colab notebooks dominate the
+# language bar and the repository is reported as mostly Jupyter Notebook, which
+# tells a visitor nothing. The 29 scripts are the code.
+data/derived/**      linguist-generated
+results/**           linguist-generated
+freeze_manifest.json linguist-generated
+notebooks/**         linguist-vendored
+LICENSE-docs         linguist-vendored

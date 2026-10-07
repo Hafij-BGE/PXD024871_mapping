@@ -1,0 +1,153 @@
+cff-version: 1.2.0
+message: >-
+  If you use this repository, please cite it as below. Please also cite the
+  underlying PRIDE deposit and any predictor whose output you reuse; the
+  citation each one requires is listed in THIRD_PARTY_NOTICES.md.
+title: >-
+  PXD024871 — a preregistered sequence-only CNN benchmark on HLA class-I
+  immunopeptidomics
+abstract: >-
+  A single-cohort, preregistered study of whether a 1D convolutional network can
+  distinguish experimentally observed HLA class-I peptides from matched decoys
+  from sequence alone, and how it compares with five published presentation
+  predictors on identical rows. Primary endpoint AP 0.7551 (99% CI 0.7368–0.7721)
+  on held-out biological units. On 165,574 rows common to all systems, four
+  independently built predictors span 0.0046 AP while the CNN leads them by
+  0.137–0.142 — a pattern the report argues weakens, rather than supports, an
+  architectural reading of that lead. Includes the full decision log, the QC
+  gates, and the analyses that were withdrawn.
+type: software
+authors:
+  - family-names: Rahman
+    given-names: Md Hafijur
+    alias: hafijbd
+version: 1.0.0
+date-released: '2026-10-07'
+license:
+  - MIT
+  - CC-BY-4.0
+license-url: https://github.com/hafijbd/PXD024871_mapping/blob/main/LICENSE
+repository-code: https://github.com/hafijbd/PXD024871_mapping
+keywords:
+  - immunopeptidomics
+  - HLA class I
+  - MHC class I
+  - antigen presentation
+  - convolutional neural network
+  - reproducibility
+  - preregistration
+  - PXD024871
+references:
+  - type: data
+    title: >-
+      Immunopeptidomics-guided warehouse design for peptide-based immunotherapy
+      in chronic lymphocytic leukemia
+    notes: >-
+      The PRIDE Archive deposit reanalysed here (PXD024871, published
+      2021-09-10). Title and submitter retrieved from the PRIDE Archive API on
+      2026-10-07, not transcribed from memory. This repository is an independent
+      reanalysis and is not affiliated with the depositors.
+    url: https://www.ebi.ac.uk/pride/archive/projects/PXD024871
+    year: 2021
+    authors:
+      - family-names: Nelde
+        given-names: Annika
+      - family-names: Walz
+        given-names: Juliane S.
+  - type: article
+    title: >-
+      Immunopeptidomics-Guided Warehouse Design for Peptide-Based Immunotherapy
+      in Chronic Lymphocytic Leukemia
+    notes: >-
+      The publication accompanying PXD024871, named in the deposit's own
+      reference line.
+    authors:
+      - family-names: Nelde
+        given-names: Annika
+      - family-names: Maringer
+        given-names: Yacine
+      - family-names: Bilich
+        given-names: Tatjana
+      - family-names: Salih
+        given-names: Helmut R.
+      - family-names: Roerden
+        given-names: Malte
+      - family-names: Heitmann
+        given-names: Jonas S.
+      - family-names: Marcu
+        given-names: Ana
+      - family-names: Bauer
+        given-names: Jens
+      - family-names: Neidert
+        given-names: Marian C.
+      - family-names: Denzlinger
+        given-names: Claudio
+      - family-names: Illerhaus
+        given-names: Gerald
+      - family-names: Aulitzky
+        given-names: Walter Erich
+      - family-names: Rammensee
+        given-names: Hans-Georg
+      - family-names: Walz
+        given-names: Juliane S.
+    journal: Frontiers in Immunology
+    year: 2021
+    volume: '12'
+    start: '705974'
+    doi: 10.3389/fimmu.2021.705974
+  - type: article
+    title: >-
+      NetMHCpan-4.1 and NetMHCIIpan-4.0: improved predictions of MHC antigen
+      presentation by concurrent motif deconvolution and integration of MS MHC
+      eluted ligand data
+    authors:
+      - family-names: Reynisson
+        given-names: Birkir
+      - family-names: Alvarez
+        given-names: Bruno
+      - family-names: Paul
+        given-names: Sinu
+      - family-names: Peters
+        given-names: Bjoern
+      - family-names: Nielsen
+        given-names: Morten
+    journal: Nucleic Acids Research
+    year: 2020
+    volume: '48'
+    issue: W1
+    start: W449
+    end: W454
+    doi: 10.1093/nar/gkaa379
+  - type: article
+    title: >-
+      MHCflurry 2.0: Improved Pan-Allele Prediction of MHC Class I-Presented
+      Peptides by Incorporating Antigen Processing
+    authors:
+      - family-names: O'Donnell
+        given-names: Timothy J.
+      - family-names: Rubinsteyn
+        given-names: Alex
+      - family-names: Laserson
+        given-names: Uri
+    journal: Cell Systems
+    year: 2020
+    volume: '11'
+    issue: '1'
+    start: '42'
+    end: 48.e7
+    doi: 10.1016/j.cels.2020.06.010
+  - type: article
+    title: 'Predicting MHC-I ligands across alleles and species: how far can we go?'
+    authors:
+      - family-names: Tadros
+        given-names: Daniel M.
+      - family-names: Racle
+        given-names: Julien
+      - family-names: Gfeller
+        given-names: David
+    journal: Genome Medicine
+    year: 2025
+    volume: '17'
+    issue: '1'
+    start: '25'
+    doi: 10.1186/s13073-025-01450-8

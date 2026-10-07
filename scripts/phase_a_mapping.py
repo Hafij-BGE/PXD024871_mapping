@@ -111,14 +111,21 @@ def main():
     w = lambda path, rowsx: (
         csv.DictWriter(path.open('w', newline='', encoding='utf-8'), fieldnames=list(rowsx[0].keys())),
         rowsx)
-    def write(path, rowsx):
-        if not rowsx:
+    def write(path, rowsx, fields=None):
+        # An empty table must still carry its header. Writing a 0-byte file
+        # leaves a reader unable to tell "no rows" from "this stage crashed",
+        # which is exactly how FILE_MAP_REJECTS.csv read for the whole project:
+        # 0 bytes, no header, and M1's gate line asserting the emptiness that
+        # the file itself could not evidence. Callers whose table may be empty
+        # pass `fields`.
+        cols = list(rowsx[0].keys()) if rowsx else fields
+        if cols is None:
             path.write_text('', encoding='utf-8'); return
         with path.open('w', newline='', encoding='utf-8') as fh:
-            wr = csv.DictWriter(fh, fieldnames=list(rowsx[0].keys())); wr.writeheader(); wr.writerows(rowsx)
+            wr = csv.DictWriter(fh, fieldnames=cols); wr.writeheader(); wr.writerows(rowsx)
 
     write(DER/'FILE_MAP.csv', filemap)
-    write(DER/'FILE_MAP_REJECTS.csv', rejects)
+    write(DER/'FILE_MAP_REJECTS.csv', rejects, fields=['key', 'status', 'reason'])
     write(DER/'ELIGIBILITY.csv', [{'raw_file': f['raw_file'], 'hla_class': f['hla_class'],
                                    'source_evidence': f['source_evidence'], 'eligible': f['eligible'],
                                    'exclusion_reason': f['exclusion_reason']} for f in filemap])

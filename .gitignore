@@ -1,3 +1,32 @@
+# ---------------------------------------------------------------------------
+# Withheld on public release (D037)
+# ---------------------------------------------------------------------------
+# The T-A4 experiment proposal is an internal document that was "not yet
+# preregistered or executed" when written. Its content is withheld; its title,
+# size and SHA-256 are committed in the stub beside it, so every reference to
+# it elsewhere still resolves to something a reader can verify.
+PXD024871_CNN_Experiment_Proposal.md
+!PXD024871_CNN_Experiment_Proposal.STUB.md
+
+# Verbatim stdout of NetMHCpan 4.1 and MixMHCpred 3.0 (37 MB). The per-peptide
+# SCORE CSVs are committed -- they are the evidence behind the four-predictor
+# comparison in §18 and are ordinary derived results. The raw program output is
+# not committed, because both tools reach users through an academic licence and
+# republishing their verbatim output is the part of this that comes closest to
+# redistributing the tools themselves. The files are kept on local disk: they
+# exist so that a parsing error never costs a 45-minute re-score again, which
+# is exactly what it cost once (see the header of predict_netmhcpan.py).
+results/predictors/netmhcpan_raw/
+results/predictors/mixmhcpred_raw/
+
+# Superseded duplicates, byte-identical to the five-predictor-era names that
+# replaced them. Hashes recorded in D037; nothing was deleted from disk.
+data/derived/TEST_PREDICTOR_OVERLAP_2_0_0.csv
+data/derived/TEST_PREDICTOR_OVERLAP_2_3_0.csv
+
+# ---------------------------------------------------------------------------
+# Third-party data and models obtained under their own licences
+# ---------------------------------------------------------------------------
 # Raw PAYLOADS are not committed: the containers are tens of gigabytes and the
 # repository is not their archive. Provenance records are committed, because
 # they are what make absent payloads verifiable.
@@ -6,6 +35,11 @@
 # file total under a megabyte, every pipeline stage reads them, and excluding
 # them made the repository non-self-contained: a fresh clone could not run
 # batch_extract.py at all, which is how this was found.
+#
+# S5 and S6 additionally MAY NOT be redistributed: the UniProt human proteome,
+# the MHCflurry training corpora, the NetMHCpan 4.2 training set and the
+# MixMHCpred training table each carry their own terms. DATA_SOURCES.md records
+# where each came from and its SHA-256, which is what reproducibility needs.
 data/raw/**
 !data/raw/
 !data/raw/*/
@@ -13,10 +47,31 @@ data/raw/**
 !data/raw/S1/*.json
 !data/raw/S2/*.tsv
 
-__pycache__/
-*.pyc
-
+# ---------------------------------------------------------------------------
+# Transient
+# ---------------------------------------------------------------------------
 # Transient stdout/stderr capture from runs. The provenance artifacts are the
 # CSV and params JSON a run writes, not its progress stream.
 results/**/run.log
 results/**/run.err
+
+# Agent/editor session state, not project content.
+.claude/
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+
+# OS
+.DS_Store
+Thumbs.db

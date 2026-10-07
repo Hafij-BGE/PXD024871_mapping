@@ -312,19 +312,38 @@ the repository.
 | Field | Value |
 |---|---|
 | `source_id` | S7 |
-| `origin` | PENDING |
-| `accession_or_url` | PENDING — DOI |
+| `origin` | Frontiers in Immunology (publisher); identified via the PRIDE Archive project record's own `referenceLine` |
+| `accession_or_url` | `https://doi.org/10.3389/fimmu.2021.705974` · PMID 34305947 · PMC8297687 |
 | `version` | Version of record |
-| `retrieval_date` | PENDING |
-| `original_filename` | PENDING |
-| `local_path` | `data/raw/S7/` |
-| `checksum` | PENDING |
+| `retrieval_date` | 2026-10-07 — **identification only; the article itself was not retrieved** |
+| `original_filename` | n/a — not downloaded |
+| `local_path` | `data/raw/S7/` — **empty; nothing was placed here** |
+| `checksum` | n/a — no payload retrieved |
 | `published_checksum` | n/a |
-| `file_size` | PENDING |
-| `license` | PENDING |
-| `reference` | PENDING |
-| `acquisition_method` | PENDING |
+| `file_size` | n/a — no payload retrieved |
+| `license` | Not established. PMC8297687 exists, which is consistent with open access, but the article's licence was **not** read |
+| `reference` | Nelde A, Maringer Y, Bilich T, Salih HR, Roerden M, Heitmann JS, Marcu A, Bauer J, Neidert MC, Denzlinger C, Illerhaus G, Aulitzky WE, Rammensee HG, Walz JS. *Immunopeptidomics-Guided Warehouse Design for Peptide-Based Immunotherapy in Chronic Lymphocytic Leukemia.* Front Immunol 2021;12:705974 |
+| `acquisition_method` | PRIDE Archive API (`/pride/ws/archive/v2/projects/PXD024871`) for the reference line and deposit title; PubMed for the bibliographic record. Both on 2026-10-07 |
 | `processing_history` | `NONE` |
+
+**Status: IDENTIFIED, NOT RETRIEVED.** This changes under D037, which found the
+reference while verifying citations for public release. For the whole working
+life of the project this entry read `PENDING` throughout, and the record should
+be clear that what changed is identification, not use:
+
+- The deposit's authoritative title — *"Immunopeptidomics-guided warehouse
+  design for peptide-based immunotherapy in chronic lymphocytic leukemia"* —
+  and its submitter (Annika Nelde) are now recorded from the PRIDE API rather
+  than inferred. A title written from memory in a draft `CITATION.cff` was
+  **wrong**, which is how this was checked at all.
+- **The cross-check this source exists to provide has not been performed.** The
+  article was not read. M3 class assignment has not been validated against it,
+  and the depositor's identification pipeline is still described only from S2.
+  G2's recorded unavailability of S7 therefore stands as recorded; nothing
+  about any gate changes.
+- Anyone continuing this work now has the pointer. Reading the article is the
+  cheapest remaining way to cross-check M3, and it is the first thing a second
+  pass should do.
 
 **Role:** the independent cross-check for M3 class assignment and the
 description of the depositor's identification pipeline that S4's non-retrieval
