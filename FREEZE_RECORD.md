@@ -1,4 +1,4 @@
-# FINAL FREEZE
+# FINAL FREEZE  (second anchor)
 
 ```
 PXD024871 CNN experiment — final freeze
@@ -6,17 +6,23 @@ PXD024871 CNN experiment — final freeze
 Every gate is closed. The endpoint was read once, under a rule fixed before
 any model existed, and is not reopened by this record.
 
-files         349 tracked (freeze_manifest.json excluded: it cannot hash itself)
-bytes         93,959,584
-frozen        2026-10-07T09:53:10Z
+SUPERSEDES b83a741b, the first anchor. That freeze was deliberately reopened
+under D035 and D036 to add NetMHCpan 4.1 and MixMHCpred 3.0 to the S18
+comparison. It remains valid for what it covered: the tree as it stood when S18
+had two arms. A freeze that can never be reopened is an embargo; one reopened
+silently is worthless. The decision entries are the difference.
+
+files         386 tracked (freeze_manifest.json excluded: it cannot hash itself)
+bytes         150,866,675
+frozen        2026-10-07T12:17:08Z
 branch        claude/mapping-research-project-prompt-glsess
-parent        c10af2d1985ed0e359a34f60d12ade7f7f328f28
+parent        2652b227a5effbc46663304178b7cc4b597fde93
 ```
 
 **The anchor is the commit that adds `freeze_manifest.json`, not the parent
 above.** A manifest cannot contain the hash of the commit that carries it. The
 parent is recorded so the pair is unambiguous: the anchor is the single child of
-`c10af2d1985e` that introduces the manifest.
+`2652b227a5ef` that introduces the manifest.
 
 ## What the freeze asserts
 
@@ -29,11 +35,11 @@ all nine checks were clean at the moment it was written:
 | 1 | Working tree clean, nothing untracked | pass |
 | 2 | Preregistration checksums still hold — the dataset and split have not moved since `f7550f54` (D009) | 6 artifacts, all unchanged |
 | 3 | Every artifact, script and figure `REPORT.md` names resolves | pass |
-| 4 | Every headline number in `REPORT.md` appears verbatim in the artifact it came from | 25 numbers |
+| 4 | Every headline number in `REPORT.md` appears verbatim in the artifact it came from | **44 numbers** |
 | 5 | The figures regenerate byte-identically from those artifacts | 7 figures |
 | 6 | Every QC gate passed or carries a recorded unavailability | G1–G13, FINAL |
 | 7 | Every decision resolved, none left OPEN | D001–D033 |
-| 8 | An existing manifest still agrees with the tree, and declares its own exclusion | 349 entries |
+| 8 | An existing manifest still agrees with the tree, and declares its own exclusion | 386 entries |
 | 9 | The trainer's own selftest passes | encoder, AP, gradients, overfit |
 
 Anyone can re-run `python3 scripts/freeze.py --verify` against this tree and get
@@ -50,7 +56,7 @@ hashes, but that the hashes were taken of a tree that had been checked.
 | Cross-platform, Lumos → LTQ | 0.7108 | platform costs 0.04–0.06 AP |
 | Allele-specific, HLA-A\*02:01 | +0.0476 | CI99 [+0.0314, +0.0626], 9/9 units |
 | Allele-specific, HLA-C\*07:02 | -0.0049 | **not demonstrated** |
-| CNN vs MHCflurry 2.3.0, mutually naive | +0.1340 | CI99 [+0.1126, +0.1505], 10/10 units |
+| §18 — CNN vs four predictors, common row set | **+0.1373 to +0.1418** | all 10/10 units; the four predictors span only 0.0046 |
 
 ## What the freeze does NOT assert
 
@@ -62,7 +68,9 @@ Those are different claims, and the second is the only one a checksum can carry.
 preregistration, this record is created by the repository owner with the
 owner's clock. It fixes ordering *within* the repository and nothing outside it.
 
-**That nothing is left open.** Three things are unavailable rather than done,
+**That nothing is left open.** NetMHCpan 4.2's software needs a licence
+separate from the 4.1 grant, so its training data is registered and it is scored
+in no comparison. Beyond that, three things are unavailable rather than done,
 each recorded in `SECTIONS.md`: §18 lacks NetMHCpan (licence form) and
 MixMHCpred (proxy refuses its host); §20 lacks robustness across negative-control
 designs (the dataset was frozen with set C alone); and the symmetric allele test
