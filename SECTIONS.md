@@ -748,11 +748,29 @@ G6 — Train/validation/test split locked                 § 10
 G7 — CNN architecture & input representation locked     § 11–12
 G8 — Training protocol & compute gate passed            § 13–14
 G9 — CNN training completed                             (training)
-G10 — Test evaluation completed                         § 15–17
-G11 — Predictor comparison completed                    § 18
-G12 — Statistical analysis completed                    § 16
-G13 — Biological interpretation finalized               § 20
-FINAL → Decision on primary hypothesis                  § 25
+G10 — Test evaluation completed                         § 15-17  [PASSED 2026-10-07]
+G11 — Predictor comparison completed                    § 18     [BLOCKED by D006]
+G12 — Statistical analysis completed                    § 16     [PART: transfer done]
+G13 — Biological interpretation finalized               § 20     [HELD for D001]
+FINAL -> Decision on primary hypothesis                  § 25    [null REJECTED]
 ```
 
 No gate can be bypassed silently. Record any reduction or deferral.
+
+**Gate status, 2026-10-07.**
+
+- **G10 PASSED** — `results/qc/QC_G10_endpoint.md`. The endpoint was read once
+  under the D008 rule: primary 0.7551, CI99 [0.7368, 0.7721] against a threshold
+  of 0.647. Null rejected, and rejected again on the leakage-free subset
+  (0.7056, CI99 [0.6926, 0.7184]).
+- **G11 BLOCKED** — no predictor's training-set membership list was obtained.
+  D006 forbids promoting §18 while any predictor is unverifiable. Not deferred
+  for convenience; the input does not exist.
+- **G12 PART-PASSED** — `results/qc/QC_G12_transfer.md`. The preregistered
+  cross-platform transfer (D025) and its matched control (D028) are complete:
+  performance does not collapse across platforms, and the platform effect is
+  measured at 0.04-0.06 AP. G12 as a whole is **not** passed: the allele-disjoint
+  analysis (D001) has not run, and §18 is blocked.
+- **G13 HELD** — §20 must not be written as biology until D001's analysis has
+  run. Ruling out an instrument-specific signature does not rule out confounds
+  the two instruments share.

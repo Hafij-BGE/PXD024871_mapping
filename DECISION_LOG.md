@@ -813,6 +813,27 @@ by seed and leaves no choice to make afterwards.
 both platforms (D005), so platform and participant stay perfectly nested and
 nothing here recovers a platform-free estimate. It measures the confound's size.
 
+**Outcome, 2026-10-07.** The matched control earned its place. The two
+preregistered arms came in 0.055 and 0.044 below the primary endpoint, a gap
+that the preregistered design alone could not have attributed; the matched
+contrasts put the platform component of it at 0.04–0.06 and did so twice, once
+with the model held constant and once with the test units held constant, the
+two agreeing to within 0.01.
+
+The arm-specific floors mattered more than expected. They range from 0.5917 to
+0.6648 — a spread of 0.073 across arms, against the single pooled 0.597 the
+analysis would otherwise have used. Against the pooled floor, LTQ → Lumos
+(0.6959) and within-LTQ (0.7481) would have looked 0.05 apart in lift; against
+their own floors they are 0.1042 and 0.0833, which reverses the ordering. The
+pooled floor would have made the transfer arms look worse than they are and the
+within-LTQ arm better.
+
+That spread also produced the post-hoc diagnostic in QC_G12 §2.3: on the LTQ
+half the CNN's cross-platform penalty is indistinguishable from the one a
+composition-only linear model pays on the same units, while on the Lumos half it
+exceeds it by 0.0261 with all 13 units in the same direction. Recorded as
+post-hoc, because it was asked only once the floors were seen to move.
+
 **Seeds.** `seed('transfer_halves')` for the halves,
 `seed('transfer_valsplit')` for the early-stopping holdouts,
 `seed('transfer_init', i)` for weights (a new purpose string, so no collision
@@ -860,6 +881,19 @@ of inferring it. If performance holds within platform and collapses across, the
 **Preregistered now, before any result is visible**, because it is the analysis
 most likely to be reinterpreted as exploratory if it were run after seeing a
 disappointing headline number.
+
+**Outcome, 2026-10-07 (`results/qc/QC_G12_transfer.md`).** Run as written, with
+the D028 matched control. **Performance does not collapse across platforms.**
+LTQ → Lumos 0.6959, CI99 [0.6805, 0.7113]; Lumos → LTQ 0.7108, CI99 [0.6993,
+0.7221]. Both lower bounds clear the D008 threshold of 0.647 and each arm's own
+composition floor + 0.05. The collapse condition this entry specified is not
+met, so the pre-committed reading *"the signal is substantially instrument, not
+presentation"* does not apply.
+
+A platform effect is nonetheless measured, at **0.04–0.06 AP**, from four
+estimates across two contrasts with no interval containing zero. That is the
+confound's size: D005 remains an accepted limitation, and this entry's purpose
+was to measure it rather than remove it, which it did.
 
 ---
 
