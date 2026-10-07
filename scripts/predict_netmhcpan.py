@@ -9,6 +9,16 @@ NetMHCpan reports `Score_EL`, the eluted-ligand likelihood, which is the
 quantity comparable to MHCflurry's presentation score; `%Rank_EL` is kept too.
 Best allele = highest Score_EL, equivalently lowest %Rank_EL.
 
+The key is the `Peptide` column, NOT `Icore`. Icore is the interaction core
+after insertions and deletions: it differs from the submitted peptide in about
+5.4% of rows and varies BY ALLELE, so keying on it yields more keys than there
+were peptides -- 2,292 from 2,000 in a benchmark -- while silently losing
+peptides whose Icore never equals their own sequence. The first run of this
+script made that mistake and its output was discarded.
+
+Raw NetMHCpan output is kept per unit, so a parsing error never costs a re-run
+again, which is exactly what it cost the first time.
+
 Rows whose sequence carries an ambiguity code (X, B, Z) are skipped, exactly as
 for MHCflurry, so all three systems score identical rows.
 
@@ -16,7 +26,7 @@ Runs one unit per process, --jobs at a time: NetMHCpan is single-threaded and
 the container has four cores.
 """
 
-import argparse, csv, re, subprocess, sys, tempfile
+import argparse, csv, gzip, re, subprocess, sys, tempfile
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
@@ -52,16 +62,22 @@ def score_unit(args):
                            capture_output=True, text=True)
         if p.returncode != 0:
             return unit, None, p.stderr[-500:]
+        # Keep the raw output. Re-parsing is free; re-scoring is 45 minutes,
+        # which is what the Icore mistake cost on the first run.
+        raw = OUT/'netmhcpan_raw'
+        raw.mkdir(parents=True, exist_ok=True)
+        with gzip.open(raw/f'{unit}.out.gz', 'wt') as fh:
+            fh.write(p.stdout)
         best = {}
         for line in p.stdout.splitlines():
             m = ROW.match(line)
             if not m:
                 continue
-            _mhc, _core, icore, el, rank = m.groups()
+            mhc, peptide, _icore, el, rank = m.groups()
             el, rank = float(el), float(rank)
-            cur = best.get(icore)
+            cur = best.get(peptide)          # keyed on the SUBMITTED peptide
             if cur is None or el > cur[0]:
-                best[icore] = (el, rank, _mhc)
+                best[peptide] = (el, rank, mhc)
         return unit, best, None
 
 
@@ -83,7 +99,9 @@ def main():
             if err:
                 sys.exit(f"{unit} FAILED: {err}")
             results[unit] = best
-            print(f"  {unit}: {len(best):,} peptides scored", flush=True)
+            want = len({s for s, _ in rows[unit]})
+            flag = '' if len(best) == want else f'   <-- EXPECTED {want:,}'
+            print(f"  {unit}: {len(best):,} peptides scored{flag}", flush=True)
 
     OUT.mkdir(parents=True, exist_ok=True)
     out = OUT/'netmhcpan_4_1_test_scores.csv'
