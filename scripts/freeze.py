@@ -101,6 +101,16 @@ def verify(writing=False):
         checks.append((f'overlap {line}', 100 * d['overlap_positives_frac'], '{:.2f}'))
     for r in L['by_length']:
         checks.append((r['stratum'], r['mean_ap'], '{:.4f}'))
+    # R14: the four-predictor comparison and its contamination table
+    A = json.loads(R('results/qc/predictor_comparison_all.json'))
+    for k, s in A['common']['systems'].items():
+        checks.append((f'common row set {k}', s['mean_ap'], '{:.4f}'))
+    for c in A['common']['contrasts']:
+        checks.append((f"common CNN - {c['vs']}", c['difference'], '{:.4f}'))
+    K2 = json.loads(R('results/qc/contamination_all.json'))
+    for name, d in K2['predictors'].items():
+        checks.append((f'{name} pos overlap', 100*d['overlap_positives_frac'], '{:.2f}'))
+        checks.append((f'{name} neg overlap', 100*d['overlap_negatives_frac'], '{:.2f}'))
     bad = [n for n, v, f in checks if f.format(v) not in rep]
     ok(not bad, f'{len(checks)} numbers found verbatim in REPORT.md',
        '' if not bad else f'absent: {bad}')
