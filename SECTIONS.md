@@ -774,10 +774,13 @@ No gate can be bypassed silently. Record any reduction or deferral.
   carrier-exclusive stratum shows +0.0335 (14/14 units) but the preregistered
   sign test is inconclusive. G12 as a whole is **not** passed: §18 is blocked by
   D006.
-- **G13 HELD** — §20 must not be written as biology. Both analyses that were
-  meant to license it have now run, and neither does. The signal survives an
-  unseen instrument and an unseen dominant allele, which rules out two specific
-  confounds and establishes neither presentation biology nor allele specificity.
-  Released only by the symmetric multi-allele test named in
-  `QC_G12_allele.md` §4, or by an analysis that addresses the confounds both
-  platforms and both allele groups share.
+- **G13 HELD, pending D032** — the symmetric multi-allele test has now run
+  (`QC_G12_multi_allele.md`). An allele-specific effect is **established for
+  HLA-A\*02:01** (+0.0476, CI99 [+0.0314, +0.0626], 9/9 units, with
+  memorisation, recurrence and training-set quality each measured at zero on the
+  same units) and **not demonstrated for HLA-C\*07:02**. Three of D031's four
+  release conditions are met; the fourth required significance from a 6-unit arm
+  and was close to unattainable by construction. **D032 proposes narrowing the
+  criterion and is OPEN for the project owner** — G13 stays held until it is
+  answered, and §20 stays unwritten. D032 carries the exact §20 wording a
+  release would license and the case against releasing.
