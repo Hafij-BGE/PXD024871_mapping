@@ -169,6 +169,7 @@ blocks:
 | D031 | Multi-allele test preregistered: five-allele replication plus the one symmetric allele PAIR (A*02:01 vs C*07:02), where a sign reversal between the two exclusive strata is the signature D029's contrast II could not deliver. Also finds that PARTIAL typing under-reports a locus, so 2 of D001's 23 non-carriers are not certain | may release G13 |
 | D032 | **ACCEPTED by the project owner, 2026-10-07.** G13's D031 criterion required both Part B directions to be significant; the 6-unit C*07:02 arm could not supply that. Narrowed to one direction. **G13 RELEASED, §20 written to the accepted wording** | G13 passed |
 | D033 | §18 admission executed under D006. Both MHCflurry lines are quantified `OVERLAPPING` (8.29% / 9.11% of test positives, 6.9:1 and 7.9:1 biased toward positives). D006 was wrong in three helpful ways: GitHub release assets are reachable, each model bundle ships its own training data, and both lines are admissible. Primary comparison subset must be naive to BOTH systems, not just the predictor | G11 |
+| D034 | Final freeze. `scripts/freeze.py --write` refuses to write a manifest unless eight verification checks pass first, so the record exists only because the tree was checked. 348 files, 93.9 MB. Tag refused again, as in D009; the commit is the anchor | closes the project |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -792,6 +793,85 @@ about memorisation.
 
 **Rejected: dropping from training instead.** It discards real observations and
 still leaves the test set's composition altered relative to the universe.
+
+---
+
+## D034 — Final freeze · RESOLVED
+
+**Resolved:** 2026-10-07 · **Record:** `FREEZE_RECORD.md`, `freeze_manifest.json`
+**Mechanism:** `scripts/freeze.py` · **Follows:** D009, which froze the
+preregistration by the same method
+
+**Decision: the repository is frozen by a manifest that cannot be written
+unless the tree verifies first.**
+
+### Why verification comes before checksums
+
+D009 froze the preregistration with a checksum list, and that was the right
+instrument for what it had to prove: that six named artifacts matched a record.
+A final freeze covers 348 files and a set of conclusions, and a checksum list
+over an unverified tree would prove only that a mess was reproducible.
+
+So `--write` runs `--verify` first and refuses on any failure. Eight checks:
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Working tree clean, nothing untracked | pass |
+| 2 | Preregistration checksums still hold — dataset and split unmoved since `f7550f54` | 6 artifacts |
+| 3 | Every artifact, script and figure `REPORT.md` names resolves | pass |
+| 4 | Every headline number in `REPORT.md` appears verbatim in its artifact | 25 numbers |
+| 5 | Figures regenerate byte-identically from the artifacts | 7 figures |
+| 6 | Every QC gate passed or carries a recorded unavailability | G1–G13, FINAL |
+| 7 | Every decision resolved, none left OPEN | D001–D033 |
+| 8 | The trainer's selftest passes | pass |
+
+**Check 2 is the one that matters most.** It proves the frozen dataset and split
+are byte-identical to what the preregistration committed to, so every result in
+this repository was computed on the data the endpoint rule was written against.
+Without it, "preregistered" is a claim about intent; with it, it is a claim about
+bytes.
+
+**Check 5 was added because the figures are derived twice over** — from
+artifacts that are themselves derived from the dataset. A figure that cannot be
+regenerated is a figure whose relationship to the data is unverifiable, and
+regenerating them is cheap.
+
+**The verifier's own first run failed, and the verifier was wrong, not the log.**
+Check 7 initially read only entry headings and reported six resolved decisions
+as open, because D001, D014, D015, D020, D022 and D023 carry their status in the
+body. Recorded because a verification tool that has never produced a failure has
+not been tested, and this one's first failure was its own.
+
+### The anchor
+
+**The anchor is the commit that adds `freeze_manifest.json`.** A manifest cannot
+contain the hash of the commit that carries it, so the manifest records its
+parent and `FREEZE_RECORD.md` states the pair: the anchor is the single child of
+that parent which introduces the manifest.
+
+**No tag, again.** One was attempted and the remote refused it, exactly as it
+refused the preregistration tag (D009) — the session credential is scoped to
+`refs/heads`. Recorded rather than worked around, and the second occurrence
+confirms it is the environment rather than a one-off.
+
+### What this freeze does not assert
+
+**Not that the conclusions are right.** It asserts the tree is internally
+consistent and that the prose's numbers are the artifacts' numbers. A checksum
+can carry the second claim and not the first.
+
+**Not independent chronology.** As D009 said of the preregistration: created by
+the repository owner, with the owner's clock. It fixes ordering within the
+repository and nothing outside it.
+
+**Not completeness.** Three things are unavailable rather than done, each
+recorded in `SECTIONS.md`: NetMHCpan and MixMHCpred for §18, negative-control
+robustness for §20, and a second symmetric allele pair. A second cohort is the
+only route to the last two.
+
+**Not that §20 is safe.** It rests on D032, where a criterion I had written was
+narrowed after it failed, with the project owner's acceptance. The freeze
+preserves that fact; it does not settle it.
 
 ---
 

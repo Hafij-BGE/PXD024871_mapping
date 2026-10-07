@@ -239,7 +239,15 @@ created by the repository owner (D009).
 
 Sections 11, 12 and 13 — architecture, input representation and training
 protocol — were found unfrozen while this section was being written, having been
-carried past the freeze commit unlocked, and were frozen in response (D026). The
+carried past the freeze commit unlocked, and were frozen in response (D026).
+
+The repository was frozen on completion (D034, `FREEZE_RECORD.md`). That record
+is written by `scripts/freeze.py --write`, which refuses to run unless eight
+verification checks pass — among them that the dataset and split are still
+byte-identical to what the preregistration committed to, that every headline
+number in this report appears verbatim in the artifact it came from, and that
+the figures regenerate byte-identically. `--verify` re-runs all eight against
+any copy of the tree. The
 network is two convolutional blocks over a centre-padded length-12 encoding,
 trained with a fixed 16-point hyperparameter grid selected on mean validation
 average precision across the five folds. The preregistration is now complete:
