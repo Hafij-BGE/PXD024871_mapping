@@ -25,3 +25,59 @@ C_pool 15  C_test 14  N_pool 15  N_test 8
   train rows 240,000  val rows 60,000
   seed 0: val AP 0.7353 (20 epochs, 51s)
   seed 1: val AP 0.7323 (18 epochs, 49s)
+  seed 2: val AP 0.7335 (23 epochs, 57s)
+  seed 3: val AP 0.7375 (19 epochs, 49s)
+  seed 4: val AP 0.7316 (26 epochs, 61s)
+  mismatched: 14 held-out carriers  /  all rows
+    units 14  rows 280,000  mean per-unit AP 0.7269  CI99 [0.7091, 0.7435]
+    arm floor 0.6323   lift +0.0946  CI99 [+0.0748, +0.1176]
+  mismatched: 14 held-out carriers  /  carrier-restricted stratum
+    units 14  rows 3,672  mean per-unit AP 0.8042  CI99 [0.7762, 0.8308]
+    arm floor 0.7255   lift +0.0787  CI99 [+0.0533, +0.1024]
+  matched: 8 held-out non-carriers  /  all rows
+    units 8  rows 160,000  mean per-unit AP 0.7377  CI99 [0.7141, 0.7623]
+    arm floor 0.6385   lift +0.0992  CI99 [+0.0697, +0.1279]
+  matched: 8 held-out non-carriers  /  noncarrier-restricted stratum
+    units 8  rows 976  mean per-unit AP 0.8475  CI99 [0.8109, 0.8947]
+    arm floor 0.7409   lift +0.1066  CI99 [+0.0309, +0.2117]
+
+=== M_AM (matched-D029) ===
+  train rows 240,000  val rows 60,000
+  seed 0: val AP 0.7494 (26 epochs, 60s)
+  seed 1: val AP 0.7493 (22 epochs, 54s)
+  seed 2: val AP 0.7517 (22 epochs, 54s)
+  seed 3: val AP 0.7475 (15 epochs, 41s)
+  seed 4: val AP 0.7501 (19 epochs, 48s)
+  matched: 14 held-out carriers  /  all rows
+    units 14  rows 280,000  mean per-unit AP 0.7356  CI99 [0.7129, 0.7555]
+    arm floor 0.6352   lift +0.1004  CI99 [+0.0860, +0.1198]
+  matched: 14 held-out carriers  /  carrier-restricted stratum
+    units 14  rows 3,672  mean per-unit AP 0.8702  CI99 [0.8498, 0.8901]
+    arm floor 0.7777   lift +0.0925  CI99 [+0.0694, +0.1188]
+  mismatched: 8 held-out non-carriers  /  all rows
+    units 8  rows 160,000  mean per-unit AP 0.7378  CI99 [0.7101, 0.7657]
+    arm floor 0.6359   lift +0.1019  CI99 [+0.0838, +0.1183]
+  mismatched: 8 held-out non-carriers  /  noncarrier-restricted stratum
+    units 8  rows 976  mean per-unit AP 0.8231  CI99 [0.7987, 0.8435]
+    arm floor 0.7280   lift +0.0951  CI99 [+0.0151, +0.1920]
+
+========================================================================
+  Contrast I — C_test (14 carriers) — all rows
+    matched (M_AM) 0.7356   mismatched (M_AD) 0.7269
+    paired difference +0.0087  CI99 [+0.0011, +0.0165]  (10/14 units positive)
+  Contrast I — C_test (14 carriers) — carrier-restricted stratum
+    matched (M_AM) 0.8702   mismatched (M_AD) 0.8042
+    paired difference +0.0660  CI99 [+0.0362, +0.0988]  (14/14 units positive)
+  Contrast II — N_test (8 non-carriers) — all rows
+    matched (M_AD) 0.7377   mismatched (M_AM) 0.7378
+    paired difference -0.0000  CI99 [-0.0048, +0.0076]  (3/8 units positive)
+  Contrast II — N_test (8 non-carriers) — noncarrier-restricted stratum
+    matched (M_AD) 0.8475   mismatched (M_AM) 0.8231
+    paired difference +0.0244  CI99 [-0.0217, +0.0685]  (5/8 units positive)
+========================================================================
+  D029 fixed the reading in advance: BOTH contrasts positive is an
+  allele effect; OPPOSITE SIGNS mean one training set is simply
+  better and contrast I alone would have been misread.
+========================================================================
+
+wrote /home/user/PXD024871_mapping/results/model/allele.json

@@ -486,6 +486,71 @@ a diagnostic that generated a hypothesis — D025 records that 12-mers are 11.69
 of LTQ positives against 9.85% of Lumos, and length is positional rather than
 compositional — not as a test of one.
 
+### R11 — Dominant-allele-held-out transfer
+
+D001 preregistered an allele-disjoint secondary split. Measured before running
+it (D029), the split is **not** allele-disjoint: the 29-unit test partition
+carries 36 alleles and only 5 are absent from the 23-unit training partition,
+23 of 29 test units have exactly one unseen allele, and the mean unseen
+fraction is **21.7%**. It is a dominant-allele-held-out split, which is how it
+is reported, and a real effect arrives attenuated roughly fivefold. Full detail
+in `results/qc/QC_G12_allele.md`.
+
+**The preregistered arm.** Train on the non-carriers of HLA-A\*02:01, test on
+the 29 carriers:
+
+| P_AD | mean per-unit AP | CI99 | own floor | lift |
+|---|---|---|---|---|
+| all rows | 0.7422 | [0.7302, 0.7534] | 0.6371 | +0.1051 |
+| leakage-free against its own training units | 0.7210 | [0.7103, 0.7308] | 0.6147 | +0.1064 |
+
+That lift is indistinguishable from the cross-platform arms' +0.1015 and
++0.1042. **A model that has never seen a unit carrying the cohort's most common
+class-I allele performs on carriers of it as well as it does anywhere else.**
+
+**The matched contrasts (D029), corrected for memorisation (D030).** Every row
+set excludes positives either arm saw in training, so the two models are equally
+naive to every sequence scored:
+
+| Contrast I — 14 held-out carriers | paired difference | CI99 | units positive |
+|---|---|---|---|
+| all rows | +0.0072 | [−0.0015, +0.0162] | 9 / 14 |
+| carrier-**exclusive** stratum | **+0.0335** | [+0.0236, +0.0438] | **14 / 14** |
+| recurrence-matched control | +0.0056 | [−0.0137, +0.0279] | 8 / 14 |
+
+| Contrast II — 8 held-out non-carriers | paired difference | CI99 | units positive |
+|---|---|---|---|
+| all rows | +0.0000 | [−0.0051, +0.0078] | 3 / 8 |
+| non-carrier-exclusive stratum | −0.0131 | [−0.0287, +0.0040] | 2 / 8 |
+| recurrence-matched control | +0.0065 | [−0.0296, +0.0507] | 3 / 8 |
+
+The carrier-exclusive effect is not recurrence — paired
+difference-of-differences against the recurrence-matched control on the same 14
+units is +0.0279, CI99 [+0.0067, +0.0472] — and not one training set being
+better, which is measured directly on class-shared peptides across 22 held-out
+units at **+0.0005, CI99 [−0.0081, +0.0092]**.
+
+**The verdict is nonetheless inconclusive, by the rule D029 fixed in advance.**
+That rule read opposite contrast signs as "one training set is simply better",
+and the signs are opposite. The premise is measurably false here, which is
+recorded but does not convert a failed preregistered test into a passed one.
+D029's defect was assuming the two groups are symmetric: the 29 carriers share
+A\*02:01 while the 23 non-carriers share only its absence and span 41 alleles,
+so contrast II is a weak replication test by construction. The symmetric test
+that would settle it — repeating the design on HLA-C\*07:02 (24 units) and
+HLA-A\*01:01 (17 units) — is named and deliberately not run, because adding arms
+after a preregistered test fails is how a negative result becomes a positive one.
+
+**One result in this section is void and kept anyway.** D029's original stratum
+was defined as "observed in M_AM's training pool and absent from M_AD's", so
+M_AM had trained on 97.93% of its rows and M_AD on 0.00%. The +0.0660 it
+produced was memorisation and is the largest number the run produced. It stays
+in `allele.json` with D030 pointing at it. It is the second occurrence of one
+failure mode — the first `TEST_LEAKFREE` mask selected a subset with no
+negatives and returned 1.0000 — and both times the broken version gave the most
+flattering answer available, which is the argument for the standing check D030
+adds.
+
 ## Discussion
 
 **Most of this section discusses the design, not the hypothesis**, and was
