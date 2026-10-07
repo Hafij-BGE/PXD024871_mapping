@@ -397,9 +397,15 @@ typical early stopping.
 
 ### R8 — Not obtained
 
-The predictor comparison (§18) has no result: no predictor's training-set
-membership list was obtained, and D006 forbids promoting §18 while any predictor
-is unverifiable. The allele-disjoint analysis (D001) has not been run.
+**Superseded.** This section recorded §18 as having no result because no
+predictor's training-set membership list was obtainable, and the
+allele-disjoint analysis as not run. Both have since been done: §18 in R13, the
+allele analyses in R11 and R12. The original claim about obtainability was
+wrong, and D006's outcome block records why — github.com's bare domain was
+measured rather than its release assets, and each MHCflurry model bundle ships
+its own training data. What remains genuinely not obtained is listed in the
+Limitations section and in the gate table: the S4 acquisitions, NetMHCpan,
+MixMHCpred, and sets A and B of the negative construction.
 
 ### R9 — Model selection and the primary endpoint
 
@@ -641,6 +647,74 @@ rule demands. **D032 proposes the narrowing and leaves it to the project owner**
 with the exact §20 wording it would license, because the criterion is mine and
 relaxing it in order to pass it is self-serving by construction. §20 stays
 unwritten meanwhile, and nothing downstream is blocked: §25 is read and closed.
+
+### R13 — Comparison with existing predictors (§18)
+
+D006 fixed the handling before any predictor was run; D033 executed it. Both
+MHCflurry release lines were admitted as quantified `OVERLAPPING`, their
+training lists taken from the model bundles themselves and registered as S6
+sources with sha256. Detail in `results/qc/QC_G11.md`.
+
+| | MHCflurry 2.0.0 | MHCflurry 2.3.0 |
+|---|---|---|
+| training peptides | 605,189 | 666,025 |
+| overlap with test positives | 8.29% | 9.11% |
+| overlap with test negatives | 1.20% | 1.16% |
+| positive : negative bias | 6.9 : 1 | 7.9 : 1 |
+
+**D006's central argument was confirmed by measurement.** The 2.0.0 models
+predate this deposit's 2021-09 publication by fifteen months and name it
+nowhere — and 8.29% of this test partition's positives are in their training
+data regardless, arriving through other studies. On a date argument that line
+would have been called clean, and the comparison would have carried an 8%
+contamination nobody had counted.
+
+**The comparison**, on rows naive to both systems — removing only the
+predictor's overlap would leave the CNN's measured 15.99% in place and hand it a
+selectively easier dataset, which §18 forbids in those words:
+
+| Row set | rows | prevalence | CNN | MF 2.0.0 | MF 2.3.0 | CNN − 2.0.0 | CNN − 2.3.0 |
+|---|---|---|---|---|---|---|---|
+| **mutually naive (primary)** | 175,524 | 0.440 | **0.6859** | 0.5481 | 0.5519 | **+0.1378** | **+0.1340** |
+| predictor-naive only | 187,764 | 0.477 | 0.7285 | 0.5892 | 0.5938 | +0.1393 | +0.1347 |
+| full partition | 199,978 | 0.500 | 0.7551 | 0.6629 | 0.6673 | +0.0922 | +0.0877 |
+
+Primary intervals: CI99 [+0.1151, +0.1583] and [+0.1126, +0.1505], **10 of 10
+participants each**. The advantage is largest where contamination is smallest,
+so it is not produced by memorisation — and the full-partition gap is narrower
+because MHCflurry gains more from its own overlap (0.548 → 0.663) than the CNN
+does from its (0.686 → 0.755). Average precision depends on prevalence, which
+the subsetting moves from 0.440 to 0.500, so absolute values compare only within
+a row set. The full-partition CNN figure reproduces the endpoint at 0.7551.
+
+**What this does not establish, and the numbers that say so.** MHCflurry is
+being asked a different question: it predicts whether a peptide *can* be
+presented, and our label records whether it *was observed*. **11.78% of set-C
+negatives are ranked strong presenters** (percentile ≤ 2) and 9.11% have
+predicted affinity ≤ 500 nM. Each is counted as the predictor's error, and some
+are the predictor being right about a peptide that simply went undetected. The
+CNN also trained on 42 participants of this cohort — same laboratory, same two
+instruments, same negative construction, whose instrument component R10 put at
+0.04–0.06 AP — while MHCflurry never saw it. **A model trained on the task,
+distribution and technical artefacts of the test set beating one that was not is
+close to tautological.** §18 shows that the CNN adds information for this task
+on this cohort. It does not show that it is a better model of HLA presentation,
+and should not be cited as if it did.
+
+**Not promoted.** D014 made promotion conditional on every admitted predictor
+being clean or quantified-overlapping, which is now true; D014 equally bars a
+switch after seeing results. §25 was read and closed before any predictor score
+existed, so §18 stays secondary.
+
+**One incidental finding.** MHCflurry's refusal of a peptide containing `X`
+surfaced that the frozen positives hold **181 rows (0.035%) with ambiguity
+codes** — X, B (Asx), Z (Glx) — and that the CNN's encoder maps an unknown
+character to the **pad token**, so those peptides were encoded with internal pads
+rather than rejected. 22 are in the test partition, 0.011% of its rows, so the
+endpoint is unaffected at any decimal that matters. The defect is the encoder's
+silent fallback and a selftest covering only standard residues — the same shape
+as the bug that once deleted the middle of every long peptide, an encoder
+accepting input it should have refused.
 
 ## Discussion
 

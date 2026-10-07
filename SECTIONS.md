@@ -658,9 +658,55 @@ Re-check the projection once more units are extracted.
 - Existing predictors designed for different tasks (binding affinity vs. presence/absence)
 - Fair comparison requires careful setup
 
-**Status:** OPEN (depends on test evaluation)
+**Status:** **RESOLVED 2026-10-07 — G11 PASSED** (`results/qc/QC_G11.md`,
+D033). The planning fields above are left as written; the finding follows.
 
-**Next Step:** Resolve D006 first — the contamination check in M7 gates both the fairness of this comparison and any future promotion of it to primary. Then obtain predictor outputs and evaluate. Better powered than §25 at every participant count tested (run-001, F7), but not promotable post hoc: a switch after seeing results is endpoint switching regardless of the power argument.
+### Finding
+
+Both MHCflurry release lines were admitted under D006 as quantified
+`OVERLAPPING` — training lists retrieved from the model bundles themselves and
+registered as S6 sources with sha256. Overlap with the test partition: 8.29% of
+positives for 2.0.0, 9.11% for 2.3.0, against 1.20% and 1.16% of negatives, a
+~7:1 bias toward positives.
+
+On rows naive to **both** systems (D033 — removing only the predictor's overlap
+would hand the CNN a selectively easier dataset, which the Methodology above
+forbids):
+
+| System | mean per-unit AP | CI99 |
+|---|---|---|
+| **CNN** | **0.6859** | [0.6703, 0.7019] |
+| MHCflurry 2.0.0 | 0.5481 | [0.5342, 0.5646] |
+| MHCflurry 2.3.0 | 0.5519 | [0.5382, 0.5688] |
+
+CNN − 2.0.0 = **+0.1378** (CI99 [+0.1151, +0.1583], 10/10 units);
+CNN − 2.3.0 = **+0.1340** (CI99 [+0.1126, +0.1505], 10/10 units). The advantage
+is largest where contamination is smallest, so it is not memorisation.
+
+### §18 may NOT state
+
+- **that the CNN is a better model of HLA class-I presentation.** The comparison
+  is not a fair test of predictor quality. MHCflurry predicts whether a peptide
+  *can* be presented; our label records whether it *was observed*. **11.78% of
+  set-C negatives are ranked strong presenters** (percentile ≤ 2) and 9.11% have
+  predicted affinity ≤ 500 nM — counted as the predictor's errors, though some
+  are the predictor being right and the label being a detection artefact.
+- **that the margin reflects architecture.** The CNN trained on 42 participants
+  of this cohort — same laboratory, same two instruments, same protocol, same
+  negative construction, whose instrument component R10 put at 0.04–0.06 AP.
+  MHCflurry never saw this cohort. Read the margin as the value of
+  task-specific training.
+- anything about NetMHCpan or MixMHCpred, neither of which was obtained.
+
+**Not promoted.** D014's promotion condition — every admitted predictor `CLEAN`
+or quantified `OVERLAPPING` — is now met, and D014's bar on post-hoc switching
+is unchanged. §25 was read and closed before any predictor score existed.
+
+**Next Step:** None. `results/predictors/comparison_with_predictors.csv` is the
+deliverable named above. NetMHCpan 4.1 would need a licence accepted by the
+project owner at the DTU host; MixMHCpred would need a route to
+`raw.githubusercontent.com`, which this environment's proxy refuses while
+allowing release assets. Both are recorded as not obtained rather than deferred.
 
 ---
 
@@ -808,8 +854,8 @@ G7 — CNN architecture & input representation locked     § 11–12
 G8 — Training protocol & compute gate passed            § 13–14
 G9 — CNN training completed                             (training)
 G10 — Test evaluation completed                         § 15-17  [PASSED 2026-10-07]
-G11 — Predictor comparison completed                    § 18     [BLOCKED by D006]
-G12 — Statistical analysis completed                    § 16     [PART: transfer done]
+G11 — Predictor comparison completed                    § 18     [PASSED 2026-10-07]
+G12 — Statistical analysis completed                    § 16     [PASSED 2026-10-07]
 G13 — Biological interpretation finalized               § 20     [PASSED 2026-10-07]
 FINAL -> Decision on primary hypothesis                  § 25    [null REJECTED]
 ```
@@ -822,17 +868,24 @@ No gate can be bypassed silently. Record any reduction or deferral.
   under the D008 rule: primary 0.7551, CI99 [0.7368, 0.7721] against a threshold
   of 0.647. Null rejected, and rejected again on the leakage-free subset
   (0.7056, CI99 [0.6926, 0.7184]).
-- **G11 BLOCKED** — no predictor's training-set membership list was obtained.
-  D006 forbids promoting §18 while any predictor is unverifiable. Not deferred
-  for convenience; the input does not exist.
-- **G12 PART-PASSED** — `QC_G12_transfer.md` and `QC_G12_allele.md`. Both
+- **G11 PASSED 2026-10-07** — `results/qc/QC_G11.md`. Both MHCflurry lines
+  admitted as quantified `OVERLAPPING` (8.29% / 9.11% of test positives, ~7:1
+  biased toward positives). On rows naive to both systems the CNN leads by
+  **+0.1378** and **+0.1340** AP, 10/10 participants, and the lead is largest
+  where contamination is smallest. **The earlier status here — "the input does
+  not exist" — was wrong**: D006 had measured github.com's bare domain rather
+  than its release assets, and each model bundle ships its own training data.
+  §18 is not promoted (D014). The comparison is not a fair test of predictor
+  quality: 11.78% of set-C negatives are ranked strong presenters, so the task
+  differs from the predictor's.
+- **G12 PASSED 2026-10-07** — `QC_G12_transfer.md` and `QC_G12_allele.md`. Both
   preregistered secondary analyses are complete. Cross-platform transfer (D025,
   D028): performance does not collapse, platform effect 0.04-0.06 AP.
   Dominant-allele-held-out (D001, D029, D030): holding out the cohort's most
   common allele costs nothing visible (+0.0072, CI99 [-0.0015, +0.0162]); the
   carrier-exclusive stratum shows +0.0335 (14/14 units) but the preregistered
-  sign test is inconclusive. G12 as a whole is **not** passed: §18 is blocked by
-  D006.
+  sign test is inconclusive. The multi-allele test (D031) then settled it for
+  A\*02:01. **G12 now PASSED**, with §18 complete under G11.
 - **G13 PASSED 2026-10-07** — `QC_G12_multi_allele.md`. An allele-specific
   effect is **established for HLA-A\*02:01** (+0.0476, CI99 [+0.0314, +0.0626],
   9/9 units, with memorisation, recurrence and training-set quality each measured
@@ -845,6 +898,15 @@ No gate can be bypassed silently. Record any reduction or deferral.
   five lengths clear the threshold), and negative-control design is recorded as
   structurally unavailable under the dataset freeze.
 
-**Remaining open: G11 / §18 only**, blocked by D006 because no predictor's
-training-set membership list was obtainable. Every other gate has passed or is
-recorded as structurally unavailable.
+**All gates are now closed.** G1–G13 and FINAL have each either passed or
+carry an explicitly recorded, structurally unavailable component:
+
+| Recorded as unavailable | Why |
+|---|---|
+| §20 robustness across negative-control designs | the dataset was frozen with set C alone; sets A and B would need the freeze broken |
+| §18 NetMHCpan 4.1 | per-user academic licence form at the DTU host, not scriptable |
+| §18 MixMHCpred | distributed via `raw.githubusercontent.com`, refused by this proxy |
+| the symmetric multi-allele test beyond one pair | no second allele pair has ≥14 units on both sides in this cohort |
+| S4 acquisitions | never retrieved; recorded in `DATA_SOURCES.md` |
+
+Nothing is outstanding that this dataset and environment could supply.
