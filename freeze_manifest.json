@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-07T09:53:10Z",
+ "frozen_utc": "2026-10-07T09:54:57Z",
  "branch": "claude/mapping-research-project-prompt-glsess",
- "parent_commit": "c10af2d1985ed0e359a34f60d12ade7f7f328f28",
+ "parent_commit": "fed228f0c37c2a33c5e8f2ba36d5a9c4a476f133",
  "n_files": 349,
- "total_bytes": 93959584,
+ "total_bytes": 93962796,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -21,8 +21,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 110254,
-   "sha256": "2dee6470f6fbb81a05601f84e0329574bf9ceabe7ead4c0a857eade1c87d387f"
+   "bytes": 111548,
+   "sha256": "ff2ea5578554f63c04202c150562ad5e46a21663af3829e965faf6f2e6c3ab8e"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -36,8 +36,8 @@
   },
   {
    "path": "FREEZE_RECORD.md",
-   "bytes": 5615,
-   "sha256": "311cc914f500b084c4a8308e36833f3889e19cd094aa15647947460a6175bd81"
+   "bytes": 6180,
+   "sha256": "6af303611d088da929e9f18c7d9b462a469a2234c8f821da7dbe4c5be6e29d0f"
   },
   {
    "path": "HANDOVER.md",
@@ -1671,8 +1671,8 @@
   },
   {
    "path": "scripts/freeze.py",
-   "bytes": 9757,
-   "sha256": "fc6e62eddb8c967b645627490b8ab7fcda90a122f900efcef49ddc0e38e511bf"
+   "bytes": 11110,
+   "sha256": "6fffc0fd282a7e98a42b6c39c481d3b08f7c7265d5a103c99df746d7350cdb4e"
   },
   {
    "path": "scripts/leakage_audit.py",
