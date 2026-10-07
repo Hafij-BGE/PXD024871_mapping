@@ -164,6 +164,7 @@ blocks:
 | D026 | Architecture, input representation and training protocol frozen. Closes the preregistration gap found while writing Methods: these were carried past the freeze unlocked. See entry below | before training |
 | D027 | How the 25 final models yield one endpoint value. §13 required all 25 be reported but never said how they combine. **RESOLVED before the test partition was read.** See entry below | before --mode test |
 | D028 | Cross-platform transfer design: D025 run as preregistered, plus a matched within-platform control, because the preregistered form alone confounds platform with training-set size. Logged before the run. See entry below | before transfer |
+| D029 | The `allele_disjoint_partition` split holds out ONE allele, not a disjoint set: only 5 of 36 test alleles are absent from training and 21.7% of a test unit's repertoire is unseen, so the design is attenuated ~5x. D001 run verbatim, renamed dominant-allele-held-out, plus a matched pair and a validated allele-enriched stratum. Logged before the run | before G13 |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -741,6 +742,152 @@ about memorisation.
 
 **Rejected: dropping from training instead.** It discards real observations and
 still leaves the test set's composition altered relative to the universe.
+
+---
+
+## D029 — The allele-disjoint split is one-allele-held-out, and what to do about it · RESOLVED
+
+**Opened and resolved:** 2026-10-07 · **Before any allele-arm result was visible**
+**Depends on:** D001 (the preregistered secondary split), D028 (the matched-control precedent)
+**Affects:** §9, §10, §20, §25 · **Blocks:** G13
+
+**Decision: run D001's split exactly as preregistered, rename what it measures,
+and add a matched control plus an allele-enriched stratum, because the split as
+built holds out one allele rather than a disjoint allele set.**
+
+### The naming is wrong, and the error is not cosmetic
+
+D001 specified "an allele-disjoint split alongside the donor-disjoint split" and
+`SPLIT.csv` implements it as `allele_disjoint_partition`: 23 units that do not
+carry HLA-A\*02:01 against the 29 that do. **The two partitions are not allele
+disjoint.** Measured in-repo:
+
+| Quantity | Value |
+|---|---|
+| Alleles present in the 23-unit training partition | 41 |
+| Alleles present in the 29-unit test partition | 36 |
+| Test alleles **absent** from training | **5** — A\*02:01, A\*29:02, B\*27:02, B\*56:01, B\*57:01 |
+| Test units with exactly one unseen allele | 23 of 29 |
+| Test units with two unseen alleles | 6 of 29 |
+| Mean fraction of a test unit's alleles unseen in training | **21.7%** |
+
+So roughly four fifths of every test unit's HLA repertoire is represented in
+training. Each test unit presents peptides from five or six alleles pooled, and
+no deconvolution assigns a peptide to its restricting allele, so **the peptides
+that could show an allele effect are diluted about fivefold by peptides from
+alleles the model has already seen.** A real effect of holding out an allele
+would appear attenuated by roughly that factor, and the split would understate
+it. Reading a small difference from this split as "allele identity does not
+matter" would be reading an attenuated design as a null result.
+
+D001 was right that genotype had to be carried and that the split had to exist —
+this entry does not reopen that. What it corrects is the claim the split can
+support. It is a **dominant-allele-held-out** split, and that is what will be
+reported. `allele_disjoint_partition` keeps its column name, because renaming a
+frozen column would break the split freeze; the name is wrong and this entry is
+where that is recorded.
+
+### What is run
+
+**1. P_AD — D001 verbatim.** Train on the 23 non-carriers, test on the 29
+carriers. 5 of the 23 are an early-stopping holdout (same necessity and same
+deviation as D028), so 18 units train.
+
+**2 and 3. M_AD and M_AM — the matched pair.** Carriers and non-carriers are
+each split platform-stratified (D025 makes stratification mandatory) under
+`seed('allele_split')`:
+
+| Pool | units | LTQ / Lumos |
+|---|---|---|
+| C_pool — carriers available for training | 15 (12 train + 3 val) | 7 / 8 |
+| C_test — carriers held out | 14 | 7 / 7 |
+| N_pool — non-carriers available for training | 15 (12 train + 3 val) | 7 / 8 |
+| N_test — non-carriers held out | 8 | 4 / 4 |
+
+M_AD trains on 12 non-carriers; M_AM trains on 12 carriers. Both are scored on
+**both** held-out sets. Training size is equal, so the arms differ in whether
+the training units carry the dominant allele and in nothing else.
+
+| Contrast | test units | matched model | mismatched model |
+|---|---|---|---|
+| **I** | C_test (14 carriers) | M_AM | M_AD |
+| **II** | N_test (8 non-carriers) | M_AD | M_AM |
+
+Both are paired per unit, so the interval is a paired cluster bootstrap and
+between-unit variance cancels. **The pattern is what identifies the cause, and
+it is fixed here before the numbers exist:**
+
+- **Both contrasts positive** → sharing the test units' allele class with
+  training helps, in both directions. That is an allele effect.
+- **Opposite signs** → one training set is simply the better one, and contrast I
+  alone would have been read as an allele effect that is not there.
+
+A single arm cannot distinguish these. This is the same failure D028 found in
+D025, and it is the reason this entry exists.
+
+**Arm-specific floors.** Each arm carries a composition-only LDA fitted on its
+own training rows and scored on its own test rows, by the D002 method. D028
+measured why: arm floors there ran 0.5917 to 0.6648 against the pooled 0.597,
+and using the pooled figure would have reversed the ordering between two arms.
+
+### The allele-enriched stratum
+
+The fivefold dilution above is the design's main weakness, so a stratum is
+preregistered that concentrates the peptides plausibly restricted by the
+held-out allele. **It is defined using only the pooled training units, never the
+held-out ones:** a sequence is *carrier-restricted* if it was observed in ≥2 of
+the 15 C_pool units and in none of the 15 N_pool units, and
+*non-carrier-restricted* with the roles reversed. 4,664 and 3,523 sequences
+respectively.
+
+**The definition was validated on units excluded from it** before being adopted:
+
+| Stratum | reaches a C_test unit | reaches an N_test unit | per-unit rate ratio |
+|---|---|---|---|
+| carrier-restricted | 29.25% | 8.04% | **2.08** |
+| non-carrier-restricted | 17.43% | 12.63% | **0.79** |
+
+Carrier-restricted peptides turn up in held-out carriers at twice the per-unit
+rate of held-out non-carriers, and non-carrier-restricted peptides go the other
+way. The stratum tracks genuine carrier-linked restriction rather than peptide
+privacy, which is the trap the first attempt fell into: carrier-*exclusive*
+peptides without a recurrence requirement are **91.6%** of every carrier's
+positives, because 79.9% of peptides are participant-private (D003). That
+version was discarded before being preregistered, and is recorded here rather
+than omitted.
+
+Each eval is reported on all rows and on the stratum matched to the test units'
+own class, with negatives subsampled 1:1 per unit under
+`seed('allele_stratum_negatives')` so average precision stays on the same scale
+as the primary. Both arms of a contrast are scored on identical rows, so pairing
+holds.
+
+**What the stratum is not.** Carrier-linked is not A\*02:01-restricted. The
+stratum will also capture peptides restricted by alleles in linkage with
+A\*02:01, and any other systematic difference between the carrier and
+non-carrier groups. It raises the effect's concentration; it does not identify
+the restricting allele. Nothing here is allele deconvolution.
+
+### Recorded limits
+
+1. **This cannot license §20 on its own.** Even both contrasts positive would
+   show that peptide repertoires differ by HLA genotype in a way a sequence
+   model detects — which is a weaker statement than allele-specific binding, and
+   is also what the confounds shared by both groups would produce. G13 stays
+   held after this analysis, not released by it.
+2. **8 units** in contrast II. The sign is informative; its magnitude is not
+   well determined.
+3. **All three arms train on units inside the primary test partition**, as the
+   transfer arms did. These models serve this analysis only and never §25, which
+   was read once and is closed.
+4. **The stratum analysis changes prevalence and set size**, so its absolute AP
+   is not comparable to R9's. Only the paired within-stratum contrast is.
+
+**Seeds.** `seed('allele_split')` for the pools, `seed('allele_valsplit')` for
+the early-stopping holdouts, `seed('allele_init', i)` for weights,
+`seed('allele_bootstrap')` for intervals, `seed('allele_stratum_negatives')`
+for the 1:1 stratum negatives. Five replicate seeds per arm; per-unit AP is the
+mean across them, as D027 fixed.
 
 ---
 

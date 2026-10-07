@@ -10,6 +10,7 @@ derived per D010.
   --mode final      fit the selected config, 5 folds x 5 seeds
   --mode test       read the held-out partition ONCE and compute the endpoint
   --mode transfer   cross-platform transfer (D025) with the matched control (D028)
+  --mode allele     dominant-allele-held-out transfer (D001) with its control (D029)
 
 The test partition is guarded: --mode test refuses to run unless a completed
 selection record exists naming the configuration, so the endpoint cannot be
@@ -513,10 +514,289 @@ def transfer(rows, split, device, max_epochs, want_arms, replicates):
     print(f"\nwrote {outfile}")
 
 
+
+# ------------------------------------------------------------------ D001 / D029
+
+def allele(rows, split, device, max_epochs, want_arms, replicates):
+    """D001's split run verbatim, plus the D029 matched pair and stratum.
+
+    The split holds out ONE allele, not a disjoint allele set: 21.7% of a test
+    unit's repertoire is unseen, so a real effect arrives attenuated. The
+    matched pair tells an allele effect apart from one training set simply
+    being better; a single arm cannot.
+    """
+    import random
+    from collections import defaultdict
+
+    car = sorted(u for u, r in split.items() if r['carries_top_allele'] == 'yes')
+    non = sorted(u for u, r in split.items() if r['carries_top_allele'] == 'no')
+    ad_tr = sorted(u for u, r in split.items() if r['allele_disjoint_partition'] == 'train')
+    ad_te = sorted(u for u, r in split.items() if r['allele_disjoint_partition'] == 'test')
+    assert set(ad_tr) == set(non) and set(ad_te) == set(car), \
+        "the frozen split's allele partition must be exactly carrier vs non-carrier"
+
+    rng_s = random.Random(seed('allele_split'))
+
+    def strat(units, n_first):
+        """Platform-stratified draw. D025 made stratification mandatory: at
+        0.6451 composition-only separability, an unstratified draw can quietly
+        become a platform split and be read as an allele effect."""
+        byp = defaultdict(list)
+        for u in units:
+            byp[split[u]['platform']].append(u)
+        first = []
+        for pl in sorted(byp):
+            lst = sorted(byp[pl]); rng_s.shuffle(lst)
+            first += lst[:round(n_first*len(lst)/len(units))]
+        rest = [u for u in units if u not in set(first)]; rng_s.shuffle(rest)
+        while len(first) < n_first:
+            first.append(rest.pop())
+        return sorted(first), sorted(u for u in units if u not in set(first))
+
+    C_pool, C_test = strat(car, 15)
+    N_pool, N_test = strat(non, 15)
+
+    rng_v = random.Random(seed('allele_valsplit'))
+    def hold_out(pool, n_train):
+        us = list(pool); rng_v.shuffle(us)
+        return sorted(us[:n_train]), sorted(us[n_train:])
+
+    # --- the two strata, defined on the POOLED units only, never the held-out ones
+    obs = defaultdict(set)
+    for s, u, l in rows:
+        if l == 1:
+            obs[s].add(u)
+    Cp, Np = set(C_pool), set(N_pool)
+    cres = {s for s, us in obs.items() if len(us & Cp) >= 2 and not (us & Np)}
+    nres = {s for s, us in obs.items() if len(us & Np) >= 2 and not (us & Cp)}
+    print(f"strata (defined on the 15+15 pooled units only): "
+          f"carrier-restricted {len(cres):,}, non-carrier-restricted {len(nres):,}")
+
+    arms = []
+    tr, va = hold_out(ad_tr, len(ad_tr) - 5)
+    arms.append({'id': 'P_AD', 'kind': 'preregistered-D001',
+                 'train_class': 'non-carrier', 'train_units': tr, 'val_units': va,
+                 'evals': [{'label': 'dominant allele unseen: all 29 carriers',
+                            'rel': 'mismatched', 'units': ad_te, 'stratum': 'carrier'}]})
+    tr, va = hold_out(N_pool, 12)
+    arms.append({'id': 'M_AD', 'kind': 'matched-D029', 'train_class': 'non-carrier',
+                 'train_units': tr, 'val_units': va,
+                 'evals': [{'label': 'mismatched: 14 held-out carriers',
+                            'rel': 'mismatched', 'units': C_test, 'stratum': 'carrier'},
+                           {'label': 'matched: 8 held-out non-carriers',
+                            'rel': 'matched', 'units': N_test, 'stratum': 'noncarrier'}]})
+    tr, va = hold_out(C_pool, 12)
+    arms.append({'id': 'M_AM', 'kind': 'matched-D029', 'train_class': 'carrier',
+                 'train_units': tr, 'val_units': va,
+                 'evals': [{'label': 'matched: 14 held-out carriers',
+                            'rel': 'matched', 'units': C_test, 'stratum': 'carrier'},
+                           {'label': 'mismatched: 8 held-out non-carriers',
+                            'rel': 'mismatched', 'units': N_test, 'stratum': 'noncarrier'}]})
+    if want_arms:
+        keep = set(want_arms.split(','))
+        arms = [a for a in arms if a['id'] in keep]
+
+    cfg = json.loads((RES/'selection.json').read_text())['selected']['config']
+    print(f"config {cfg} (frozen by selection; not re-tuned here)")
+    print(f"C_pool {len(C_pool)}  C_test {len(C_test)}  "
+          f"N_pool {len(N_pool)}  N_test {len(N_test)}")
+    for a in arms:
+        print(f"  {a['id']:<6} train {len(a['train_units'])} {a['train_class']} units, "
+              f"val {len(a['val_units'])}, evals " +
+              "; ".join(f"{e['label']} [{e['rel']}]" for e in a['evals']))
+    print()
+
+    seqs = [s for s, _, _ in rows]
+    X, y = encode(seqs), np.array([l for _, _, l in rows])
+    uarr = np.array([u for _, u, _ in rows])
+    sarr = np.array(seqs, dtype=object)
+    where = defaultdict(list)
+    for i, u in enumerate(uarr):
+        where[u].append(i)
+    where = {u: np.array(v) for u, v in where.items()}
+    def rowsof(units):
+        return np.concatenate([where[u] for u in units])
+    C = composition(seqs)
+
+    rng_n = np.random.default_rng(seed('allele_stratum_negatives'))
+    def stratum_rows(units, which):
+        """Stratum positives plus 1:1 negatives drawn per unit, so average
+        precision stays on the primary's scale instead of dropping with
+        prevalence. Identical rows for every arm, so pairing holds."""
+        S = cres if which == 'carrier' else nres
+        out = []
+        for u in sorted(units):
+            idx = where[u]
+            pos = idx[(y[idx] == 1) & np.array([s in S for s in sarr[idx]])]
+            neg = idx[y[idx] == 0]
+            if len(pos) < 10:
+                continue
+            out.append(pos)
+            out.append(rng_n.choice(neg, size=len(pos), replace=False))
+        return np.concatenate(out) if out else np.array([], dtype=int)
+
+    full = (max_epochs == MAX_EPOCHS and replicates == 5)
+    outfile = RES/('allele.json' if full else 'allele.PARTIAL.json')
+    tag = '' if full else f'.e{max_epochs}r{replicates}'
+    if not full:
+        print(f"*** SHORTENED RUN (max_epochs={max_epochs}, replicates={replicates}). "
+              f"Not a result. ***\n")
+
+    out = {'config': cfg, 'replicates': replicates, 'max_epochs': max_epochs,
+           'pools': {'C_pool': C_pool, 'C_test': C_test,
+                     'N_pool': N_pool, 'N_test': N_test},
+           'strata_sizes': {'carrier_restricted': len(cres),
+                            'noncarrier_restricted': len(nres)},
+           'seeds': {k: seed(f'allele_{k}') for k in
+                     ('split', 'valsplit', 'bootstrap', 'stratum_negatives')},
+           'arms': []}
+    if outfile.exists():
+        old = json.loads(outfile.read_text())
+        out['arms'] = [a for a in old.get('arms', [])
+                       if a['id'] not in {x['id'] for x in arms}]
+
+    rng = np.random.default_rng(seed('allele_bootstrap'))
+
+    for ai, arm in enumerate(arms):
+        tri, vai = rowsof(arm['train_units']), rowsof(arm['val_units'])
+        print(f"=== {arm['id']} ({arm['kind']}) ===", flush=True)
+        print(f"  train rows {len(tri):,}  val rows {len(vai):,}", flush=True)
+        models, fitlog = [], []
+        for r_ in range(replicates):
+            sd = seed('allele_init', ai*10 + r_)
+            path = RES/f"allele_{arm['id']}_s{r_}{tag}.pt"
+            if path.exists():
+                ck = torch.load(path, map_location='cpu', weights_only=False)
+                if ck.get('max_epochs') != max_epochs or ck.get('cfg') != cfg:
+                    sys.exit(f"REFUSING to reuse {path.name}: fitted at "
+                             f"max_epochs={ck.get('max_epochs')}, this run is "
+                             f"{max_epochs}. Delete it or match the budget.")
+                m = CNN(**cfg).to(device); m.load_state_dict(ck['state']); m.eval()
+                models.append(m)
+                fitlog.append({'replicate': r_, 'seed': sd, 'val_ap': ck['val_ap'],
+                               'epochs': ck['epochs'], 'file': path.name, 'cached': True})
+                print(f"  seed {r_}: cached (val AP {ck['val_ap']:.4f})", flush=True)
+                continue
+            t0 = time.time()
+            m, vap, ep = fit(cfg, (X[tri], y[tri]), (X[vai], y[vai]), sd, device, max_epochs)
+            torch.save({'state': m.state_dict(), 'cfg': cfg, 'seed': sd,
+                        'arm': arm['id'], 'replicate': r_, 'val_ap': vap,
+                        'epochs': ep, 'max_epochs': max_epochs,
+                        'train_units': arm['train_units'], 'val_units': arm['val_units']},
+                       path)
+            m.eval(); models.append(m)
+            fitlog.append({'replicate': r_, 'seed': sd, 'val_ap': vap, 'epochs': ep,
+                           'file': path.name, 'cached': False})
+            print(f"  seed {r_}: val AP {vap:.4f} ({ep} epochs, {time.time()-t0:.0f}s)",
+                  flush=True)
+
+        rec = {'id': arm['id'], 'kind': arm['kind'], 'train_class': arm['train_class'],
+               'train_units': arm['train_units'], 'val_units': arm['val_units'],
+               'n_train_units': len(arm['train_units']), 'fits': fitlog, 'evals': []}
+
+        for ev in arm['evals']:
+            for scope, tei in (('all rows', rowsof(ev['units'])),
+                               (f"{ev['stratum']}-restricted stratum",
+                                stratum_rows(ev['units'], ev['stratum']))):
+                if tei.size == 0:
+                    print(f"  {ev['label']} / {scope}: EMPTY, skipped")
+                    continue
+                Xte = torch.from_numpy(X[tei]).to(device)
+                S = []
+                for m in models:
+                    with torch.no_grad():
+                        S.append(torch.cat([m(Xte[i:i+8192]) for i in
+                                            range(0, len(Xte), 8192)]).cpu().numpy())
+                S = np.vstack(S)
+                yte, ute = y[tei], uarr[tei]
+                fl = lda_scores(C[tri], y[tri], C[tei])
+                pu, puf = {}, {}
+                for u in sorted(set(ute)):
+                    k = ute == u
+                    if yte[k].sum() == 0 or yte[k].sum() == k.sum():
+                        continue
+                    pu[u] = float(np.mean([average_precision(yte[k], S[j][k])
+                                           for j in range(S.shape[0])]))
+                    puf[u] = average_precision(yte[k], fl[k])
+                us = sorted(pu)
+                v = np.array([pu[u] for u in us]); vf = np.array([puf[u] for u in us])
+                lo, hi = cluster_ci(v, rng)
+                flo, fhi = cluster_ci(vf, rng)
+                dlo, dhi = paired_ci(v - vf, rng)
+                print(f"  {ev['label']}  /  {scope}")
+                print(f"    units {v.size}  rows {tei.size:,}  mean per-unit AP "
+                      f"{v.mean():.4f}  CI99 [{lo:.4f}, {hi:.4f}]")
+                print(f"    arm floor {vf.mean():.4f}   lift {v.mean()-vf.mean():+.4f}  "
+                      f"CI99 [{dlo:+.4f}, {dhi:+.4f}]", flush=True)
+                rec['evals'].append({
+                    'label': ev['label'], 'rel': ev['rel'], 'scope': scope,
+                    'units': ev['units'], 'n_units': int(v.size), 'n_rows': int(tei.size),
+                    'mean_ap': float(v.mean()), 'ci99': [lo, hi],
+                    'min': float(v.min()), 'max': float(v.max()),
+                    'floor_mean_ap': float(vf.mean()), 'floor_ci99': [flo, fhi],
+                    'lift_over_floor': float(v.mean()-vf.mean()), 'lift_ci99': [dlo, dhi],
+                    'per_unit': {u: pu[u] for u in us},
+                    'per_unit_floor': {u: puf[u] for u in us}})
+        out['arms'].append(rec)
+        out['arms'].sort(key=lambda a: a['id'])
+        json.dump(out, open(outfile, 'w'), indent=1)
+        print()
+
+    # ---- the two paired contrasts (D029). Their SIGNS are what identifies the cause.
+    out['contrasts'] = []
+    idx = {a['id']: a for a in out['arms']}
+    def ev_of(arm_id, rel, scope):
+        a = idx.get(arm_id)
+        if not a:
+            return None
+        for e in a['evals']:
+            if e['rel'] == rel and e['scope'] == scope:
+                return e
+        return None
+
+    for cname, test_set, m_arm, x_arm, strat_scope in (
+            ('I', 'C_test (14 carriers)', 'M_AM', 'M_AD', 'carrier-restricted stratum'),
+            ('II', 'N_test (8 non-carriers)', 'M_AD', 'M_AM', 'noncarrier-restricted stratum')):
+        for scope in ('all rows', strat_scope):
+            a, b = ev_of(m_arm, 'matched', scope), ev_of(x_arm, 'mismatched', scope)
+            if not (a and b):
+                continue
+            us = sorted(set(a['per_unit']) & set(b['per_unit']))
+            if not us:
+                continue
+            d = np.array([a['per_unit'][u] - b['per_unit'][u] for u in us])
+            lo, hi = paired_ci(d, rng)
+            out['contrasts'].append({
+                'contrast': cname, 'test_set': test_set, 'scope': scope,
+                'matched_arm': m_arm, 'mismatched_arm': x_arm, 'n_units': len(us),
+                'matched_mean': float(np.mean([a['per_unit'][u] for u in us])),
+                'mismatched_mean': float(np.mean([b['per_unit'][u] for u in us])),
+                'difference': float(d.mean()), 'ci99': [lo, hi],
+                'n_units_positive': int((d > 0).sum())})
+
+    if out['contrasts']:
+        print("="*72)
+        for c in out['contrasts']:
+            print(f"  Contrast {c['contrast']} — {c['test_set']} — {c['scope']}")
+            print(f"    matched ({c['matched_arm']}) {c['matched_mean']:.4f}   "
+                  f"mismatched ({c['mismatched_arm']}) {c['mismatched_mean']:.4f}")
+            print(f"    paired difference {c['difference']:+.4f}  "
+                  f"CI99 [{c['ci99'][0]:+.4f}, {c['ci99'][1]:+.4f}]  "
+                  f"({c['n_units_positive']}/{c['n_units']} units positive)")
+        print("="*72)
+        print("  D029 fixed the reading in advance: BOTH contrasts positive is an")
+        print("  allele effect; OPPOSITE SIGNS mean one training set is simply")
+        print("  better and contrast I alone would have been misread.")
+        print("="*72)
+
+    json.dump(out, open(outfile, 'w'), indent=1)
+    print(f"\nwrote {outfile}")
+
+
 def main():
     ap_ = argparse.ArgumentParser()
     ap_.add_argument('--mode', required=True,
-                     choices=['selftest', 'cv', 'final', 'test', 'transfer'])
+                     choices=['selftest', 'cv', 'final', 'test', 'transfer', 'allele'])
     ap_.add_argument('--arms', default='', help='comma-separated arm ids; default all')
     ap_.add_argument('--replicates', type=int, default=5)
     ap_.add_argument('--limit-configs', type=int, default=0)
@@ -717,6 +997,15 @@ def main():
                      "primary test partition. It must not run before the single "
                      "preregistered endpoint read (results/model/endpoint.json).")
         transfer(rows, split, device, a.max_epochs, a.arms, a.replicates)
+
+    if a.mode == 'allele':
+        if not (RES/'selection.json').exists():
+            sys.exit("REFUSING: --mode allele needs the frozen configuration from "
+                     "results/model/selection.json; it does not tune its own.")
+        if not (RES/'endpoint.json').exists():
+            sys.exit("REFUSING: --mode allele trains on units inside the primary "
+                     "test partition. It must follow the single preregistered read.")
+        allele(rows, split, device, a.max_epochs, a.arms, a.replicates)
 
 
 if __name__ == '__main__':
