@@ -1,0 +1,14 @@
+=== NetMHCpan finished, starting MixMHCpred ===
+199,978 rows over 10 units; 4 jobs; 143 supported alleles
+  UPN01: 19,999 peptides scored
+  UPN08: 19,999 peptides scored
+  UPN14: 20,000 peptides scored
+  UPN22: 20,000 peptides scored
+  UPN24: 19,999 peptides scored
+  UPN27: 19,995 peptides scored   dropped allele(s): ['HLA-B*27:02']
+  UPN31: 19,998 peptides scored
+  UPN38: 19,997 peptides scored
+  UPN46: 19,994 peptides scored
+  UPN51: 19,997 peptides scored
+
+wrote /home/user/PXD024871_mapping/results/predictors/mixmhcpred_3_0_test_scores.csv  (199,978 rows)
