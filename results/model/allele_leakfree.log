@@ -1,0 +1,61 @@
+sequences neither matched arm trained on: 240,150 of 466,946
+
+carrier     exclusive  2,511 seqs   recurrence-matched control    226 seqs
+noncarrier  exclusive    608 seqs   recurrence-matched control    136 seqs
+
+C_test (14 carriers)  —  leak-free, all rows
+  matched (M_AM)
+    units 14  rows 264,047  mean AP 0.7002  CI99 [0.6808, 0.7180]   floor 0.5968  lift +0.1035 CI99 [+0.0880, +0.1240]
+  mismatched (M_AD)
+    units 14  rows 264,047  mean AP 0.6930  CI99 [0.6776, 0.7075]   floor 0.5949  lift +0.0981 CI99 [+0.0770, +0.1241]
+
+C_test (14 carriers)  —  leak-free carrier-EXCLUSIVE stratum
+  matched (M_AM)
+    units 14  rows 10,398  mean AP 0.8075  CI99 [0.7911, 0.8236]   floor 0.7004  lift +0.1071 CI99 [+0.0778, +0.1374]
+  mismatched (M_AD)
+    units 14  rows 10,398  mean AP 0.7740  CI99 [0.7566, 0.7930]   floor 0.6837  lift +0.0903 CI99 [+0.0590, +0.1221]
+
+C_test (14 carriers)  —  leak-free recurrence-matched CONTROL
+  matched (M_AM)
+    units 14  rows 954  mean AP 0.8451  CI99 [0.8164, 0.8729]   floor 0.7207  lift +0.1244 CI99 [+0.0878, +0.1576]
+  mismatched (M_AD)
+    units 14  rows 954  mean AP 0.8394  CI99 [0.8022, 0.8691]   floor 0.7231  lift +0.1163 CI99 [+0.0835, +0.1494]
+
+N_test (8 non-carriers)  —  leak-free, all rows
+  matched (M_AD)
+    units 8  rows 152,765  mean AP 0.7115  CI99 [0.6910, 0.7328]   floor 0.6105  lift +0.1010 CI99 [+0.0708, +0.1301]
+  mismatched (M_AM)
+    units 8  rows 152,765  mean AP 0.7115  CI99 [0.6862, 0.7366]   floor 0.6079  lift +0.1036 CI99 [+0.0831, +0.1206]
+
+N_test (8 non-carriers)  —  leak-free noncarrier-EXCLUSIVE stratum
+  matched (M_AD)
+    units 8  rows 2,444  mean AP 0.8030  CI99 [0.7612, 0.8372]   floor 0.6802  lift +0.1228 CI99 [+0.0795, +0.1639]
+  mismatched (M_AM)
+    units 8  rows 2,444  mean AP 0.8161  CI99 [0.7839, 0.8466]   floor 0.6854  lift +0.1307 CI99 [+0.1050, +0.1487]
+
+N_test (8 non-carriers)  —  leak-free recurrence-matched CONTROL
+  matched (M_AD)
+    units 8  rows 560  mean AP 0.8367  CI99 [0.7952, 0.8827]   floor 0.7108  lift +0.1259 CI99 [+0.0748, +0.1853]
+  mismatched (M_AM)
+    units 8  rows 560  mean AP 0.8302  CI99 [0.7740, 0.8807]   floor 0.7059  lift +0.1244 CI99 [+0.0625, +0.1842]
+
+==========================================================================
+  Contrast I — C_test (14 carriers) — leak-free, all rows
+    matched 0.7002   mismatched 0.6930   paired +0.0072  CI99 [-0.0015, +0.0162]  (9/14 units positive)
+  Contrast I — C_test (14 carriers) — carrier-exclusive stratum
+    matched 0.8075   mismatched 0.7740   paired +0.0335  CI99 [+0.0236, +0.0438]  (14/14 units positive)
+  Contrast I — C_test (14 carriers) — recurrence-matched control
+    matched 0.8451   mismatched 0.8394   paired +0.0056  CI99 [-0.0137, +0.0279]  (8/14 units positive)
+  Contrast II — N_test (8 non-carriers) — leak-free, all rows
+    matched 0.7115   mismatched 0.7115   paired +0.0000  CI99 [-0.0051, +0.0078]  (3/8 units positive)
+  Contrast II — N_test (8 non-carriers) — noncarrier-exclusive stratum
+    matched 0.8030   mismatched 0.8161   paired -0.0131  CI99 [-0.0287, +0.0040]  (2/8 units positive)
+  Contrast II — N_test (8 non-carriers) — recurrence-matched control
+    matched 0.8367   mismatched 0.8302   paired +0.0065  CI99 [-0.0296, +0.0507]  (3/8 units positive)
+==========================================================================
+
+P_AD (preregistered D001) — leakage-free against its own 18 training units
+  all 29 carriers, leakage-free
+    units 29  rows 559,665  mean AP 0.7210  CI99 [0.7103, 0.7308]   floor 0.6147  lift +0.1064 CI99 [+0.0934, +0.1198]
+
+wrote /home/user/PXD024871_mapping/results/model/allele_leakfree.json

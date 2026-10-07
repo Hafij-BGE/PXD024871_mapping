@@ -165,6 +165,7 @@ blocks:
 | D027 | How the 25 final models yield one endpoint value. §13 required all 25 be reported but never said how they combine. **RESOLVED before the test partition was read.** See entry below | before --mode test |
 | D028 | Cross-platform transfer design: D025 run as preregistered, plus a matched within-platform control, because the preregistered form alone confounds platform with training-set size. Logged before the run. See entry below | before transfer |
 | D029 | The `allele_disjoint_partition` split holds out ONE allele, not a disjoint set: only 5 of 36 test alleles are absent from training and 21.7% of a test unit's repertoire is unseen, so the design is attenuated ~5x. D001 run verbatim, renamed dominant-allele-held-out, plus a matched pair and a validated allele-enriched stratum. Logged before the run | before G13 |
+| D030 | The D029 allele stratum was defined as "in M_AM's pool, not in M_AD's", so M_AM had memorised 97.93% of it and M_AD 0.00%. Its +0.0660 is void; corrected to +0.0335 on row sets neither arm saw. Second instance of the TEST_LEAKFREE failure mode, so a standing check is added | voids a result |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -745,6 +746,64 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
+## D030 — The D029 stratum was defined so that one arm had memorised it · RESOLVED
+
+**Opened and resolved:** 2026-10-07, on inspecting the D029 run before reporting it
+**Supersedes:** the stratum definition in D029 · **Does not supersede:** anything else in D029
+
+**Decision: the stratum contrast in `allele.json` is void. Every evaluation
+subset must be restricted to sequences neither arm saw in training, and the
+corrected analysis in `allele_leakfree.json` is the one that is reported.**
+
+**The flaw.** D029 defined a sequence as carrier-restricted if it was observed
+in ≥2 of the 15 C_pool units and in none of the 15 N_pool units. C_pool is
+M_AM's training pool; N_pool is M_AD's. The definition therefore *required* that
+the sequence be present in M_AM's side of the data and absent from M_AD's.
+Measured on the held-out carriers' stratum rows: **97.93% are sequences M_AM
+trained on, 0.00% are sequences M_AD could have trained on.** The +0.0660 it
+produced measures memorisation, and it was the largest effect in the run.
+
+**How it got past the design.** D029 did validate the stratum — on held-out
+units, finding carrier-restricted peptides reach held-out carriers at 2.08× the
+per-unit rate of held-out non-carriers. That check confirmed the stratum tracks
+carrier linkage. It said nothing about **what each arm had already seen**, which
+is a different question, and the one that mattered.
+
+**This is the second occurrence of one failure mode.** The first `TEST_LEAKFREE`
+mask selected a subset containing no negatives, making average precision 1.0000
+by arithmetic. Both times a subset was defined by a property that fixed the
+answer, and both times the broken version produced the most flattering number in
+the run. **Standing check, from here on: for every evaluation subset, report
+what fraction of it each model being compared had already seen in training.**
+A subset whose definition references a model's training units is void until
+that fraction is shown to be equal across the models compared.
+
+**The correction.** `scripts/allele_leakfree.py` rebuilds every row set
+excluding positives either matched arm saw in training, so both models are
+equally naive to every sequence scored. Carrier-linkage survives as recurrence
+among **held-out** carriers plus absence from every non-carrier. A
+recurrence-matched control — equally recurrent, equally unseen, not exclusive to
+a class — is scored alongside. Corrected contrast I on the exclusive stratum is
+**+0.0335** (CI99 [+0.0236, +0.0438], 14/14 units), against **+0.0660**
+uncorrected: close to half of the original was memorisation.
+
+**`allele.json` is kept as run.** The void number stays in the repository with
+this entry pointing at it, because a rejected analysis is recorded rather than
+deleted. `QC_G12_allele.md` §2.1 states the 97.93% / 0.00% split so the number
+cannot be quoted without it.
+
+**A second D029 defect, found at the same time and recorded separately in
+`QC_G12_allele.md` §3.** D029's sign rule assumed the carrier and non-carrier
+groups are symmetric. They are not: the 29 carriers share HLA-A\*02:01, while
+the 23 non-carriers share only its absence and span 41 alleles — a figure
+printed in D029's own table. Contrast II is therefore a weak replication test by
+construction. This was knowable before the run and was not seen. It is recorded
+as a defect in the rule, **not** as grounds to reinterpret a preregistered test
+that the result fails; §4 of the QC document names the symmetric test that would
+settle it instead.
+
+---
+
 ## D029 — The allele-disjoint split is one-allele-held-out, and what to do about it · RESOLVED
 
 **Opened and resolved:** 2026-10-07 · **Before any allele-arm result was visible**
@@ -888,6 +947,34 @@ the early-stopping holdouts, `seed('allele_init', i)` for weights,
 `seed('allele_bootstrap')` for intervals, `seed('allele_stratum_negatives')`
 for the 1:1 stratum negatives. Five replicate seeds per arm; per-unit AP is the
 mean across them, as D027 fixed.
+
+**Outcome, 2026-10-07 (`results/qc/QC_G12_allele.md`). VERDICT INCONCLUSIVE.**
+
+The preregistered arm is clean and clear: trained on non-carriers, the model
+scores the 29 carriers at a leakage-free lift of **+0.1064** over its own floor,
+against +0.1015 and +0.1042 for the two cross-platform arms. **Holding out the
+cohort's most common class-I allele costs nothing visible.** At the
+whole-repertoire level the matched contrast puts the cost at **+0.0072**, CI99
+[−0.0015, +0.0162] — an interval containing zero, exactly as the fivefold
+attenuation above predicts.
+
+The stratum designed to defeat that attenuation was **broken**, and in the
+direction that flattered the hypothesis: see D030. Corrected, contrast I on the
+carrier-exclusive stratum is **+0.0335**, CI99 [+0.0236, +0.0438], **14 of 14
+units positive**, and it is not memorisation (zero by construction), not
+recurrence (difference-of-differences against a recurrence-matched control
++0.0279, CI99 [+0.0067, +0.0472]) and not one training set being better
+(measured directly at +0.0005, CI99 [−0.0081, +0.0092] over 22 units).
+
+**But this entry's own sign rule rejects it.** Contrast II came out at −0.0131
+on its exclusive stratum, so the signs are opposite — the branch this entry
+assigned to "one training set is simply better". That premise is measurably
+false here, which is recorded and does **not** convert a failed preregistered
+test into a passed one. The rule's symmetry assumption was the defect, and D030
+records that it was knowable in advance from the 41-allele figure in this
+entry's own table.
+
+**G13 stays held, as this entry said it would whatever the result.**
 
 ---
 

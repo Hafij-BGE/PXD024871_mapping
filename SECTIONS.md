@@ -766,11 +766,18 @@ No gate can be bypassed silently. Record any reduction or deferral.
 - **G11 BLOCKED** — no predictor's training-set membership list was obtained.
   D006 forbids promoting §18 while any predictor is unverifiable. Not deferred
   for convenience; the input does not exist.
-- **G12 PART-PASSED** — `results/qc/QC_G12_transfer.md`. The preregistered
-  cross-platform transfer (D025) and its matched control (D028) are complete:
-  performance does not collapse across platforms, and the platform effect is
-  measured at 0.04-0.06 AP. G12 as a whole is **not** passed: the allele-disjoint
-  analysis (D001) has not run, and §18 is blocked.
-- **G13 HELD** — §20 must not be written as biology until D001's analysis has
-  run. Ruling out an instrument-specific signature does not rule out confounds
-  the two instruments share.
+- **G12 PART-PASSED** — `QC_G12_transfer.md` and `QC_G12_allele.md`. Both
+  preregistered secondary analyses are complete. Cross-platform transfer (D025,
+  D028): performance does not collapse, platform effect 0.04-0.06 AP.
+  Dominant-allele-held-out (D001, D029, D030): holding out the cohort's most
+  common allele costs nothing visible (+0.0072, CI99 [-0.0015, +0.0162]); the
+  carrier-exclusive stratum shows +0.0335 (14/14 units) but the preregistered
+  sign test is inconclusive. G12 as a whole is **not** passed: §18 is blocked by
+  D006.
+- **G13 HELD** — §20 must not be written as biology. Both analyses that were
+  meant to license it have now run, and neither does. The signal survives an
+  unseen instrument and an unseen dominant allele, which rules out two specific
+  confounds and establishes neither presentation biology nor allele specificity.
+  Released only by the symmetric multi-allele test named in
+  `QC_G12_allele.md` §4, or by an analysis that addresses the confounds both
+  platforms and both allele groups share.
