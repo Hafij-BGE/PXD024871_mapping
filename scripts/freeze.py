@@ -198,8 +198,21 @@ def write_manifest():
                    'contain the hash of the commit that carries it, nor its own '
                    'digest, so freeze_manifest.json is the one file excluded.',
            'files': rows}
-    (REPO/'freeze_manifest.json').write_text(json.dumps(man, indent=1))
-    print(f"wrote freeze_manifest.json: {len(rows)} files, {total/1e6:.1f} MB")
+    (REPO/MANIFEST).write_text(json.dumps(man, indent=1))
+    print(f"wrote {MANIFEST}: {len(rows)} files, {total/1e6:.1f} MB")
+
+    # Re-read and re-hash immediately. The manifest is only true for the tree as
+    # it stood when the walk ran, so anything edited after that point is already
+    # stale -- which happened twice while building this freeze, once for the
+    # manifest itself and once for two prose files edited after the walk. This
+    # closes the window rather than relying on remembering to re-verify.
+    back = json.loads((REPO/MANIFEST).read_text())
+    stale = [f['path'] for f in back['files'] if sha(REPO/f['path']) != f['sha256']]
+    if stale:
+        sys.exit(f"\nMANIFEST STALE ON WRITE: {stale}. Something changed the tree "
+                 f"after the walk. Nothing may be edited between --write and the "
+                 f"commit; re-run --write as the last action before committing.")
+    print("  re-read and re-hashed: every entry still matches the tree")
     return man
 
 

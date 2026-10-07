@@ -847,8 +847,17 @@ printed in `FREEZE_RECORD.md` caught it on the next run. The manifest now
 excludes itself and declares the exclusion, and check 8 was added so the failure
 is caught before a commit rather than after one.
 
-Both are recorded because a verification tool that has never produced a failure
-has not been tested, and this one's first two failures were its own.
+A third followed: the manifest was written, then `FREEZE_RECORD.md` and this
+entry were edited to describe the second fix, and the manifest was committed
+carrying their pre-edit hashes. Check 8 would have caught it on a re-verify that
+was not run. The fix is structural rather than procedural — `--write` now
+re-reads and re-hashes the manifest it has just written and aborts if anything
+in the tree has moved, so the window between writing and committing cannot be
+filled with edits.
+
+All three are recorded because a verification tool that has never produced a
+failure has not been tested, and every failure this one has produced was its
+own or the freeze's.
 
 ### The anchor
 
