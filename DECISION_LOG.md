@@ -889,6 +889,31 @@ the outcome this entry is equally prepared to record.
 `seed('multi_negatives')` for the 1:1 stratum negatives. Five replicates per
 arm; per-unit AP is the mean across them (D027).
 
+### Disclosure: a plumbing run previewed Part B's direction
+
+The plumbing test needed to validate this code — Part B, one seed, two epochs —
+necessarily computed the contrasts, so **Part B's direction was visible before
+the real run.** It showed +0.0308 on the A\*02:01-exclusive stratum and −0.0189
+on the C\*07:02-exclusive stratum: the sign reversal this entry preregistered.
+
+Disclosed rather than omitted. Two reasons it cannot bias the result, and one
+reason it is still a cost:
+
+- **Nothing remained to choose.** The alleles, the pair, the group definitions,
+  the pool and validation draws, the three strata per allele, the seeds and the
+  reading rule were all fixed in this entry and committed before the plumbing
+  run. A preview can only bias an analysis that still has a free parameter.
+- **A 2-epoch single-seed fit is not the model.** The real arms train to early
+  stopping over five seeds, so the preview's numbers are not the result's.
+- **The cost is to me, not the design.** I now know the direction, and a reader
+  must take on trust that no unlogged choice followed. That is why this
+  paragraph exists and why the commit history is the check: the design commit
+  precedes the run.
+
+A better sequence would have validated the plumbing on a row set that is not
+one of the reported ones — scrambled group labels, for instance. That is the
+practice to adopt for the next analysis of this shape.
+
 ---
 
 ## D030 — The D029 stratum was defined so that one arm had memorised it · RESOLVED
