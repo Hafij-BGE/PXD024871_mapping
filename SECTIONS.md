@@ -702,11 +702,17 @@ is largest where contamination is smallest, so it is not memorisation.
 or quantified `OVERLAPPING` — is now met, and D014's bar on post-hoc switching
 is unchanged. §25 was read and closed before any predictor score existed.
 
-**Next Step:** None. `results/predictors/comparison_with_predictors.csv` is the
-deliverable named above. NetMHCpan 4.1 would need a licence accepted by the
-project owner at the DTU host; MixMHCpred would need a route to
-`raw.githubusercontent.com`, which this environment's proxy refuses while
-allowing release assets. Both are recorded as not obtained rather than deferred.
+**Updated 2026-10-07 (D035, D036).** Both predictors this section said were
+unobtainable have been obtained and scored. The MixMHCpred reason was simply
+false — `raw.githubusercontent.com` is not refused — and the NetMHCpan reason
+conflated licence-gated software with open training data. The comparison now
+spans four predictors; see `results/qc/QC_G11_four_predictors.md`. On rows no
+system has seen, the CNN leads by **+0.1373 to +0.1418**, 10/10 units, and **the
+four predictors agree with each other to within 0.0046** — which strengthens the
+reading that the lead is cohort-specific training rather than architecture.
+
+**Next Step:** None reachable here. NetMHCpan **4.2** needs a second licence
+submission; its training data is registered but it is scored in no comparison.
 
 ---
 

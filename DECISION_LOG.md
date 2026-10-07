@@ -798,7 +798,7 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
-## D036 — Two more predictors, and how the §18 row sets must change · OPEN
+## D036 — Two more predictors, and how the §18 row sets must change · RESOLVED
 
 **Opened:** 2026-10-07, **before any MixMHCpred or NetMHCpan 4.2 score existed**
 **Extends:** D035 (which reopened the freeze for NetMHCpan 4.1 only) · **Requested by the project owner**
@@ -887,9 +887,38 @@ needs a separate `sw_request` submission. Until then 4.2 appears in the
 contamination table and **in no comparison**, which is recorded here rather than
 left to be noticed.
 
+### Outcome, 2026-10-07 (`results/qc/QC_G11_four_predictors.md`)
+
+**The two row sets were worth separating, and they agree.** Pairwise contrasts
+run +0.1261 to +0.1345; common-set contrasts run +0.1373 to +0.1418. The
+pairwise numbers are slightly smaller because their larger row sets retain
+peptides the *other* predictors had seen, which are easier for everyone. No
+conclusion turns on the choice, which is the outcome that makes reporting both
+cheap and the omission of either indefensible.
+
+**The finding neither row set was designed to produce: the four predictors
+converge.** They span **0.5434 to 0.5479 — 0.0046** — on the common set. Three
+groups, three training corpora, three architectures, one trained on 12 million
+peptides, agreeing to within half a percentage point and differing from the CNN
+together.
+
+**That weakens the architectural reading of §18 considerably.** If the CNN were
+a better model of presentation, the four would spread by capability and the
+strongest would close some of the gap. They cluster instead, 0.14 below a model
+trained on this cohort's own instruments, protocol and negative construction.
+Four independent tools agreeing with each other and disagreeing with the CNN is
+what a task-and-distribution advantage looks like, not a modelling one. QC_G11's
+original §4 caveat was right and is now better evidenced than when it was
+written with two predictors.
+
+**NetMHCpan 4.2 remains unscored.** Its contamination profile (20.74% / 16.20%,
+bias 1.3:1) would also have made it the weakest comparator of the five for
+reasons unrelated to its quality, so the missing licence costs less than it
+would for any other arm.
+
 ---
 
-## D035 — Reopen the freeze for a NetMHCpan arm · OPEN (run in progress)
+## D035 — Reopen the freeze for a NetMHCpan arm · RESOLVED
 
 **Opened:** 2026-10-07, **before any NetMHCpan score existed** · **Reopens:** D034
 **Anchor being superseded:** `b83a741b`
@@ -963,6 +992,28 @@ mutually-naive one primary.
 
 **Installation verified against the vendor's own reference output:** the
 package's `test/test.pep.out` reproduces exactly.
+
+### Outcome, 2026-10-07
+
+**NetMHCpan 4.1 scored 199,978 rows, every unit's count matching the number of
+distinct peptides submitted.** On the common row set it reaches **0.5472**
+against the CNN's 0.6852 — a gap of **+0.1380**, CI99 [+0.1068, +0.1634], 10 of
+10 participants.
+
+**The arm answered its own question in the negative.** D035 was opened partly
+because a 12-million-peptide pan-allele predictor is a stiffer comparator than
+MHCflurry's 0.67M and the CNN's lead had not been tested against one. It is now:
+NetMHCpan 4.1 lands at 0.5472, MHCflurry 2.3.0 at 0.5479. **An eighteen-fold
+larger training set buys nothing here**, and the lead is unchanged.
+
+**One scoring run was discarded.** The first parse keyed each peptide's best
+score on `Icore`, the interaction core after insertions and deletions, which
+differs from the submitted peptide in 5.4% of rows and varies by allele. It
+produced 2,292 keys from 2,000 benchmark peptides. The tell was a progress line
+reading "24,462 peptides scored" for a unit holding 20,000 rows. Cost: 45
+minutes. The script now keys on the submitted peptide, retains raw output per
+unit so a parsing error never costs a re-run again, and asserts each unit's key
+count against the peptides submitted.
 
 ---
 
@@ -1167,8 +1218,8 @@ usable is not needed.
 
 | Predictor | Status |
 |---|---|
-| NetMHCpan 4.1 | **not obtained** — distribution is behind a per-user academic licence form at the DTU host; not scriptable, and accepting a licence on the owner's behalf is not mine to do |
-| MixMHCpred | **not obtained** — distributed via `raw.githubusercontent.com`, which returns 404 through this proxy, unlike release assets |
+| NetMHCpan 4.1 | **Software** correctly described: a per-user academic licence form, which the project owner submitted on 2026-10-07. But this row conflated software with training data — **the training data was open all along**, so the M7 check was never blocked. Obtained and scored under D035 |
+| MixMHCpred | ~~**not obtained** — distributed via `raw.githubusercontent.com`, which returns 404 through this proxy, unlike release assets~~ **THIS WAS FALSE.** That host returns 200 on any real file path; the bare host was probed and the result generalised. Obtained and scored under D036 |
 
 Both are absent from §18 and neither is reported. §18's input list named
 "NetMHCpan, MixMHCpred, or others"; the comparison runs on MHCflurry alone and

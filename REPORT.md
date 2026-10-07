@@ -795,6 +795,75 @@ being clean or quantified-overlapping, which is now true; D014 equally bars a
 switch after seeing results. §25 was read and closed before any predictor score
 existed, so §18 stays secondary.
 
+### R14 — §18 extended to four predictors
+
+R13 reported two MHCflurry lines and listed NetMHCpan and MixMHCpred as
+unobtainable. **Both reasons were wrong** (D035, D036): NetMHCpan's row
+conflated licence-gated *software* with *training data* that was open all along,
+and MixMHCpred's row claimed this environment's proxy refuses
+`raw.githubusercontent.com`, which it does not — a bare host had been probed and
+the negative generalised. Both are now obtained, admitted as quantified
+`OVERLAPPING`, and scored. Detail in `results/qc/QC_G11_four_predictors.md`.
+
+**Contamination, all five, one method** (`contamination_all.py`, which also
+splits the overlap by label as the earlier script did not):
+
+| Predictor | our positives seen | our negatives seen | bias |
+|---|---|---|---|
+| MHCflurry 2.0.0 | 8.29% | 1.20% | 6.9 : 1 |
+| MHCflurry 2.3.0 | 9.11% | 1.16% | 7.9 : 1 |
+| NetMHCpan 4.1 | 9.22% | 3.32% | 2.8 : 1 |
+| NetMHCpan 4.2 | 20.74% | 16.20% | 1.3 : 1 |
+| MixMHCpred 3.0 | 10.36% | 3.33% | 3.1 : 1 |
+
+**NetMHCpan 4.2 is scored in no comparison** — its software needs a licence
+separate from the 4.1 grant. At 1.3:1 it has also been trained to reject one
+sixth of our decoys, so D006's argument that contamination can only flatter a
+predictor would not have protected it.
+
+**Two row sets, because one would not do.** Extending D033's mutually-naive rule
+to all four predictors would delete 17.2% of rows from every contrast to
+accommodate the most contaminated one. So each CNN-versus-X contrast also runs
+on the rows naive to the CNN and X alone.
+
+**Common row set — 165,574 rows, prevalence 0.440, every system naive:**
+
+| System | mean per-unit AP | CI99 | vs CNN | units |
+|---|---|---|---|---|
+| **CNN** | **0.6852** | [0.6682, 0.7027] | — | — |
+| MHCflurry 2.3.0 | 0.5479 | [0.5329, 0.5652] | **+0.1373** | 10 / 10 |
+| NetMHCpan 4.1 | 0.5472 | [0.5302, 0.5721] | **+0.1380** | 10 / 10 |
+| MHCflurry 2.0.0 | 0.5443 | [0.5306, 0.5609] | **+0.1409** | 10 / 10 |
+| MixMHCpred 3.0 | 0.5434 | [0.5290, 0.5599] | **+0.1418** | 10 / 10 |
+
+Pairwise contrasts run +0.1261 to +0.1345 on their larger row sets; the full
+partition gives +0.0877 to +0.0944, and reproduces the endpoint at 0.7551. No
+conclusion turns on which row set is used.
+
+**The finding the design did not set out to produce: the four predictors
+converge.** They span **0.5434 to 0.5479 — a range of 0.0046.** Three groups,
+three training corpora, three architectures, one of them trained on 12,081,588
+peptides, agreeing with each other to within half a percentage point and
+differing from the CNN together.
+
+**This makes the architectural reading of §18 harder to sustain, not easier.**
+If a 20,000-parameter CNN were simply a better model of MHC-I presentation than
+the state of the art, the four would spread by capability and the strongest
+would close some of the gap. They cluster instead, 0.14 below a model trained on
+42 participants of this cohort — same laboratory, same instruments, same
+protocol, same negative construction over this cohort's own expressed proteins.
+Four independent tools agreeing with each other and disagreeing with the CNN is
+the signature of a task-and-distribution advantage, not a modelling one. R13's
+caveat was right, and four predictors evidence it better than two did.
+
+**The predictors are not failing.** A random ranker scores AP = prevalence =
+0.440 here. They reach +0.104 to +0.108 over random and the CNN +0.246. They do
+real work on a question adjacent to ours, on a cohort they have never seen.
+
+**And training-set size buys nothing across this range.** NetMHCpan 4.1 trains
+on 12.1M peptides against MHCflurry 2.3.0's 0.67M — eighteen-fold — and lands at
+0.5472 against 0.5479.
+
 **One incidental finding.** MHCflurry's refusal of a peptide containing `X`
 surfaced that the frozen positives hold **181 rows (0.035%) with ambiguity
 codes** — X, B (Asx), Z (Glx) — and that the CNN's encoder maps an unknown
