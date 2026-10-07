@@ -170,6 +170,7 @@ blocks:
 | D032 | **ACCEPTED by the project owner, 2026-10-07.** G13's D031 criterion required both Part B directions to be significant; the 6-unit C*07:02 arm could not supply that. Narrowed to one direction. **G13 RELEASED, §20 written to the accepted wording** | G13 passed |
 | D033 | §18 admission executed under D006. Both MHCflurry lines are quantified `OVERLAPPING` (8.29% / 9.11% of test positives, 6.9:1 and 7.9:1 biased toward positives). D006 was wrong in three helpful ways: GitHub release assets are reachable, each model bundle ships its own training data, and both lines are admissible. Primary comparison subset must be naive to BOTH systems, not just the predictor | G11 |
 | D034 | Final freeze. `scripts/freeze.py --write` refuses to write a manifest unless eight verification checks pass first, so the record exists only because the tree was checked. 348 files, 93.9 MB. Tag refused again, as in D009; the commit is the anchor | closes the project |
+| D035 | **Freeze reopened deliberately** to add NetMHCpan 4.1 as a third §18 arm. Its training data is published openly (12,081,588 peptides) and was measured before the software arrived: 9.22% of test positives, 3.32% of negatives, a 2.8:1 bias that is weaker than MHCflurry's ~7:1 and weakens D006's one-direction argument for this arm | reopens the freeze |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -793,6 +794,83 @@ about memorisation.
 
 **Rejected: dropping from training instead.** It discards real observations and
 still leaves the test set's composition altered relative to the universe.
+
+---
+
+## D035 — Reopen the freeze for a NetMHCpan arm · OPEN (run in progress)
+
+**Opened:** 2026-10-07, **before any NetMHCpan score existed** · **Reopens:** D034
+**Anchor being superseded:** `b83a741b`
+
+**Decision: reopen the frozen repository to add NetMHCpan 4.1 as a third §18
+arm, because the obstacle D006 recorded turned out to be two separable
+obstacles and only one of them was real.**
+
+### What changed since D033
+
+D033 recorded NetMHCpan as "not obtained — distribution is behind a per-user
+academic licence form at the DTU host". That conflated two things:
+
+| | Gated? |
+|---|---|
+| The **training data**, which is what D006's admission rule needs | **No.** Open paper supplementary material, no form |
+| The **software**, which produces the scores | Yes — academic form, institutional e-mail |
+
+`NetMHCpan_train.tar.gz` (87 MB, sha256 `06f2c9f2…`) is published at
+`services.healthtech.dtu.dk/suppl/immunology/NAR_NetMHCpan_NetMHCIIpan/` and
+states plainly that it is "the data set used for training of NetMHCpan-4.1". So
+the contamination check was possible all along, and D033's framing was wrong in
+the direction that made the work look more blocked than it was.
+
+The project owner obtained the academic licence on 2026-10-07 10:50 UTC, which
+supplied the other half.
+
+### M7 outcome, measured before the software arrived
+
+| | NetMHCpan 4.1 | MHCflurry 2.0.0 | MHCflurry 2.3.0 |
+|---|---|---|---|
+| training peptides | **12,081,588** | 605,189 | 666,025 |
+| overlap, test positives | **9.22%** | 8.29% | 9.11% |
+| overlap, test negatives | **3.32%** | 1.20% | 1.16% |
+| positive : negative bias | **2.8 : 1** | 6.9 : 1 | 7.9 : 1 |
+
+**Verdict: `OVERLAPPING`, quantified.** Admissible under D006 without invoking
+the `UNVERIFIABLE` rule.
+
+**One thing this arm does not inherit.** D006's asymmetry argument — that
+contamination can only flatter a predictor, so a CNN win over a contaminated
+predictor is conservative — rests on the overlap being lopsided toward
+positives. At 2.8:1 it is markedly less lopsided than MHCflurry's ~7:1, because
+NetMHCpan has also seen 3.32% of our negatives and may have learned that they
+were not eluted. The one-direction reading is therefore **weaker for this arm**
+and is not relied on; the mutually-naive row set (D033) remains the primary,
+and it now excludes NetMHCpan's 12.5% as well, shrinking it below the current
+175,524 rows.
+
+### What reopening costs, stated plainly
+
+`b83a741b` stops being the live anchor and `freeze.py --verify` will fail check
+8 until the repository is re-frozen. **The superseded anchor remains valid for
+what it covered** — the tree as it stood when §18 had two arms — and
+`FREEZE_RECORD.md` will name it as superseded rather than delete it. A freeze
+that can never be reopened is not a freeze, it is an embargo; a freeze that is
+reopened silently is worthless. This entry is the difference.
+
+**§25 is untouched.** The endpoint was read once and is closed. Nothing in this
+arm can reopen it, and §18 remains secondary regardless of what NetMHCpan
+scores — D014 bars a post-hoc switch whatever the numbers say.
+
+### Protocol, fixed before the scores land
+
+Identical to the MHCflurry arms: each peptide scored against its own
+participant's recorded alleles, best allele taken, `Score_EL` as the comparable
+quantity to MHCflurry's presentation score, `%Rank_EL` stored alongside so the
+choice is reversible. Ambiguity-code rows excluded, so all three systems score
+byte-identical rows. Reported on all three D033 row sets, with the
+mutually-naive one primary.
+
+**Installation verified against the vendor's own reference output:** the
+package's `test/test.pep.out` reproduces exactly.
 
 ---
 
