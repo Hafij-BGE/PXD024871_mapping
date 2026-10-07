@@ -171,6 +171,7 @@ blocks:
 | D033 | §18 admission executed under D006. Both MHCflurry lines are quantified `OVERLAPPING` (8.29% / 9.11% of test positives, 6.9:1 and 7.9:1 biased toward positives). D006 was wrong in three helpful ways: GitHub release assets are reachable, each model bundle ships its own training data, and both lines are admissible. Primary comparison subset must be naive to BOTH systems, not just the predictor | G11 |
 | D034 | Final freeze. `scripts/freeze.py --write` refuses to write a manifest unless eight verification checks pass first, so the record exists only because the tree was checked. 348 files, 93.9 MB. Tag refused again, as in D009; the commit is the anchor | closes the project |
 | D035 | **Freeze reopened deliberately** to add NetMHCpan 4.1 as a third §18 arm. Its training data is published openly (12,081,588 peptides) and was measured before the software arrived: 9.22% of test positives, 3.32% of negatives, a 2.8:1 bias that is weaker than MHCflurry's ~7:1 and weakens D006's one-direction argument for this arm | reopens the freeze |
+| D036 | Admit MixMHCpred 3.0 and NetMHCpan 4.2. All five predictors are quantified `OVERLAPPING`, but 4.2 has seen 20.74% of our positives AND 16.20% of our negatives (bias 1.3:1), so D006's one-direction argument fails for it. §18 moves to TWO row sets: pairwise primary, plus a common set, because an all-naive set would delete 17.2% of rows from every other contrast | extends D035 |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -794,6 +795,97 @@ about memorisation.
 
 **Rejected: dropping from training instead.** It discards real observations and
 still leaves the test set's composition altered relative to the universe.
+
+---
+
+## D036 — Two more predictors, and how the §18 row sets must change · OPEN
+
+**Opened:** 2026-10-07, **before any MixMHCpred or NetMHCpan 4.2 score existed**
+**Extends:** D035 (which reopened the freeze for NetMHCpan 4.1 only) · **Requested by the project owner**
+
+**Decision: admit MixMHCpred 3.0 and NetMHCpan 4.2, and report §18 on TWO row
+sets rather than one, because a single all-naive row set makes every comparison
+pay for the most contaminated predictor in the panel.**
+
+### Three claims in D033 and this log were wrong, all in the same direction
+
+| Claim | Reality |
+|---|---|
+| "MixMHCpred … distributed via `raw.githubusercontent.com`, which this environment's proxy refuses" | **False.** That host returns 200 on any real file path; the bare host was tested and the result generalised. The repository clones normally through the session's git proxy |
+| MixMHCpred "leans `UNVERIFIABLE`" (said in session) | **False.** Its training data is published as Additional file 2 of the paper — 2,557,766 rows, retrieved and registered |
+| NetMHCpan training data not obtainable (D006/S6) | **False**, for 4.1 and 4.2 alike; both are open supplementary material |
+
+**The pattern is one error repeated, not three errors.** Each time the cheapest
+URL was tested rather than the one that mattered, and a negative result was
+generalised to "unavailable". D033 made it about github.com; this entry makes it
+about `raw.githubusercontent.com`. It is recorded as a pattern because the fix
+is a habit, not a correction: **probe the specific artifact, never the host.**
+
+### M7, all five predictors, one method (`contamination_all.py`)
+
+The earlier `predictor_contamination.py` covered MHCflurry only and did not
+split the overlap by label. It is kept as QC_G11 used it; this supersedes it.
+
+| Predictor | train pos | train neg | our positives seen | our negatives seen | bias |
+|---|---|---|---|---|---|
+| MHCflurry 2.0.0 | 556,234 | 50,315 | 8.29% | 1.20% | 6.9 : 1 |
+| MHCflurry 2.3.0 | 514,286 | 181,294 | 9.11% | 1.16% | 7.9 : 1 |
+| NetMHCpan 4.1 | 387,475 | 11,693,931 | 9.22% | 3.32% | 2.8 : 1 |
+| **NetMHCpan 4.2** | 440,390 | 12,741,099 | **20.74%** | **16.20%** | **1.3 : 1** |
+| MixMHCpred 3.0 | 354,675 | 2,018,404 | 10.36% | 3.33% | 3.1 : 1 |
+
+All five: `OVERLAPPING`, quantified. None needs the `UNVERIFIABLE` rule.
+
+**NetMHCpan 4.2 is a different kind of comparator and must be labelled as one.**
+It has seen **one in five of our positives and one in six of our negatives**, at
+a bias of 1.3:1 — very nearly symmetric. D006's argument that contamination can
+only flatter a predictor, which makes a CNN win conservative, **does not hold for
+4.2 at all**: having been trained to reject one sixth of our decoys is help, not
+handicap. Its larger decoy pool is the cause — 12.7M random-proteome negatives
+against a set-C construction also drawn from the human proteome.
+
+### The row-set problem this creates
+
+D033 fixed the primary as rows naive to **both** compared systems. With five
+predictors the natural extension is rows naive to all of them, and that extension
+is a trap:
+
+| Row set | rows | prevalence |
+|---|---|---|
+| CNN + both MHCflurry (the published §18 primary) | 175,544 | 0.440 |
+| + NetMHCpan 4.1 | 170,648 | 0.441 |
+| + MixMHCpred 3.0 | 165,594 | 0.440 |
+| + NetMHCpan 4.2 | **141,276** | 0.443 |
+
+**Admitting 4.2 would delete 29,372 rows — 17.2% — from every other
+comparison**, including the CNN-versus-MHCflurry contrast already reported in
+R13, purely because a fifth predictor saw them.
+
+### Decision: two row sets, both reported
+
+1. **Pairwise primary.** Each CNN-versus-X contrast runs on the rows naive to
+   the CNN and to **X alone**. This is the largest valid row set for that
+   contrast and does not let one predictor's contamination shrink another's
+   evidence. Predictors are *not* mutually comparable across these sets, and
+   that is stated wherever they appear.
+2. **Common row set.** All five on the 141,276 rows naive to everything, where
+   they are directly comparable to each other and to the CNN. Smaller, and the
+   price of comparability.
+
+Neither is "the" answer: the first maximises power per contrast, the second
+maximises comparability, and reporting one without the other would hide the
+trade. Prevalence stays at 0.440–0.443 throughout, so AP remains on one scale.
+
+### Status and what is still missing
+
+**MixMHCpred 3.0**: repository cloned (113 MB), training data registered
+(sha256 `8101609a…`), free for academic use. Scoring can proceed.
+
+**NetMHCpan 4.2**: training data registered (sha256 `243a3075…`), **software
+not obtained.** The 4.1 licence the owner was granted does not cover 4.2; it
+needs a separate `sw_request` submission. Until then 4.2 appears in the
+contamination table and **in no comparison**, which is recorded here rather than
+left to be noticed.
 
 ---
 
