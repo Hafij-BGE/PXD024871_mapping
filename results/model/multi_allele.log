@@ -1,0 +1,8 @@
+torch 2.14.1+cu130  device cpu  config {'E': 16, 'C': 32, 'k': 3, 'p': 0.0}
+
+==============================================================================
+PART A — replication across five alleles
+==============================================================================
+
+--- HLA-A*02:01: 29 carriers, 21 certain non-carriers, 19 carrier test units ---
+  [A0_0201_carr] train 8 units / 160,000 rows, val 2 units
