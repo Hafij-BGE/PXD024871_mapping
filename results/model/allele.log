@@ -1,0 +1,27 @@
+torch 2.14.1+cu130  device cpu  threads 4
+cv rows 840,000; test rows 200,000 (untouched in this mode)
+strata (defined on the 15+15 pooled units only): carrier-restricted 4,664, non-carrier-restricted 3,523
+config {'E': 16, 'C': 32, 'k': 3, 'p': 0.0} (frozen by selection; not re-tuned here)
+C_pool 15  C_test 14  N_pool 15  N_test 8
+  P_AD   train 18 non-carrier units, val 5, evals dominant allele unseen: all 29 carriers [mismatched]
+  M_AD   train 12 non-carrier units, val 3, evals mismatched: 14 held-out carriers [mismatched]; matched: 8 held-out non-carriers [matched]
+  M_AM   train 12 carrier units, val 3, evals matched: 14 held-out carriers [matched]; mismatched: 8 held-out non-carriers [mismatched]
+
+=== P_AD (preregistered-D001) ===
+  train rows 360,000  val rows 100,000
+  seed 0: val AP 0.7389 (20 epochs, 82s)
+  seed 1: val AP 0.7384 (27 epochs, 96s)
+  seed 2: val AP 0.7396 (49 epochs, 154s)
+  seed 3: val AP 0.7399 (32 epochs, 109s)
+  seed 4: val AP 0.7396 (24 epochs, 89s)
+  dominant allele unseen: all 29 carriers  /  all rows
+    units 29  rows 580,000  mean per-unit AP 0.7422  CI99 [0.7302, 0.7534]
+    arm floor 0.6371   lift +0.1051  CI99 [+0.0922, +0.1181]
+  dominant allele unseen: all 29 carriers  /  carrier-restricted stratum
+    units 29  rows 23,726  mean per-unit AP 0.8054  CI99 [0.7940, 0.8169]
+    arm floor 0.7132   lift +0.0922  CI99 [+0.0788, +0.1052]
+
+=== M_AD (matched-D029) ===
+  train rows 240,000  val rows 60,000
+  seed 0: val AP 0.7353 (20 epochs, 51s)
+  seed 1: val AP 0.7323 (18 epochs, 49s)
