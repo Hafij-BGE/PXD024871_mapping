@@ -166,6 +166,7 @@ blocks:
 | D028 | Cross-platform transfer design: D025 run as preregistered, plus a matched within-platform control, because the preregistered form alone confounds platform with training-set size. Logged before the run. See entry below | before transfer |
 | D029 | The `allele_disjoint_partition` split holds out ONE allele, not a disjoint set: only 5 of 36 test alleles are absent from training and 21.7% of a test unit's repertoire is unseen, so the design is attenuated ~5x. D001 run verbatim, renamed dominant-allele-held-out, plus a matched pair and a validated allele-enriched stratum. Logged before the run | before G13 |
 | D030 | The D029 allele stratum was defined as "in M_AM's pool, not in M_AD's", so M_AM had memorised 97.93% of it and M_AD 0.00%. Its +0.0660 is void; corrected to +0.0335 on row sets neither arm saw. Second instance of the TEST_LEAKFREE failure mode, so a standing check is added | voids a result |
+| D031 | Multi-allele test preregistered: five-allele replication plus the one symmetric allele PAIR (A*02:01 vs C*07:02), where a sign reversal between the two exclusive strata is the signature D029's contrast II could not deliver. Also finds that PARTIAL typing under-reports a locus, so 2 of D001's 23 non-carriers are not certain | may release G13 |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -743,6 +744,150 @@ about memorisation.
 
 **Rejected: dropping from training instead.** It discards real observations and
 still leaves the test set's composition altered relative to the universe.
+
+---
+
+## D031 — Multi-allele test: replication across five alleles, plus one symmetric pair · RESOLVED
+
+**Opened and resolved:** 2026-10-07 · **Before any multi-allele result was visible**
+**Requested by the user** after `QC_G12_allele.md` §4 named this as the test that
+would settle D029 · **Depends on:** D029, D030 · **May release:** G13
+
+**Decision: run the per-allele design across the five most frequent class-I
+alleles, and add the one allele pair whose groups both share an allele. The
+second is the decisive test; the first is replication.**
+
+### Why the D029 design cannot be fixed by repeating it
+
+D029's contrast II failed as a confirmation test because the two groups are not
+symmetric: carriers of HLA-A\*02:01 share that allele, while non-carriers share
+only its absence. **That defect is not specific to A\*02:01 — it holds for every
+allele split.** "Non-carriers of A" is never a group with a shared motif, so no
+single-allele design can produce a symmetric replication. Repeating D029 for
+more alleles multiplies the evidence but never removes the asymmetry.
+
+So the test has two parts, and only the second is symmetric.
+
+### Part A — replication across five alleles
+
+For each allele below: train one arm on carriers, one on non-carriers, 8
+training units and 2 early-stopping units each (equal, platform-stratified per
+D025), and score both on the held-out carriers' **A-exclusive stratum**.
+
+| Allele | carriers | certain non-carriers | carrier test units |
+|---|---|---|---|
+| HLA-A\*02:01 | 29 | 21 | 19 |
+| HLA-C\*07:02 | 24 | 23 | 14 |
+| HLA-A\*01:01 | 17 | 29 | 7 |
+| HLA-A\*24:02 | 16 | 30 | 6 |
+| HLA-B\*07:02 | 15 | 31 | 5 |
+
+Five splits with five different group compositions. The "this particular
+training set was simply better" account would have to hold five times, each time
+favouring the carrier side, and the neutral estimate measures it directly in
+each.
+
+### Part B — the symmetric pair, which is the decisive test
+
+**HLA-A\*02:01 and HLA-C\*07:02 are the only pair whose mutually exclusive
+groups are both large enough.** **Corrected before the run:** the 20 / 15 figures
+first written here were computed by absence alone, ignoring the locus-certainty
+rule this same entry mandates two sections below — an internal inconsistency in
+this entry, found when the code applied the rule. Requiring the *excluded*
+allele's locus to be fully typed gives **17** units carrying A\*02:01 and
+certainly not C\*07:02, and **14** carrying C\*07:02 and certainly not
+A\*02:01. Six units train and 2 validate on each side, leaving carrier tests of
+**9 and 6**. The smaller figures are what the run uses.
+
+Both arms are carrier-trained — each for its own allele — so **there is no
+asymmetry**. Each is scored on both exclusive strata:
+
+| | A\*02:01-exclusive stratum | C\*07:02-exclusive stratum |
+|---|---|---|
+| expected if allele-specific | M_A02 **>** M_C07 | M_C07 **>** M_A02 |
+| expected if one training set is better | same sign on both | same sign on both |
+
+**A sign reversal between the two strata is the signature of an allele effect,
+and it is what D029's contrast II could not deliver.** Fixed here before the
+numbers exist. The other eight candidate pairs leave 1–4 test units on the
+minority side and are not run; the sizes are in this entry so the choice is not
+a selection made later.
+
+### Non-carriage must be locus-certain, and was not
+
+**New finding, recorded here.** D012 noted 14 of 52 units have PARTIAL typing
+and none imputed. What PARTIAL means at locus level was not: each of those 14
+units reports **one** allele at one or two loci instead of two, which is
+homozygosity and untyped-second-allele being indistinguishable in the SDRF. So a
+unit reporting one HLA-A allele that is not A\*02:01 may still carry A\*02:01 at
+the untyped position.
+
+A unit therefore counts as a non-carrier of A here only if it reports **two**
+alleles at A's locus and neither is A. Effect on the groups:
+
+| Allele | non-carriers by absence | **uncertain** (locus under-typed) | certain |
+|---|---|---|---|
+| A\*02:01 | 23 | 2 — UPN10, UPN16 | 21 |
+| C\*07:02 | 28 | 5 | 23 |
+| A\*01:01 | 35 | 6 | 29 |
+| A\*24:02 | 36 | 6 | 30 |
+| B\*07:02 | 37 | 6 | 31 |
+
+**This touches D001 and D029 retroactively:** 2 of the 23 units used there as
+A\*02:01 non-carriers have an under-typed A locus, so 21 of 23 are certain. The
+contamination is 8.7% and in the direction that would *weaken* an allele
+effect, so it does not explain D029's +0.0335 — but it was not stated and is
+now.
+
+The **absence** requirement in each stratum definition still ranges over *all*
+non-carriers including the uncertain ones, which is the conservative direction:
+it can drop a genuinely restricted peptide, never admit an unrestricted one.
+
+### Carried forward from D030
+
+Every row set excludes positives either compared arm saw in training, and
+**every evaluation reports the seen-fraction for each arm** — the standing check
+D030 added after the first stratum turned out to be 97.93% memorised by one arm
+and 0.00% by the other. Each comparison also carries its own composition-only
+floor, its own recurrence-matched control, and its own direct estimate of the
+training-set quality difference on class-shared peptides.
+
+### How Part A is read, fixed now
+
+Each allele's contrast is reported with its own paired cluster-bootstrap
+interval, and the sign pattern across the five is reported as a count.
+**No joint p-value is computed.** The five splits draw from 52 units and most
+units appear in several of them, so the contrasts are correlated and a sign test
+treating them as independent would overstate the evidence. Replication here
+means a consistent pattern across correlated splits, which is weaker than five
+independent confirmations and is reported as such.
+
+### Limits accepted in advance
+
+1. **Three of the five carrier tests have 7, 6 and 5 units.** Their intervals
+   will be wide; they contribute signs, not magnitudes.
+2. **Part B's arms train on 6 units** against Part A's 8 and D029's 12, so Part
+   B's absolute numbers are not comparable to either. Only its internal sign
+   reversal is.
+3. **Still one cohort, one disease, one laboratory**, and still no allele
+   deconvolution: "A-exclusive" means exclusive to carriers of A, which includes
+   peptides restricted by alleles in linkage with A.
+4. **All arms train on units inside the primary test partition**, as every
+   secondary analysis since R10 has. None serves §25, which is closed.
+
+### What would release G13
+
+Part B showing the sign reversal, with both directions' intervals excluding
+zero and both neutral estimates near zero, and Part A's five contrasts
+consistent with it. Anything less leaves G13 held. Part B failing to reverse
+closes the allele-specificity question negatively for this dataset, and that is
+the outcome this entry is equally prepared to record.
+
+**Seeds.** `seed('multi_split', i)` per allele for the pools,
+`seed('multi_valsplit', i)` for the early-stopping units,
+`seed('multi_init', i)` for weights, `seed('multi_bootstrap')` for intervals,
+`seed('multi_negatives')` for the 1:1 stratum negatives. Five replicates per
+arm; per-unit AP is the mean across them (D027).
 
 ---
 
