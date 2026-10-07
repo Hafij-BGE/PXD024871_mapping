@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-07T16:35:31Z",
+ "frozen_utc": "2026-10-07T20:29:26Z",
  "branch": "claude/mapping-research-project-prompt-glsess",
- "parent_commit": "c26719d00669c8588b4f3f35ba6a3f3736e7d964",
- "n_files": 370,
- "total_bytes": 113498026,
+ "parent_commit": "574b2f8064844e7fd66193bad28e538837b47c6c",
+ "n_files": 361,
+ "total_bytes": 113290537,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -16,8 +16,8 @@
   },
   {
    "path": ".gitignore",
-   "bytes": 3199,
-   "sha256": "61069fdf3fe6e463951a7ec86763c74405ed8f0c92c9102d408ad8892950a411"
+   "bytes": 3835,
+   "sha256": "02c8269c2da249f3f2b919415372c13edebd4b08051b63842bb5d3182d620853"
   },
   {
    "path": "CITATION.cff",
@@ -31,13 +31,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 131302,
-   "sha256": "ed76efe1b6700e4db93dbead22df3a29e78c846e294c7dc2fd3c605b2d7f2298"
-  },
-  {
-   "path": "ENVIRONMENT.md",
-   "bytes": 3355,
-   "sha256": "ec33e8bc9285cb634c853e94c27b84ff674c7b0661d33ade559944ecf2ae2c5a"
+   "bytes": 135111,
+   "sha256": "5c625b143f3e46cfd07a3d774477e6aeb1a929d6aec35a5b39bbbcfdd3d385fe"
   },
   {
    "path": "FLOWCHART.md",
@@ -46,13 +41,8 @@
   },
   {
    "path": "FREEZE_RECORD.md",
-   "bytes": 10115,
-   "sha256": "917d3b287371d2216dc6d4dcadeac57962c1acd6b8f901d484b09871d4d61493"
-  },
-  {
-   "path": "HANDOVER.md",
-   "bytes": 2439,
-   "sha256": "10d5af91ca3e4dfda758282aa0a148dc32908f022568c0d4a251475e2b6dab55"
+   "bytes": 10612,
+   "sha256": "2f205a9a19587cdef29c58a7af5c9e2d3283feb1d727ae24125f821e264b4fe2"
   },
   {
    "path": "LICENSE",
@@ -65,24 +55,9 @@
    "sha256": "c35d9d8b8bdb44589b37b77d978837d0540211acbd93fd9427f596d7876bbecd"
   },
   {
-   "path": "METHODOLOGY.md",
-   "bytes": 26953,
-   "sha256": "321649ce047303875acbbfe6cda5d4755de03dd5dde720cf6dd2781f27f54a31"
-  },
-  {
-   "path": "POWER_ANALYSIS.md",
-   "bytes": 10494,
-   "sha256": "52bdf8074b4afbefe43240d48582bf96a1f3a6f37a747ca4c44bd2610768b524"
-  },
-  {
    "path": "PREREGISTRATION.md",
    "bytes": 3360,
    "sha256": "78fb6d2771ced5e3052b57c9f14aebbf9dd5438ec52268f15b9905808690e35e"
-  },
-  {
-   "path": "PROJECT_PROMPT.md",
-   "bytes": 4332,
-   "sha256": "cb3e957e8b61d8509cdaa84590815fdc77112309d40fdd98ecf48028132f0324"
   },
   {
    "path": "PXD024871_CNN_Experiment_Proposal.STUB.md",
@@ -91,28 +66,8 @@
   },
   {
    "path": "README.md",
-   "bytes": 7671,
-   "sha256": "6059a380efa263c3d95112ee7f69a3de880dd380d7b734f9512f9e778c2d7f0b"
-  },
-  {
-   "path": "REPORT.md",
-   "bytes": 85958,
-   "sha256": "124d9ebbf61b19f5acb1dba2fc38ea31e2db24112d5d9247b929187ff5f5ab76"
-  },
-  {
-   "path": "RUN_LOG.md",
-   "bytes": 25127,
-   "sha256": "b411a262c72c676ea5aafafd052c1130a6a4c0d666bdaa06ce2075d9a0c5e4c4"
-  },
-  {
-   "path": "SECTIONS.md",
-   "bytes": 44796,
-   "sha256": "557e1ed2fa91a5548b2fcc333df8d60659dd8b6045a263ffde7a3d38df1bf983"
-  },
-  {
-   "path": "THIRD_PARTY_NOTICES.md",
-   "bytes": 9527,
-   "sha256": "40b30cd07555e530f8c7886d3ec142a835f248ac20dad99e244cf18e153b1e8b"
+   "bytes": 8221,
+   "sha256": "2d3ecd3827387eeca988aba5a35edd9242942a84f366b1f7691711fa8ef75a98"
   },
   {
    "path": "data/derived/ALLELE_FREQUENCY.csv",
