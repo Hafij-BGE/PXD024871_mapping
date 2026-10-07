@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-07T09:50:56Z",
+ "frozen_utc": "2026-10-07T09:52:13Z",
  "branch": "claude/mapping-research-project-prompt-glsess",
- "parent_commit": "d371a6a6598b058e4a649f356e52cb87e20d9e5f",
- "n_files": 348,
- "total_bytes": 93948128,
+ "parent_commit": "1f086e94ccc90b86a2cb7befebb3f554034dcaa3",
+ "n_files": 350,
+ "total_bytes": 94012744,
  "note": "parent_commit is the commit BEFORE this manifest was committed. The anchor is the commit that ADDS this file; a manifest cannot contain the hash of the commit that carries it.",
  "files": [
   {
@@ -18,8 +18,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 106122,
-   "sha256": "96a76da8974943563179c17e3b62103b147a46b25430440787f42c46f21564e9"
+   "bytes": 110254,
+   "sha256": "2dee6470f6fbb81a05601f84e0329574bf9ceabe7ead4c0a857eade1c87d387f"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -30,6 +30,11 @@
    "path": "FLOWCHART.md",
    "bytes": 13061,
    "sha256": "009edce9dac87f2bdc3356333d1126583f02b12c8fa7edb535a239a54379ac90"
+  },
+  {
+   "path": "FREEZE_RECORD.md",
+   "bytes": 5615,
+   "sha256": "311cc914f500b084c4a8308e36833f3889e19cd094aa15647947460a6175bd81"
   },
   {
    "path": "HANDOVER.md",
@@ -63,8 +68,8 @@
   },
   {
    "path": "REPORT.md",
-   "bytes": 81749,
-   "sha256": "1488078d6ac7cd7f994870de3811e7ab88bb25eaaf34fb88b7ba3589357999ce"
+   "bytes": 82239,
+   "sha256": "089e12717edcc31c74cf7e1bea473ff58ac21b2128969162c4e52d0a65538037"
   },
   {
    "path": "RUN_LOG.md",
@@ -730,6 +735,11 @@
    "path": "data/raw/S6/provenance.jsonl",
    "bytes": 4102,
    "sha256": "c6378a47253e67f65a5b51feb78fe3bddb86c97d571fad90729f288e8a9727f2"
+  },
+  {
+   "path": "freeze_manifest.json",
+   "bytes": 54379,
+   "sha256": "e137f35636d2e8b161836955edffc6c1b88b081a5c2e01a4b81faf86dbe88db8"
   },
   {
    "path": "notebooks/colab_runner.ipynb",
