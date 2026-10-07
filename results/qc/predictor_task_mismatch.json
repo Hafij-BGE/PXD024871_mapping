@@ -1,0 +1,12 @@
+{
+ "note": "Measures the task mismatch S18 Limitations anticipated. MHCflurry is asked whether a peptide is presentable; our label asks whether it was OBSERVED. Set-C negatives are unobserved peptides from the same source proteins, so plausible binders among them are scored high and counted wrong.",
+ "strong_presenter_pct_le_2": {
+  "positives": 0.30045610034207526,
+  "negatives": 0.11778,
+  "n_negatives_strong": 11778
+ },
+ "affinity_le_500nM": {
+  "positives": 0.26071735781872013,
+  "negatives": 0.09113
+ }
+}

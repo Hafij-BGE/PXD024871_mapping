@@ -168,6 +168,7 @@ blocks:
 | D030 | The D029 allele stratum was defined as "in M_AM's pool, not in M_AD's", so M_AM had memorised 97.93% of it and M_AD 0.00%. Its +0.0660 is void; corrected to +0.0335 on row sets neither arm saw. Second instance of the TEST_LEAKFREE failure mode, so a standing check is added | voids a result |
 | D031 | Multi-allele test preregistered: five-allele replication plus the one symmetric allele PAIR (A*02:01 vs C*07:02), where a sign reversal between the two exclusive strata is the signature D029's contrast II could not deliver. Also finds that PARTIAL typing under-reports a locus, so 2 of D001's 23 non-carriers are not certain | may release G13 |
 | D032 | **ACCEPTED by the project owner, 2026-10-07.** G13's D031 criterion required both Part B directions to be significant; the 6-unit C*07:02 arm could not supply that. Narrowed to one direction. **G13 RELEASED, §20 written to the accepted wording** | G13 passed |
+| D033 | §18 admission executed under D006. Both MHCflurry lines are quantified `OVERLAPPING` (8.29% / 9.11% of test positives, 6.9:1 and 7.9:1 biased toward positives). D006 was wrong in three helpful ways: GitHub release assets are reachable, each model bundle ships its own training data, and both lines are admissible. Primary comparison subset must be naive to BOTH systems, not just the predictor | G11 |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -566,6 +567,52 @@ specific predictor's training contents has been checked**, and this entry
 asserts nothing about them. Establishing that is G11's work under the protocol
 above.
 
+### Executed, 2026-10-07 — G11 PASSED (`results/qc/QC_G11.md`, D033)
+
+**The protocol held up; two of this entry's factual premises did not.**
+
+*Premise that failed, 1:* "github.com is blocked by the network policy." That
+was measured on the bare domain, which returns 400. **Release asset URLs return
+200 and transfer normally**, and every MHCflurry artifact is a release asset, so
+the training data was obtainable all along.
+
+*Premise that failed, 2:* S6 recorded predictor training sets as "not reliably
+obtainable". **Each MHCflurry model bundle ships its own per-component
+`train_data.csv.bz2`**, so the exact training footprint of the released
+predictor is available, not an approximation of it. `UNVERIFIABLE` went unused.
+
+**Both predictors admitted as quantified `OVERLAPPING`:** MHCflurry 2.0.0 at
+8.29% of test positives and 1.20% of negatives; 2.3.0 at 9.11% and 1.16%.
+
+**This entry's two substantive claims were both confirmed by measurement.**
+
+The direction argument: the overlap is **6.9:1 and 7.9:1 biased toward
+positives**, so contamination hands the predictor peptides it was fit on and
+almost none of the decoys it must reject. Measured, not assumed.
+
+The rejection of provenance-as-substitute: the 2.0.0 models predate this
+deposit's 2021-09 publication by fifteen months and name it nowhere, and
+**8.29% of this test partition's positives are in their training data anyway**,
+reaching it through other studies. Had date been accepted, that line would have
+been called `CLEAN` and the comparison would have carried an 8% contamination
+nobody had counted. This is the entry's most load-bearing paragraph and it was
+right.
+
+**Result.** On rows naive to both systems, the CNN beats MHCflurry 2.0.0 by
++0.1378 (CI99 [+0.1151, +0.1583]) and 2.3.0 by +0.1340 (CI99 [+0.1126,
++0.1505]), 10 of 10 participants each. The advantage is **largest** where
+contamination is smallest, so it is not produced by memorisation.
+
+**Not promoted.** This entry's condition for promotion — every admitted
+predictor `CLEAN` or quantified `OVERLAPPING` — is now met, and D014's bar on
+post-hoc switching is unchanged. §25 was read and closed before any predictor
+score existed. §18 stays secondary.
+
+**The comparison is not a fair test of predictor quality, and QC_G11 §4 says so
+with numbers**: 11.78% of set-C negatives are ranked strong presenters by
+MHCflurry, so the task differs from the predictor's, and the CNN additionally
+trained on this cohort's own instruments and negative construction.
+
 ---
 
 ## D026 — Architecture, representation and training protocol frozen · RESOLVED
@@ -745,6 +792,149 @@ about memorisation.
 
 **Rejected: dropping from training instead.** It discards real observations and
 still leaves the test set's composition altered relative to the universe.
+
+---
+
+## D033 — §18 admission: both MHCflurry lines are quantified `OVERLAPPING`, and the comparison subset must be mutually naive · RESOLVED
+
+**Opened and resolved:** 2026-10-07 · **Executes:** D006's protocol · **Gate:** G11
+**Before any predictor score was computed.**
+
+### Three things D006 assumed that turned out to be wrong, all in the helpful direction
+
+**1. GitHub is reachable for release assets.** D006 recorded "github.com is
+blocked by the network policy, so training data distributed only through it
+would need another route." That was inferred from the bare domain returning
+400. **Release asset URLs return 200 and transfer normally** — a 160 MB model
+bundle downloaded without incident. Every MHCflurry artifact is a GitHub release
+asset, so all of them were obtainable all along. D006's pessimism about
+obtainability was a measurement of the wrong URL.
+
+**2. The training list is shipped with the model.** D006 expected to compare
+against a predictor's published training corpus, and S6 recorded training sets
+as "not reliably obtainable". **Each MHCflurry model bundle ships its own
+`train_data.csv.bz2` per component** — affinity predictor, processing predictor
+with and without flanks. The union of those is the exact training footprint of
+the released predictor, not an approximation of it.
+
+This matters specifically for the 2.3.0 line. Release 2.3.0's manifest pairs
+**2026-09-28 models with a 2023-10-23 curated file**, so checking against the
+declared curated release would have bounded the overlap below and left the line
+effectively `UNVERIFIABLE`. Against the bundle's own training data it is exactly
+measurable.
+
+**3. Both lines are admissible.** D006's admission rule is satisfied for both:
+training lists retrieved, registered as S6 sources with sha256 and version,
+overlap measured at sequence level by exact match (D016 — nothing fuzzy).
+
+### M7 outcomes
+
+| | MHCflurry 2.0.0 | MHCflurry 2.3.0 |
+|---|---|---|
+| models | `models_class1_presentation.20200611` | `models_class1_presentation.20260928` |
+| training peptides (union over components) | 605,189 | 666,025 |
+| overlap with test **positives** | 8,093 — **8.29%** | 8,893 — **9.11%** |
+| overlap with test **negatives** | 1,199 — **1.20%** | 1,157 — **1.16%** |
+| per-unit positive overlap | 4.89–15.42% | 5.22–17.88% |
+| **M7 verdict** | **`OVERLAPPING`, quantified** | **`OVERLAPPING`, quantified** |
+
+**D006's reasoning about direction is confirmed by measurement.** The overlap is
+**6.9:1 and 7.9:1** biased toward positives over negatives. Contamination gives
+the predictor peptides it was fit on, and almost none of the decoys it must
+reject, so it moves the comparison against the CNN by construction.
+
+**D006's rejection of provenance-as-substitute is also confirmed.** Neither
+line's training sources name PXD024871, and the 2.0.0 models predate this
+deposit's 2021-09 publication by fifteen months — yet **8.29% of this test
+partition's positives are still in its training data**, reaching it through
+other studies. Had date been accepted as evidence, the 2.0.0 line would have
+been called `CLEAN` and the comparison would have carried an 8% contamination
+nobody had counted.
+
+### The refinement: the primary subset must be naive to BOTH systems
+
+D006's handling for `OVERLAPPING` is "primary comparison on the non-overlapping
+subset". Taken literally that means removing the **predictor's** overlap.
+
+**That would hand the CNN a selectively easier dataset, which §18 forbids in
+those words.** D003 measured 15.99% of test positives as also present in the
+CNN's training data. Removing only the predictor's 8–9% while leaving the CNN's
+16% in place would strip one system's memorisation advantage and preserve the
+other's — and the resulting number would favour the CNN for a reason that has
+nothing to do with either model's quality.
+
+**Decision: the primary §18 row set excludes any test sequence that appears in
+the training data of *either* system.** Reported alongside it, so the effect of
+each correction is visible rather than argued:
+
+| Row set | What it shows |
+|---|---|
+| **mutually naive** (primary) | neither system has seen any sequence scored |
+| predictor-naive only (D006 as literally written) | what removing only the predictor's overlap does |
+| full test partition (D006's secondary) | both memorisation advantages left in, overlap counts stated |
+
+This is the same rule the allele analysis already runs under: D030's standing
+check requires every evaluation subset to report what each compared model had
+already seen, and a subset defined so that one side has seen it and the other
+has not is void. Applying a weaker rule to §18 than to §20 would be
+inconsistent.
+
+### What this does not change
+
+**§18 is not promoted.** D014 made promotion conditional on every admitted
+predictor being `CLEAN` or quantified `OVERLAPPING`, which is now true — so the
+condition is met. **D014 equally says a switch after seeing results is endpoint
+switching regardless.** §25 was read, closed and reported before any predictor
+score existed. §18 stays secondary, and that this entry *could* have argued for
+promotion is the reason to say plainly that it does not.
+
+**`UNVERIFIABLE` goes unused, so D006's one-direction rule is not invoked.** No
+predictor here is reported under it, and the asymmetry argument that made it
+usable is not needed.
+
+### Predictors not obtained, with reasons
+
+| Predictor | Status |
+|---|---|
+| NetMHCpan 4.1 | **not obtained** — distribution is behind a per-user academic licence form at the DTU host; not scriptable, and accepting a licence on the owner's behalf is not mine to do |
+| MixMHCpred | **not obtained** — distributed via `raw.githubusercontent.com`, which returns 404 through this proxy, unlike release assets |
+
+Both are absent from §18 and neither is reported. §18's input list named
+"NetMHCpan, MixMHCpred, or others"; the comparison runs on MHCflurry alone and
+says so.
+
+**Seeds.** `seed('predictor_bootstrap')` for intervals. No training is done
+here — the CNN models are the frozen final 25 (D027) and the predictors are
+released artifacts.
+
+### Outcome, 2026-10-07
+
+**The refinement mattered, and less than expected.** The primary mutually-naive
+contrast is **+0.1378 / +0.1340**; D006's literal predictor-naive-only version
+gives **+0.1393 / +0.1347** — within 0.002. Stripping the CNN's leakage as well
+barely moves the gap, so the stricter subset was the right call on principle and
+changed no conclusion.
+
+**What did move is the full-partition comparison: +0.0922 / +0.0877.** MHCflurry
+gains more from its own overlap (0.5481 → 0.6629) than the CNN does from its
+(0.6859 → 0.7551), so leaving both advantages in *narrows* the gap. The
+contamination was working against the CNN, exactly as D006 said it would.
+
+**A caveat on reading those three numbers side by side.** Average precision
+depends on prevalence, and the subsetting moves it from 0.440 to 0.500. Within
+each row set the systems are on identical rows and the paired contrast is exact;
+across row sets the absolute values are not comparable.
+
+**An incidental finding, recorded because nothing else would have caught it.**
+MHCflurry refused a peptide containing `X`, which surfaced that the frozen
+positives hold **181 rows (0.035%) with ambiguity codes** — X, B (Asx), Z (Glx)
+— and that the CNN's encoder maps an unknown character to the **pad token**. Those
+peptides were therefore encoded with internal pads rather than rejected or
+flagged. 22 are in the test partition, 0.011% of its rows, so the endpoint is
+unaffected at any decimal place that matters. The defect is in the encoder's
+silent `IDX.get(ch, 0)` fallback and in a selftest that checks only standard
+residues, and it is the same shape as the bug that once deleted the middle of
+every long peptide: an encoder accepting input it should have rejected.
 
 ---
 
