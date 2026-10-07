@@ -1,0 +1,84 @@
+torch 2.14.1+cu130  device cpu  threads 4
+cv rows 840,000; test rows 200,000 (untouched in this mode)
+config {'E': 16, 'C': 32, 'k': 3, 'p': 0.0} (frozen by selection; not re-tuned here)
+halves: LTQ A=13 B=12   Lumos A=14 B=13
+  P_LTQ_to_Lumos   train 20 LTQ units, val 5, evals across: all 27 Lumos units (27)
+  P_Lumos_to_LTQ   train 22 Lumos units, val 5, evals across: all 25 LTQ units (25)
+  M_LTQ            train 10 LTQ units, val 3, evals within: LTQ held-out half (12); across: Lumos held-out half (13)
+  M_Lumos          train 10 Lumos units, val 4, evals within: Lumos held-out half (13); across: LTQ held-out half (12)
+
+=== P_LTQ_to_Lumos (preregistered-D025) ===
+  train rows 400,000  val rows 100,000
+  seed 0: val AP 0.7536 (33 epochs, 129s)
+  seed 1: val AP 0.7575 (53 epochs, 185s)
+  seed 2: val AP 0.7557 (31 epochs, 119s)
+  seed 3: val AP 0.7548 (48 epochs, 169s)
+  seed 4: val AP 0.7573 (29 epochs, 113s)
+  across: all 27 Lumos units
+    units 27  mean per-unit AP 0.6959  CI99 [0.6805, 0.7113]  range 0.6316-0.7644
+    arm floor (composition-only LDA) 0.5917  CI99 [0.5703, 0.6117]
+    lift over own floor +0.1042  CI99 [+0.0918, +0.1163]
+
+=== P_Lumos_to_LTQ (preregistered-D025) ===
+  train rows 440,000  val rows 100,000
+  seed 0: val AP 0.7385 (21 epochs, 95s)
+  seed 1: val AP 0.7395 (34 epochs, 137s)
+  seed 2: val AP 0.7398 (19 epochs, 90s)
+  seed 3: val AP 0.7382 (44 epochs, 168s)
+  seed 4: val AP 0.7390 (29 epochs, 123s)
+  across: all 25 LTQ units
+    units 25  mean per-unit AP 0.7108  CI99 [0.6993, 0.7221]  range 0.6677-0.7582
+    arm floor (composition-only LDA) 0.6093  CI99 [0.6015, 0.6172]
+    lift over own floor +0.1015  CI99 [+0.0931, +0.1098]
+
+=== M_LTQ (matched-D028) ===
+  train rows 200,000  val rows 60,000
+  seed 0: val AP 0.7644 (31 epochs, 58s)
+  seed 1: val AP 0.7694 (29 epochs, 56s)
+  seed 2: val AP 0.7683 (27 epochs, 53s)
+  seed 3: val AP 0.7690 (25 epochs, 50s)
+  seed 4: val AP 0.7665 (14 epochs, 35s)
+  within: LTQ held-out half
+    units 12  mean per-unit AP 0.7481  CI99 [0.7244, 0.7743]  range 0.6878-0.8140
+    arm floor (composition-only LDA) 0.6648  CI99 [0.6304, 0.6977]
+    lift over own floor +0.0833  CI99 [+0.0696, +0.0996]
+  across: Lumos held-out half
+    units 13  mean per-unit AP 0.6879  CI99 [0.6608, 0.7142]  range 0.6261-0.7548
+    arm floor (composition-only LDA) 0.5919  CI99 [0.5560, 0.6244]
+    lift over own floor +0.0961  CI99 [+0.0816, +0.1122]
+
+=== M_Lumos (matched-D028) ===
+  train rows 200,000  val rows 80,000
+  seed 0: val AP 0.7266 (21 epochs, 46s)
+  seed 1: val AP 0.7289 (28 epochs, 54s)
+  seed 2: val AP 0.7256 (14 epochs, 34s)
+  seed 3: val AP 0.7290 (23 epochs, 47s)
+  seed 4: val AP 0.7261 (25 epochs, 52s)
+  within: Lumos held-out half
+    units 13  mean per-unit AP 0.7379  CI99 [0.7244, 0.7499]  range 0.7069-0.7615
+    arm floor (composition-only LDA) 0.6158  CI99 [0.6042, 0.6278]
+    lift over own floor +0.1221  CI99 [+0.1075, +0.1372]
+  across: LTQ held-out half
+    units 12  mean per-unit AP 0.6965  CI99 [0.6791, 0.7140]  range 0.6575-0.7307
+    arm floor (composition-only LDA) 0.6102  CI99 [0.6021, 0.6193]
+    lift over own floor +0.0863  CI99 [+0.0734, +0.0986]
+
+====================================================================
+  A — same model, test platform moves  [M_LTQ]
+    within 0.7481   across 0.6879
+    difference +0.0601  CI99 [+0.0243, +0.0979] (unpaired)
+  A — same model, test platform moves  [M_Lumos]
+    within 0.7379   across 0.6965
+    difference +0.0414  CI99 [+0.0200, +0.0631] (unpaired)
+  B — same test units, training platform moves  [LTQ held-out half]
+    own-platform model 0.7481   other-platform model 0.6965
+    paired difference +0.0516  CI99 [+0.0261, +0.0745]  (10/12 units degraded)
+  B — same test units, training platform moves  [Lumos held-out half]
+    own-platform model 0.7379   other-platform model 0.6879
+    paired difference +0.0500  CI99 [+0.0295, +0.0741]  (13/13 units degraded)
+====================================================================
+  A collapse is attributable to platform only when BOTH contrasts
+  agree: A controls for the model, B controls for the test set.
+====================================================================
+
+wrote /home/user/PXD024871_mapping/results/model/transfer.json

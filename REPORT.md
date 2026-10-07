@@ -53,15 +53,18 @@ stated with its qualifications attached rather than defended afterwards.
 
 ### What this report is
 
-**A design and preregistration report.** It documents the retrieval and
-provenance mapping of the source submission, the construction and freezing of an
-analysis dataset and an evaluation split, the diagnostics that selected the
-negative controls and calibrated the statistical procedure, and the decision rule
-fixed in advance for the primary hypothesis.
+**A design, preregistration and result report, in that order.** It documents the
+retrieval and provenance mapping of the source submission, the construction and
+freezing of an analysis dataset and an evaluation split, the diagnostics that
+selected the negative controls and calibrated the statistical procedure, and the
+decision rule fixed in advance for the primary hypothesis — and then, in R9 and
+R10, what happened when that rule was applied once.
 
-**No model has been fit.** There is no result here about the hypothesis. The
-measurements reported are properties of the dataset and the design, and the
-Discussion is explicit that it discusses the design rather than the question.
+**Most of this report was written before any model existed, and none of it has
+been rewritten since.** The preregistered decision rule, the pre-committed
+interpretation table, and the four design estimates later checked against
+outcomes all stand as written. R9 and R10 were appended; the Discussion marks
+which pre-committed row applies rather than replacing the table.
 
 This ordering is the point. Each of the hazards above was quantified before the
 corresponding design choice was made: the negative construction was selected on a
@@ -253,9 +256,10 @@ the compute budget derives and to which it does not port.
 
 ## Results
 
-All results to date concern the dataset and the design. **No model has been fit**,
-so none bears on the primary hypothesis. Interpretation is deferred to the
-Discussion; this section reports measurements.
+R1–R8 concern the dataset and the design. R9 reports the primary endpoint, read
+once on 2026-10-07 under the rule fixed in D008 before any model existed; R10
+reports the preregistered cross-platform transfer. Interpretation is deferred to
+the Discussion; this section reports measurements.
 
 ### R1 — Provenance mapping
 
@@ -393,18 +397,103 @@ typical early stopping.
 
 ### R8 — Not obtained
 
-No model has been fit. There is therefore no value for the primary endpoint, no
-held-out performance, no per-participant distribution, no predictor comparison,
-and no result bearing on the primary or secondary hypotheses. Training requires
-hardware beyond the environment used for this work.
+The predictor comparison (§18) has no result: no predictor's training-set
+membership list was obtained, and D006 forbids promoting §18 while any predictor
+is unverifiable. The allele-disjoint analysis (D001) has not been run.
+
+### R9 — Model selection and the primary endpoint
+
+**Selection.** All 16 grid configurations completed over the 5 folds.
+`{E:16, C:32, k:3, p:0.0}` was selected on mean validation average precision at
+0.7525. **The grid is flat:** the spread between the best and worst
+configuration is 0.0129, against a mean within-configuration fold spread of
+0.0117. Selection is therefore not distinguishable from fold noise, and the
+selected configuration should be read as *one of sixteen that perform alike*,
+not as a tuned optimum. It is also the smallest configuration in the grid.
+
+**Final fit.** 25 models, 5 folds × 5 seeds. Between-fold spread of mean
+validation AP is 0.0132; seed spread within a fold averages 0.0024. Performance
+is governed by *which participants are held out*, five times over, more than by
+initialisation — which is what the run-001 variance decomposition predicted when
+it put between-unit variance 15× above within-unit.
+
+**Endpoint, read once.** 10 held-out participants, 200,000 rows, per-unit
+average precision averaged across the 25 models (D027), nominal-99% cluster
+bootstrap over participants (D008):
+
+| Quantity | Value | CI99 | Per-unit range |
+|---|---|---|---|
+| **Primary — full test partition** | **0.7551** | [0.7368, 0.7721] | 0.7102–0.7911 |
+| Sensitivity — leakage-free subset (D003) | 0.7056 | [0.6926, 0.7184] | 0.6796–0.7269 |
+| Secondary — score-ensembled (D027) | 0.7651 | — | — |
+
+**The null is rejected.** The lower bound 0.7368 exceeds the preregistered
+threshold of 0.647 (floor 0.597 + 0.05). It is rejected again on the
+leakage-free subset, whose lower bound 0.6926 also clears 0.647 — so the result
+does not depend on the 15.99% of test positives that also appear in training.
+Leakage inflates the primary by **+0.0495**, a real and measurable amount that
+does not change the decision.
+
+The ensembled figure is higher than the primary and is reported as the
+*flattering* framing, which is why D027 made the per-model average primary
+before the partition was read.
+
+### R10 — Cross-platform transfer
+
+D025 preregistered this before training; D028 added a matched within-platform
+control before the run and before any of its numbers were visible. Every floor
+below is a composition-only LDA fitted on that arm's own training rows and
+scored on its own test rows, because the pooled 0.597 is not the composition
+separability of a cross-platform test set. Full detail in
+`results/qc/QC_G12_transfer.md`.
+
+| Arm | train | test | mean AP | CI99 | own floor | lift |
+|---|---|---|---|---|---|---|
+| LTQ → Lumos (D025) | 20 LTQ | 27 Lumos | 0.6959 | [0.6805, 0.7113] | 0.5917 | +0.1042 |
+| Lumos → LTQ (D025) | 22 Lumos | 25 LTQ | 0.7108 | [0.6993, 0.7221] | 0.6093 | +0.1015 |
+| within LTQ (D028) | 10 LTQ | 12 LTQ | 0.7481 | [0.7244, 0.7743] | 0.6648 | +0.0833 |
+| across → Lumos (D028) | 10 LTQ | 13 Lumos | 0.6879 | [0.6608, 0.7142] | 0.5919 | +0.0961 |
+| within Lumos (D028) | 10 Lumos | 13 Lumos | 0.7379 | [0.7244, 0.7499] | 0.6158 | +0.1221 |
+| across → LTQ (D028) | 10 Lumos | 12 LTQ | 0.6965 | [0.6791, 0.7140] | 0.6102 | +0.0863 |
+
+**It does not collapse.** Both preregistered arms clear the D008 threshold —
+lower bounds 0.6805 and 0.6993 against 0.647, and against their own
+arm-specific thresholds of 0.6417 and 0.6593. A model that has never seen a run
+from the target instrument ranks peptides from unseen participants on that
+instrument 0.10 AP above what composition alone achieves on the same rows.
+
+**A platform effect is nonetheless there.** Two contrasts, built so that one
+holds the model constant while the test platform moves and the other holds the
+test units constant while the training platform moves:
+
+| Contrast | difference | CI99 | units degraded |
+|---|---|---|---|
+| same model, test platform moves (LTQ-trained) | +0.0601 | [+0.0243, +0.0979] | — |
+| same model, test platform moves (Lumos-trained) | +0.0414 | [+0.0200, +0.0631] | — |
+| same test units, training platform moves (LTQ half) | +0.0516 | [+0.0261, +0.0745] | 10 / 12 |
+| same test units, training platform moves (Lumos half) | +0.0500 | [+0.0295, +0.0741] | 13 / 13 |
+
+Four estimates from two designs, agreeing to within 0.01, none of the intervals
+containing zero: training on the other platform costs **0.04–0.06 AP**. A cost,
+not a collapse.
+
+**Post-hoc.** Paired per unit against the penalty a composition-only linear
+model pays on the same units, the CNN's cross-platform penalty is
+indistinguishable from the compositional one on the LTQ half (excess −0.0030,
+CI99 [−0.0137, +0.0073], 5 of 12 units positive) and exceeds it on the Lumos
+half (+0.0261, CI99 [+0.0176, +0.0349], 13 of 13). The asymmetry is reported as
+a diagnostic that generated a hypothesis — D025 records that 12-mers are 11.69%
+of LTQ positives against 9.85% of Lumos, and length is positional rather than
+compositional — not as a test of one.
 
 ## Discussion
 
-**This discusses the design, not the hypothesis.** No model has been fit, so
-nothing here is a finding about whether a convolutional network can distinguish
-these peptides. What the work to date establishes is narrower and worth stating
-plainly: what question this dataset can actually answer, and how much narrower
-that is than the question asked.
+**Most of this section discusses the design, not the hypothesis**, and was
+written before any model existed. The subsection on the pre-committed
+interpretation table is where the endpoint and the transfer result are read, and
+it is the only part written after them. The design discussion is kept first and
+unchanged, because what question this dataset can answer — and how much narrower
+that is than the question asked — bounds what any result can mean.
 
 ### The answerable question is substantially narrower than the proposed one
 
@@ -441,18 +530,58 @@ confound, whether or not its authors measure it. The finding belongs to the
 dataset, not to this study, and it would be worth reporting even if the CNN work
 were abandoned.
 
-### Interpretation is pre-committed, before any result exists
+### Interpretation was pre-committed, and the pre-commitment is now cashed
 
-Mapping the proposal's §21 outcomes onto the measured design, so that the
-reading of each is fixed now rather than negotiated afterwards:
+The table below was written before any model existed, mapping the proposal's
+§21 outcomes onto the measured design so that the reading of each was fixed in
+advance rather than negotiated afterwards. **It is left exactly as written.**
+The row that applies is marked, and the resolution follows it.
 
 | Result | Reading |
 |---|---|
-| Rejects the null, holds within platform **and** across platform | The strongest reading available: sequence carries signal that survives both unseen participants and unseen instrument conditions. Still bounded to one disease, one tissue, one laboratory |
+| **← APPLIES.** Rejects the null, holds within platform **and** across platform | The strongest reading available: sequence carries signal that survives both unseen participants and unseen instrument conditions. Still bounded to one disease, one tissue, one laboratory |
 | Rejects, but collapses in cross-platform transfer | The signal is substantially instrument, not presentation. §25 would not be supportable as stated |
 | Rejects on the full test partition but not on the leakage-free subset | Memorisation of the 15.99% overlap, not generalization |
 | Fails to reject | **Not** evidence of absent signal. Power is 0.42 at AUROC 0.70, so a real effect below a lift of ~0.14 is more likely to be missed than found |
 | Very high performance with any leakage or control check failing | Not interpretable biologically until resolved, per proposal §21 Outcome E |
+
+**The first row is the one that applies, and it is the only one that does.** The
+null is rejected on the full test partition (0.7551, lower bound 0.7368 against
+a threshold of 0.647). It is rejected again on the leakage-free subset (0.7056,
+lower bound 0.6926), so the third row — memorisation of the 15.99% overlap — is
+excluded; leakage inflates the estimate by 0.0495 without carrying it. Both
+preregistered cross-platform arms clear the threshold, so the second row — a
+collapse across platforms, read in advance as *"the signal is substantially
+instrument, not presentation"* — **does not apply**. No leakage or control check
+failed, so the fifth row does not apply, and the fourth is moot.
+
+That is the strongest reading the design permits, and it is worth being exact
+about how strong that is. Three things are now established. Sequence carries
+information that separates observed from unobserved peptides beyond amino-acid
+composition. That information survives being tested on participants the model
+never saw. It survives being tested on an instrument the model never saw, at a
+measured cost of 0.04–0.06 AP, which is a cost and not a collapse.
+
+Three things are not. The lift over the composition floor is 0.158 on the
+primary and 0.09–0.10 in transfer — real, bounded, and nowhere near the
+separation that would follow from a model of presentation itself; the first row's
+own text already said "still bounded to one disease, one tissue, one
+laboratory." Ruling out an instrument-specific signature does not rule out any
+confound the two instruments **share**: source-protein abundance, proteolytic
+and detectability bias common to both, and the set-C negative construction,
+whose composition alone reaches 0.6085 AUROC against positives. And the
+allele-disjoint analysis (D001) has not been run, so nothing here yet connects
+the signal to allele-specific binding — which is the specific biological claim
+§20 would want to make. **§20 should not be written as biology until D001's
+analysis has run.**
+
+The pre-commitment did the work it was supposed to do. The second row was the
+live risk: D025's own evidence put platform at 0.6451 composition-only AUROC
+against a 0.5150 control, which is a third of the way to perfect separation from
+frequencies alone, and a disappointing transfer number would have been easy to
+reinterpret after the fact. Because the reading was fixed first, the favourable
+outcome is as constrained as an unfavourable one would have been: the second row
+does not apply, and the first row's limiting clause applies in full.
 
 ### What the design work suggests about design work
 

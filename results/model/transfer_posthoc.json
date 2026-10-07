@@ -1,0 +1,44 @@
+{
+ "note": "POST-HOC, not preregistered. Derived from stored per-unit values; no model was retrained.",
+ "seed_purpose": "transfer_posthoc",
+ "results": {
+  "LTQ held-out half": {
+   "n_units": 12,
+   "cnn_penalty": 0.05155219485134387,
+   "cnn_ci": [
+    0.026680477660159137,
+    0.07444288195757778
+   ],
+   "floor_penalty": 0.054530567931168984,
+   "floor_ci": [
+    0.021664828628754948,
+    0.08543024049692399
+   ],
+   "excess": -0.002978373079825116,
+   "excess_ci": [
+    -0.013726409240403454,
+    0.00727453249885147
+   ],
+   "units_excess_positive": 5
+  },
+  "Lumos held-out half": {
+   "n_units": 13,
+   "cnn_penalty": 0.050001251340740176,
+   "cnn_ci": [
+    0.029107258491171555,
+    0.07454994088800695
+   ],
+   "floor_penalty": 0.02392384100234932,
+   "floor_ci": [
+    0.0003352688556483708,
+    0.05090859777959067
+   ],
+   "excess": 0.026077410338390856,
+   "excess_ci": [
+    0.017559671431391293,
+    0.03487246737946753
+   ],
+   "units_excess_positive": 13
+  }
+ }
+}
