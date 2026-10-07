@@ -167,6 +167,7 @@ blocks:
 | D029 | The `allele_disjoint_partition` split holds out ONE allele, not a disjoint set: only 5 of 36 test alleles are absent from training and 21.7% of a test unit's repertoire is unseen, so the design is attenuated ~5x. D001 run verbatim, renamed dominant-allele-held-out, plus a matched pair and a validated allele-enriched stratum. Logged before the run | before G13 |
 | D030 | The D029 allele stratum was defined as "in M_AM's pool, not in M_AD's", so M_AM had memorised 97.93% of it and M_AD 0.00%. Its +0.0660 is void; corrected to +0.0335 on row sets neither arm saw. Second instance of the TEST_LEAKFREE failure mode, so a standing check is added | voids a result |
 | D031 | Multi-allele test preregistered: five-allele replication plus the one symmetric allele PAIR (A*02:01 vs C*07:02), where a sign reversal between the two exclusive strata is the signature D029's contrast II could not deliver. Also finds that PARTIAL typing under-reports a locus, so 2 of D001's 23 non-carriers are not certain | may release G13 |
+| D032 | **OPEN — needs the project owner.** G13's release criterion (D031) requires both Part B directions to be significant; the 6-unit C*07:02 arm could probably never supply that, which is my error. Proposes narrowing to one direction, with the exact S20 wording it would license. Not actioned; G13 stays held | blocks G13, S20 |
 | D003 | Cross-split sequence leakage. **RESOLVED** — keep shared sequences, report the leakage-free subset as a sensitivity analysis. 14.59% of test positives are seen in training under unit-disjoint splitting. See entry below | G5, G6 |
 | D004 | Confidence threshold. **RESOLVED as a no-op** — 99.29% of the union is at the top level, so re-filtering removes 0.7%. Must be re-framed around the PeptideScores table if purity control is wanted | G4 |
 | D024 | Per-unit positive cap. **RESOLVED: 10,000 per unit, length-stratified, seed 20261006.** Chosen from a precision curve; costs 0.16% of attainable precision | G4, G6 |
@@ -747,6 +748,115 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
+## D032 — G13: a proposal to narrow the release criterion, for the owner to decide · OPEN
+
+**Opened:** 2026-10-07, after `QC_G12_multi_allele.md` · **Status: OPEN — awaiting
+the project owner.** Not actioned. G13 stays held until it is answered.
+**Depends on:** D031 (the criterion), D029, D030
+
+**This entry proposes relaxing a criterion I wrote and am now failing. That is
+self-serving by construction, which is why it is a proposal rather than a
+decision, and why the case against it is stated as fully as the case for.**
+
+### The situation
+
+D031 set four conditions for releasing G13. Three are met:
+
+| Condition | Result |
+|---|---|
+| Sign reversal in Part B | met — +0.0476 on A\*02:01-exclusive, −0.0049 on C\*07:02-exclusive |
+| Both neutral estimates near zero | met — −0.0013 and −0.0038 |
+| Part A's five contrasts consistent | met — all five positive, three of five excluding zero |
+| **Both Part B directions' intervals excluding zero** | **fails** — the C\*07:02 side does not |
+
+### The case for narrowing it
+
+**The failing condition was close to unattainable when it was written.** D031
+fixed Part B's carrier tests at 9 and 6 units and printed those numbers, then
+required a nominal-99% paired interval from the 6-unit side to exclude zero. The
+C\*07:02-exclusive stratum turned out to hold 542 sequences and 1,878 rows, the
+smallest in the run. Requiring significance from that arm was a condition the
+design could not supply, and I should have seen it from my own table.
+
+**It is the same error twice.** D029's defect was a symmetry assumption its own
+groups could not satisfy. D031's is a power requirement its own unit counts
+could not satisfy. Both are reading rules written without checking that the
+design can produce the evidence the rule demands.
+
+**What the data do show is strong where the design has power.** On the A\*02:01
+side: +0.0476, CI99 [+0.0314, +0.0626], 9 of 9 units, with memorisation,
+recurrence and training-set quality each measured at zero on the same units, on
+a design where both arms are carrier-trained so neither group is defined by an
+absence. Part A reproduces the direction in all five alleles, and catches a false
+positive (A\*01:01, raw +0.0229, adjusted +0.0083) that only the neutral estimate
+could have caught.
+
+**The proposed criterion, which is what I should have written:** sign reversal
+in Part B, **one** direction's interval excluding zero, both neutral estimates
+near zero, and Part A's contrasts consistent in direction. That is met.
+
+### The case against narrowing it
+
+**A criterion relaxed after it fails is not a criterion.** The whole value of
+D008, D025, D029 and D031 is that the reading was fixed before the numbers. If
+the rule bends when the numbers arrive, nothing in this project's preregistration
+means anything, and the reader has no way to tell a principled narrowing from a
+convenient one.
+
+**The one-direction version is weaker than it looks.** A sign reversal where only
+one arm reaches significance is also what you would see if the A\*02:01 arm's
+training set happened to suit A\*02:01-exclusive peptides for a reason unrelated
+to the allele. The neutral estimate argues against that, but on 9 units.
+
+**The C\*07:02 failure may not be power.** `QC_G12_multi_allele.md` §2.2 offers
+a biological reading — lower HLA-C surface expression, so more contamination in
+a C-exclusive stratum — but that is a post-hoc hypothesis about the same
+allele's peptides, not independent evidence. A real absence of allele-specific
+signal at the C locus would look exactly the same.
+
+**Nothing downstream is blocked.** §25 is read and closed. §20 being unwritten
+costs the project nothing but a section.
+
+### What release would and would not license
+
+If the owner accepts, §20 may state **only** this:
+
+> The model learns sequence features linked to donor genotype. For HLA-A\*02:01
+> this is demonstrated allele-specifically: a model trained on carriers ranks
+> peptides exclusive to carriers above a model trained on carriers of a
+> different allele, on held-out participants, by 0.048 average precision
+> (nominal-99% CI 0.031–0.063, 9 of 9 units), with memorisation, peptide
+> recurrence and training-set quality each measured at zero on the same units.
+> The direction reproduces across five alleles. It is not demonstrated for
+> HLA-C\*07:02. The effect is a few hundredths of average precision on strata
+> comprising 0.5–5% of each ligandome.
+
+And §20 may **not** state: that the primary endpoint's lift is presentation
+biology; that the restricting allele is identified (no deconvolution was done,
+and linkage is uncontrolled); that anything generalizes beyond this cohort,
+disease, tissue and laboratory; or anything about HLA-C.
+
+**If the owner refuses**, G13 stays held, §20 stays unwritten, and the results
+remain where they are — in `QC_G12_multi_allele.md` and R12, which state them
+in full either way. **Refusing costs no evidence.**
+
+### The third option
+
+Run more alleles. The cohort has A\*24:02 (16 carriers), B\*07:02 (15) and
+C\*03:04 (14). None pairs with another at both-sides-≥14 — the pair table in
+D031 shows the candidates leave 1–4 units on the minority side — so no second
+symmetric Part B is available in this dataset. **The symmetric test cannot be
+replicated here.** A second cohort would be required, which is outside this
+project's scope.
+
+**Recommendation.** Accept the narrowed criterion, because the condition that
+failed was unattainable by construction and the surviving evidence is strong in
+the direction the design can measure — but only with the §20 wording above,
+which is narrower than the criterion change might seem to permit. I hold the
+recommendation lightly: refusing is defensible and costs nothing but a section.
+
+---
+
 ## D031 — Multi-allele test: replication across five alleles, plus one symmetric pair · RESOLVED
 
 **Opened and resolved:** 2026-10-07 · **Before any multi-allele result was visible**
@@ -913,6 +1023,37 @@ reason it is still a cost:
 A better sequence would have validated the plumbing on a row set that is not
 one of the reported ones — scrambled group labels, for instance. That is the
 practice to adopt for the next analysis of this shape.
+
+### Outcome, 2026-10-07 (`results/qc/QC_G12_multi_allele.md`)
+
+**Part B reversed, as preregistered.** On the A\*02:01-exclusive stratum the
+A\*02:01-trained model beats the C\*07:02-trained one by **+0.0476** (CI99
+[+0.0314, +0.0626], **9 of 9 units**) after adjusting for the neutral
+training-set difference; on the C\*07:02-exclusive stratum the sign flips to
+−0.0049. Memorisation is 0.00% on all 21 row sets, and for the A\*02:01
+direction recurrence (+0.0052) and training-set quality (−0.0013) are both
+measured at zero on the same units. **This is the symmetric demonstration D029
+could not produce.**
+
+**The C\*07:02 direction demonstrates nothing** — correct sign, interval
+containing zero, 6 units, 542 stratum sequences.
+
+**Part A: all five adjusted contrasts positive**, three of five excluding zero,
+four of five excluding zero against the recurrence control. The neutral estimate
+earned its place by catching a false positive: A\*01:01 reads +0.0229 raw, but
+its neutral δ is +0.0146 (CI99 [+0.0010, +0.0270]) — the carrier arm is simply
+the better model for that split — and only +0.0083 survives adjustment. Without
+it, A\*01:01 would have been counted as a replication.
+
+**Both designs rank A\*02:01 above C\*07:02** (+0.0337 / +0.0160 in Part A;
++0.0476 / −0.0049 in Part B), a coherence check the design did not have to pass.
+
+**G13 stays held: three of this entry's four release conditions are met and the
+fourth fails.** The fourth required a nominal-99% interval from a 6-unit arm,
+which this entry's own table shows was close to unattainable — the same family of
+error as D029's symmetry assumption. **D032 proposes the narrowing and leaves it
+to the project owner**, because the criterion is mine and relaxing it to pass is
+self-serving by construction.
 
 ---
 

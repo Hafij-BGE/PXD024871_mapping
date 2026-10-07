@@ -551,6 +551,76 @@ negatives and returned 1.0000 — and both times the broken version gave the mos
 flattering answer available, which is the argument for the standing check D030
 adds.
 
+### R12 — Multi-allele test
+
+`QC_G12_allele.md` §4 named the test that would settle D029, and it was run on
+request. D031 preregistered it. The point is Part B: **HLA-A\*02:01 and
+HLA-C\*07:02 are the only pair whose mutually exclusive groups are both large
+enough, and both of its arms are carrier-trained** — each for its own allele —
+so neither group is the "defined by an absence" group that made D029's contrast
+II uninformative. A sign reversal between the two exclusive strata was fixed in
+advance as the signature. Detail in `results/qc/QC_G12_multi_allele.md`.
+
+**Part B.** `A*02:01-trained − C*07:02-trained`, paired per unit, adjusted by
+the neutral training-set difference measured on class-shared peptides:
+
+| Row set | raw | neutral δ | recurrence control | **adjusted** | CI99 | units |
+|---|---|---|---|---|---|---|
+| A\*02:01-exclusive | +0.0463 | −0.0013 | +0.0052 | **+0.0476** | **[+0.0314, +0.0626]** | **9 / 9** |
+| C\*07:02-exclusive | −0.0087 | −0.0038 | −0.0088 | −0.0049 | [−0.0366, +0.0298] | 3 / 6 |
+
+**The sign reverses.** On the A\*02:01 side the effect survives every
+alternative, each measured at zero on the same units: memorisation 0.00% by
+construction, training-set quality −0.0013, recurrence +0.0052. On the
+C\*07:02 side nothing is demonstrated — correct sign, interval containing zero,
+6 units, 542 stratum sequences.
+
+**Part A — replication across five alleles.** `carrier-trained −
+non-carrier-trained` on each allele's exclusive stratum, adjusted by that
+allele's own neutral δ:
+
+| Allele | test units | exclusive | neutral δ | **excl − δ** | CI99 | units |
+|---|---|---|---|---|---|---|
+| A\*02:01 | 19 | +0.0278 | −0.0059 | **+0.0337** | **[+0.0252, +0.0421]** | **19/19** |
+| C\*07:02 | 14 | +0.0068 | −0.0091 | **+0.0160** | **[+0.0048, +0.0269]** | 12/14 |
+| A\*01:01 | 7 | +0.0229 | **+0.0146** | +0.0083 | [−0.0100, +0.0226] | 5/7 |
+| A\*24:02 | 6 | +0.0408 | −0.0185 | **+0.0592** | **[+0.0432, +0.0732]** | **6/6** |
+| B\*07:02 | 5 | +0.0415 | +0.0091 | +0.0325 | [−0.0087, +0.0722] | 4/5 |
+
+All five positive; three exclude zero after adjustment, four against the
+recurrence control. No joint p-value: the five splits share units, so these are
+correlated replications.
+
+**The neutral estimate earned its place on A\*01:01.** Raw +0.0229 would have
+read as a fourth replication. Its neutral δ is +0.0146, CI99 [+0.0010,
++0.0270] — for that split the carrier-trained arm is simply the better model on
+peptides where neither arm is matched — and only +0.0083 survives, with an
+interval containing zero. This is the confound D029's sign rule tried to catch
+by symmetry and could not; here it is caught by direct measurement, in one split
+out of five.
+
+**Both designs rank A\*02:01 above C\*07:02** (+0.0337 / +0.0160 in Part A,
++0.0476 / −0.0049 in Part B) — different training sets, different test units,
+different comparators. A coherence check the design did not have to pass.
+
+**What this establishes.** The model learns sequence features linked to donor
+genotype, and for HLA-A\*02:01 that is demonstrated allele-specifically on a
+symmetric design. **What it does not.** The same for HLA-C\*07:02 or HLA-C
+generally; the identity of the restricting allele, since no deconvolution was
+done and linkage is uncontrolled; and anything about whether the primary
+endpoint's +0.158 lift is presentation biology — the allele effect is a few
+hundredths of average precision on strata comprising 0.5–5% of each ligandome,
+and every confound the platforms and allele groups *share* stands untouched.
+
+**G13 stays held.** Three of D031's four release conditions are met. The fourth
+required a nominal-99% interval from a 6-unit arm, which D031's own table shows
+was close to unattainable — the same family of error as D029's symmetry
+assumption, which is to say a reading rule whose design cannot supply what the
+rule demands. **D032 proposes the narrowing and leaves it to the project owner**,
+with the exact §20 wording it would license, because the criterion is mine and
+relaxing it in order to pass it is self-serving by construction. §20 stays
+unwritten meanwhile, and nothing downstream is blocked: §25 is read and closed.
+
 ## Discussion
 
 **Most of this section discusses the design, not the hypothesis**, and was
