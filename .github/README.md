@@ -140,7 +140,7 @@ Use GitHub's **"Cite this repository"** button or [`CITATION.cff`](../CITATION.c
 
 **Md Hafijur Rahman** · MSc Biomedical Technology, Dokuz Eylül University
 
-[![GitHub](https://img.shields.io/badge/GitHub-hafijbd-181717?logo=github)](https://github.com/hafijbd)
+[![GitHub](https://img.shields.io/badge/GitHub-Hafij--BGE-181717?logo=github)](https://github.com/Hafij-BGE)
 [![ORCID](https://img.shields.io/badge/ORCID-0000--0003--4031--6475-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0000-0003-4031-6475)
 
 <sub>Corrections welcome — especially from anyone with a second immunopeptidomics cohort who can try to break the 0.6852.</sub>
