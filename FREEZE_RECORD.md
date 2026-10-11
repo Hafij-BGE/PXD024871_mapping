@@ -82,7 +82,7 @@ all nine checks were clean at the moment it was written:
 | 4 | Every headline number in `REPORT.md` appears verbatim in the artifact it came from | **44 numbers** |
 | 5 | The figures regenerate byte-identically from those artifacts | 7 figures |
 | 6 | Every QC gate passed or carries a recorded unavailability | G1–G13, FINAL |
-| 7 | Every decision resolved, none left OPEN | D001–D039 |
+| 7 | Every decision resolved, none left OPEN | D001–D040 |
 | 8 | An existing manifest still agrees with the tree, and declares its own exclusion | 373 entries |
 | 9 | The trainer's own selftest passes | encoder, AP, gradients, overfit |
 
@@ -139,7 +139,9 @@ step and states what a reader who rejects it should conclude instead.
 
 **That publishing §18 is cleared.** The NetMHCpan 4.1 academic licence §7(v)
 bars publishing benchmark results to third parties without DTU Health Tech's
-prior written consent, and §18 is such a benchmark. No consent has been sought.
+prior written consent, and §18 is such a benchmark. **Consent was requested on
+2026-10-11 and the reply is pending** (D040); the licence grant itself is not
+consent, because §7(v) is a term inside it.
 `THIRD_PARTY_NOTICES.md` §1 and D037 §2 set out the reading, the countervailing
 practice, and the options. **This is the one item that a reader of a public
 repository should know is unresolved.**

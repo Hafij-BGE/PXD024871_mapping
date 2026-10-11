@@ -798,6 +798,71 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
+## D040 — NetMHCpan §7(v) consent requested; the licence grant is not consent · RESOLVED as to the action, AWAITING REPLY
+
+**Opened:** 2026-10-11 · **Acts on** L26 in `LIMITATIONS.md`, opened by D037
+
+**Decision: request DTU Health Tech's written consent to publish the §18
+benchmark, and record both what was asked and what happens on either answer.**
+
+### 1. Why the licence grant does not already settle it
+
+The academic licence for NetMHCpan-4.1 was issued on 2026-10-07 by the DTU
+Health Tech Package Manager. **That grant is not consent under §7(v)**, for
+three reasons, recorded because the opposite reading is a natural one:
+
+- **§7(v) is a term inside the licence that was granted.** The grant message
+  states that the licence terms are attached; those attached terms carry the
+  restriction. A grant cannot also be consent to an exception carved out
+  within itself.
+- **The grant is automated** — "This is a computer generated message, please do
+  not reply!" No person considered this publication.
+- **It predates the benchmark.** It cannot consent to results that did not yet
+  exist.
+
+A licence to *use* a tool implying permission to publish results of that use is
+a reasonable intuition and matches how the field behaves. The clause explicitly
+carves benchmark publication out, so the intuition does not settle it.
+
+### 2. What was asked
+
+Sent 2026-10-11 to `health-software@dtu.dk`, the address DTU's service page
+names for software licensing, copying the automated address the grant came
+from. The request quotes §7(v), references the 2026-10-07 grant so DTU can
+match it to their record, and names precisely what is published:
+
+- the mean average precision of 0.5472 on 165,574 rows common to five systems;
+- the per-peptide `Score_EL` and `%Rank_EL` values for 199,978 rows in
+  `results/predictors/netmhcpan_4_1_test_scores.csv`.
+
+It also states what is **not** published — the software, its code, its model
+files and its verbatim stdout, the last deliberately excluded under D037 — and
+volunteers the confound in the tool's favour: the comparison cannot separate
+model quality from cohort-specific training, which `REPORT.md` and L15 already
+say. The citation the service page requires is given.
+
+### 3. What happens on each answer
+
+| Answer | Action |
+|---|---|
+| **Consent given** | L26 closes. Record the reply date and the granting address here. Nothing in the repository changes |
+| **Consent refused** | Withdraw the NetMHCpan 4.1 arm: `results/predictors/netmhcpan_4_1_test_scores.csv`, its rows in `predictor_comparison_all.json`, `contamination_all.json` and `comparison_with_predictors_all.csv`, the §18 and R14 text, and F13. **§18's finding survives**: that the published predictors span 0.0046 AP rests on MHCflurry 2.0.0, MHCflurry 2.3.0 and MixMHCpred 3.0 without it. Re-freeze and record the new numbers |
+| **No reply** | L26 stays open with the request on the record. Not silently closed by the passage of time |
+
+### 4. The DOI waits for the answer
+
+A Zenodo deposit is immutable. Archiving before the answer risks permanently
+publishing a tree that then has to lose an arm, so no release is tagged until
+DTU replies or the arm is withdrawn. Logging in to Zenodo and enabling the
+repository toggle are both reversible and do not mint anything; **publishing a
+release is the irreversible step.**
+
+**RESOLVED as to the action** — the request is sent and its terms are on the
+record. The outcome is external and is tracked at L26 until it arrives.
+
+---
+
+
 ## D039 — D038 reversed for eight of nine documents; a reference gate added · RESOLVED
 
 **Opened:** 2026-10-11 · **Supersedes D038 in part** · **Requested by the

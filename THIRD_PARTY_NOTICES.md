@@ -35,15 +35,20 @@ Three things said honestly:
    including by groups unaffiliated with DTU and including the MHCflurry 2.0
    paper, which benchmarks against NetMHCpan 4.0 in its abstract. That bears on
    whether the clause is enforced against ordinary scientific comparison. It
-   does not establish that consent was given, and none has been sought.
+   does not establish that consent was given.
 3. **The clause is generic boilerplate.** The same licence's §10 requires that
    "any reference to the software for *crystallographic computations*" cite the
    manual — carried over from an unrelated package. That is evidence about how
    the document was assembled, not a permission.
 
-**Resolution is one email:** `health-software@dtu.dk`, the contact named on the
-service page for software licensing, asking for written consent to publish the
-comparison. Until then the options are to ask, to withdraw the NetMHCpan arm
+**Consent was requested on 2026-10-11** from `health-software@dtu.dk`, the
+contact named on the service page for software licensing, citing §7(v) and
+naming exactly what is published. **The reply is pending.** Note that the
+licence grant itself is not consent under this clause: §7(v) is a term *inside*
+the licence that was granted, the grant message is automated, and it predates
+the benchmark.
+
+Until DTU replies the options are to wait, to withdraw the NetMHCpan arm
 (the other four systems stand on their own, and §18's finding — that the
 predictors span 0.0046 — survives with three of them), or to continue on the
 practice argument with this notice on the record. That choice belongs to the
