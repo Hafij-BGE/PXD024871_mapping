@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-11T16:56:48Z",
+ "frozen_utc": "2026-10-11T16:57:04Z",
  "branch": "claude/mapping-research-project-prompt-glsess",
- "parent_commit": "4cef8ebde3ee51870deca06833327f96b86b5851",
+ "parent_commit": "05561630cbd9e6ba3c55337117c949fded7f79b5",
  "n_files": 373,
- "total_bytes": 113549635,
+ "total_bytes": 113549642,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -56,8 +56,8 @@
   },
   {
    "path": "FREEZE_RECORD.md",
-   "bytes": 10845,
-   "sha256": "6b3852c26af49a2f7335aede307a5f3ea2161ff535345665ee20b62f40e2f348"
+   "bytes": 10852,
+   "sha256": "deb602a5d6a91c86e890ac027c802564072f062e477e188a0e2c133619fef47a"
   },
   {
    "path": "LICENSE",
