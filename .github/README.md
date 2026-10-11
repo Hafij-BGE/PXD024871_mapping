@@ -6,7 +6,7 @@
 
 [![Status](https://img.shields.io/badge/status-complete%20%26%20frozen-2ea44f)](../FREEZE_RECORD.md)
 [![Preregistered](https://img.shields.io/badge/preregistered-yes-0969da)](../PREREGISTRATION.md)
-[![Peer review](https://img.shields.io/badge/peer%20review-not%20yet-lightgrey)](#-limits-read-before-reusing)
+[![Peer review](https://img.shields.io/badge/peer%20review-not%20yet-lightgrey)](../LIMITATIONS.md)
 [![Data](https://img.shields.io/badge/PRIDE-PXD024871-8250df)](https://www.ebi.ac.uk/pride/archive/projects/PXD024871)
 <br>
 [![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)](../requirements.txt)

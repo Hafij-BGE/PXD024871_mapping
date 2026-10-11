@@ -798,6 +798,138 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
+## D039 — D038 reversed for eight of nine documents; a reference gate added · RESOLVED
+
+**Opened:** 2026-10-11 · **Supersedes D038 in part** · **Requested by the
+project owner** after the dangling-reference defect was reported
+
+**Decision: ship eight of the nine documents D038 untracked, keep `HANDOVER.md`
+withheld, extract a standalone `LIMITATIONS.md`, and add a gate that fails when
+a shipped document cites a file that is not shipped.**
+
+D038 is not edited. It was right about its own limits and said so; this entry
+records that its central trade-off did not survive contact with the published
+repository.
+
+### 1. Why D038 was reversed
+
+**The repository cited documents it did not ship.** A reader following
+`README.md` was told the limits in `REPORT.md` §19 were "not boilerplate — read
+them before reusing any number here", and `REPORT.md` was not there. The
+repository withheld the only statement of its own limits while publishing every
+number those limits qualify. That is worse than a broken link.
+
+**The findings were already public anyway, exactly as D038 §3 predicted.** The
+live `README.md` on `main` serves 0.7551, 0.6852 and 0.0046 unauthenticated,
+alongside 180 tracked files under `results/` — all seven figures, fifteen QC
+gate records, `endpoint.json`. Withholding `REPORT.md` protected nothing and
+cost the caveats. **Shipping it reduces exposure rather than increasing it.**
+
+**`LICENSE`, `LICENSE-docs` and `CITATION.cff` all cited an unshipped
+`THIRD_PARTY_NOTICES.md`.** `LICENSE-docs` grants CC BY 4.0 over "the result
+artifacts in `results/`", which includes `mixmhcpred_3_0_test_scores.csv`, and
+pointed at that file for the third-party carve-out. **The public repository was
+therefore granting commercial reuse over MixMHCpred-derived output with the
+restricting document invisible.** That is a licence exposure, not a tidiness
+defect, and it is the single most consequential finding of this audit.
+
+### 2. What was shipped, and the safety check that preceded it
+
+Shipped: `METHODOLOGY.md`, `REPORT.md`, `RUN_LOG.md`, `SECTIONS.md`,
+`THIRD_PARTY_NOTICES.md`, `POWER_ANALYSIS.md`, `PROJECT_PROMPT.md`,
+`ENVIRONMENT.md`.
+
+All nine were scanned for publication hazards before any was shipped: secrets,
+tokens, keys, personal identifiers, institutional affiliation, absolute paths,
+cost and credential material. **Eight were clean on every axis.**
+
+Withheld: **`HANDOVER.md`** alone — the only one with no scientific content and
+the only one the scan flagged. It records the project's cloud spend ($50.05 of
+a $100 allowance, ~$0.70 per turn) and a `GH_TOKEN` `repo`-scope instruction.
+The four open issues it lists are all recorded in `DECISION_LOG.md` and
+`SECTIONS.md`, so withholding it loses nothing. Its three references were
+rewritten.
+
+**D038 §2 still holds and is not reversed by this entry:** `HANDOVER.md`, and
+everything D037 and D038 untracked, remain recoverable from this repository's
+history by anyone who clones.
+
+### 3. `LIMITATIONS.md`
+
+Twenty-six limitations, each with a status (permanent / open / resolved), its
+impact, and what would close it, extracted from `REPORT.md` §19 and grouped by
+what they prevent the study claiming. Shipped unconditionally so that no future
+decision about the report can again publish the numbers without them.
+
+It records that three of its four groups converge: **a second cohort** closes or
+advances L1, L8, L14, L15, L16 and L22 — the instrument confound, the
+single-context ceiling, the allele result, the architecture-versus-cohort
+question, the headline negative finding, and the only reader-dependent step in
+the report. No further analysis of PXD024871 reaches any of them.
+
+### 4. A stale limitation found while extracting it
+
+`REPORT.md` §19 claimed **"Two predictors named in §18's own input list were
+never obtained."** R14, in the same document, reports all four predictors on a
+common row set. The claim was true when written and **false as of R14**; D035
+and D036 obtained both. The report contradicted itself.
+
+Marked `[SUPERSEDED]` in place with the correction and the date, **not
+deleted** — the same treatment D030 gave its void contrast. Carried into
+`LIMITATIONS.md` as L18, status `resolved`.
+
+Four further stale references were found the same way and annotated rather than
+deleted: `CONTAINER_RUN_MAP.csv`, `PEPTIDE_OBSERVATIONS.parquet`,
+`TRAIN.csv`, `VALIDATION.csv`, `TEST.csv`, `CNN_PREREGISTRATION.md`,
+`cnn_config.json` and
+`training_log.csv` were all **planned in the specification and never produced**.
+Each now says so, and says what serves its role. The gap between a plan and what
+was built is evidence about the project.
+
+### 5. The gate: `scripts/check_references.py`
+
+Extracts every file reference from every shipped `.md`, `.cff` and `.ipynb`,
+resolves it, and exits non-zero naming each one that does not resolve to a
+**tracked** file. Tracked, not merely present on disk: a file in the working
+tree but untracked is in nobody else's clone, and that distinction is the whole
+defect.
+
+`--selftest` builds a tree with a real dangling reference in each of the three
+syntaxes and asserts the gate fails on it, and that a consistent tree reports
+nothing. **A gate only ever observed to pass is untested.**
+
+**Two rounds of its own false positives are worth recording**, because both
+would have made it useless:
+
+1. The first version reported **120** findings by treating prose mentions,
+   `...` abbreviations and directory links as broken paths. Real defects would
+   have been buried. Corrected: links resolve relative to the citing file;
+   backticked prose resolves by basename anywhere in the tree.
+2. The second reported `model/endpoint.json` as missing — prose writes path
+   fragments relative to the directory under discussion. Corrected with
+   component-boundary suffix matching.
+
+The honest count was **44**, not 120.
+
+Deliberate absences are **declared, not suppressed**: `DECLARED_ABSENT` maps 16
+targets to a reason, the gate prints every one on each run, and anything not in
+that map fails. Adding an entry is a decision and belongs here.
+
+### 6. `.zenodo.json`
+
+Added, with the dual licence, keywords, and `related_identifiers` pointing at
+PRIDE **PXD024871** and the four papers. **No DOI is minted yet**: linking
+Zenodo and publishing a tagged release are the owner's to do. A Zenodo deposit
+is immutable, which is why it waits for a clean gate. The concept DOI, version
+DOI, tag and commit will be recorded in a later entry.
+
+**As RESOLVED, this fixes the dangling-reference defect and the licence
+exposure.** No result, score, model or number was altered. The preregistered
+digests are unmoved.
+
+---
+
+
 ## D038 — Nine documents untracked at the owner's instruction · RESOLVED
 
 **Opened:** 2026-10-07 · **Requested by the project owner**, explicitly and

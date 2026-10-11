@@ -11,8 +11,9 @@ flattering number available and had to be withdrawn.
 
 > **Status:** complete and frozen. Checksum-verified at `freeze_manifest.json`.
 > **Not peer reviewed.** One cohort, 52 participants, 10 held-out test units.
-> The limits in `REPORT.md` §19 are not boilerplate — read them before reusing
-> any number here.
+> The limits are not boilerplate — read `LIMITATIONS.md` before reusing any
+> number here. It is the full ledger, 26 entries with status and what would
+> close each; `REPORT.md` §19 carries the longer argument.
 
 ---
 
@@ -63,7 +64,8 @@ appears in the contamination table and in no comparison.
 ```
 PREREGISTRATION.md      hypotheses, estimand and artifact hashes, committed
                         before any model was trained
-DECISION_LOG.md         D001–D038, every decision and every reversal
+DECISION_LOG.md         D001–D039, every decision and every reversal
+LIMITATIONS.md          every limitation, its status, and what would close it
 DATA_SOURCES.md         twelve provenance fields per source
 FLOWCHART.md            pipeline shape
 FREEZE_RECORD.md        the freeze and what it verifies
@@ -78,29 +80,27 @@ notebooks/              Colab runners used for the bulk extraction
 freeze_manifest.json    SHA-256 of every tracked file
 ```
 
-### Documents not published here
+### One document not published here
 
-Nine documents are part of this project and are **not in this repository**:
+`HANDOVER.md` is the only part of this project not in this repository. It is an
+operational note recording the project's cloud spend and a credential-scope
+instruction; it has no scientific content, and the four open issues it lists are
+all recorded in `DECISION_LOG.md` and `SECTIONS.md`. Withheld under D039.
 
-`REPORT.md` (the findings) · `METHODOLOGY.md` · `SECTIONS.md` ·
-`POWER_ANALYSIS.md` · `THIRD_PARTY_NOTICES.md` · `PROJECT_PROMPT.md` ·
-`RUN_LOG.md` · `ENVIRONMENT.md` · `HANDOVER.md`
+It remains in this repository's git history, as D038 recorded: untracking
+removes a file from the published tree, not from the commits that carried it.
 
-They are withheld at the project owner's decision (D038) — internal working
-documents, and a result held pending submission. References to them elsewhere in
-this repository are left **as written** rather than edited away, so they point at
-this note rather than at nothing.
+**Everything else is here**, including the eight documents an earlier revision
+withheld. D039 reversed that: the findings those documents were meant to protect
+were already public in this README, `DECISION_LOG.md`, `FREEZE_RECORD.md` and
+all 180 files under `results/`, so withholding `REPORT.md` removed the study's
+only statement of its own limits while leaving every number that statement
+qualifies. `LIMITATIONS.md` now carries that ledger separately, so it survives
+any future decision about the report.
 
-Two consequences worth stating rather than leaving to be discovered:
-
-- **`scripts/freeze.py --verify` will not run on a clone.** Three of its nine
-  checks read `REPORT.md` and it is not here. It still passes for anyone holding
-  the full tree.
-- **The withheld documents remain in this repository's git history.** Untracking
-  removes a file from the published tree, not from the commits that carried it.
-  Anyone who clones can recover them. This is recorded, not relied upon.
-
-To ask for any of them, open an issue.
+`scripts/check_references.py` enforces this: every file a shipped document cites
+must itself be shipped. It runs like the other gates and fails if that stops
+being true.
 
 ## Verifying and reproducing
 

@@ -33,11 +33,13 @@ it instead of duplicating it.
 
 ## What changed in this freeze, and what did not
 
-**Changed in THIS freeze (D038):** nine documents untracked at the project
-owner's instruction — `METHODOLOGY.md`, `REPORT.md`, `RUN_LOG.md`,
-`SECTIONS.md`, `THIRD_PARTY_NOTICES.md`, `POWER_ANALYSIS.md`,
-`PROJECT_PROMPT.md`, `HANDOVER.md`, `ENVIRONMENT.md`. All nine remain on disk
-and in history. `README.md` gained a section naming them, and the pointers in
+**Changed in THIS freeze (D039):** eight of the nine documents D038 untracked
+are shipped again — `METHODOLOGY.md`, `REPORT.md`, `RUN_LOG.md`, `SECTIONS.md`,
+`THIRD_PARTY_NOTICES.md`, `POWER_ANALYSIS.md`, `PROJECT_PROMPT.md`,
+`ENVIRONMENT.md` — because withholding them left the repository citing
+documents it did not ship, including the only statement of its own limits.
+`HANDOVER.md` alone stays withheld. Added: `LIMITATIONS.md`, `.zenodo.json` and
+`scripts/check_references.py`, the gate that makes the defect non-recurring. `README.md` gained a section naming them, and the pointers in
 `LICENSE`, `LICENSE-docs` and `README.md` to the now-untracked notices file were
 repaired. The items below this line were the THIRD anchor's changes and are kept
 for the record.

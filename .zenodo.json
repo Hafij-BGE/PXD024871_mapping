@@ -1,0 +1,56 @@
+{
+  "title": "PXD024871 — a preregistered sequence-only CNN benchmark on HLA class-I immunopeptidomics",
+  "description": "<p>A preregistered, single-cohort study asking whether a 1D convolutional network can distinguish experimentally observed HLA class-I peptides from matched decoys using <strong>sequence alone</strong>, and how it compares with four published presentation predictors on identical rows.</p><p>Data: PRIDE Archive PXD024871 (chronic lymphocytic leukaemia PBMC, 52 class-I participants). 520,000 positives and 520,000 length-matched negatives over 52 biological units, split by participant with 10 units held out. Primary endpoint average precision 0.7551 (99% CI 0.7368&ndash;0.7721) against a composition-only floor of 0.597.</p><p>On 165,574 rows common to all systems the CNN reaches 0.6852 and the four published predictors span only 0.0046 AP &mdash; a pattern the report argues <em>weakens</em> rather than supports an architectural reading of the CNN's lead.</p><p>The deposit includes the full decision log (D001&ndash;D039), the QC gate records, a standalone limitations ledger, and the analyses that were withdrawn, including two cases in which a defect produced the most flattering number available. Verification is checksum-gated: <code>scripts/freeze.py --verify</code> runs nine checks over the frozen tree.</p><p><strong>Not peer reviewed.</strong> One cohort. See LIMITATIONS.md before reusing any number.</p>",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Rahman, Md Hafijur"
+    }
+  ],
+  "keywords": [
+    "immunopeptidomics",
+    "HLA class I",
+    "MHC class I",
+    "antigen presentation",
+    "convolutional neural network",
+    "mass spectrometry",
+    "preregistration",
+    "reproducibility",
+    "PXD024871"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://www.ebi.ac.uk/pride/archive/projects/PXD024871",
+      "relation": "isDerivedFrom",
+      "resource_type": "dataset",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.3389/fimmu.2021.705974",
+      "relation": "isDerivedFrom",
+      "resource_type": "publication-article",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.1093/nar/gkaa379",
+      "relation": "references",
+      "resource_type": "publication-article",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.1016/j.cels.2020.06.010",
+      "relation": "references",
+      "resource_type": "publication-article",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.1186/s13073-025-01450-8",
+      "relation": "references",
+      "resource_type": "publication-article",
+      "scheme": "doi"
+    }
+  ],
+  "notes": "Dual-licensed: MIT for scripts/ and notebooks/; CC BY 4.0 for the documents, figures and derived data tables (see LICENSE and LICENSE-docs). Zenodo records a single licence field, so MIT is declared here and the dual arrangement is stated in the repository. One carve-out applies: MixMHCpred-derived files are restricted to academic non-commercial use by their upstream licence and are NOT covered by the CC BY grant — see THIRD_PARTY_NOTICES.md section 1. No licence-gated predictor binary and no verbatim predictor stdout is included in this deposit."
+}
