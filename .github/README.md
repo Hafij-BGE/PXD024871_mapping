@@ -89,7 +89,7 @@ Every decision, reversal and withdrawn analysis is kept on the record in [`DECIS
 | Path | What's inside |
 |---|---|
 | [`PREREGISTRATION.md`](../PREREGISTRATION.md) | Hypotheses, estimand and artifact hashes, committed before training |
-| [`DECISION_LOG.md`](../DECISION_LOG.md) | D001–D038: every decision and every reversal |
+| [`DECISION_LOG.md`](../DECISION_LOG.md) | D001–D041: every decision and every reversal |
 | [`DATA_SOURCES.md`](../DATA_SOURCES.md) | Twelve provenance fields per source |
 | [`FLOWCHART.md`](../FLOWCHART.md) | Pipeline shape |
 | [`FREEZE_RECORD.md`](../FREEZE_RECORD.md) | What the freeze verifies |
@@ -104,7 +104,7 @@ Every decision, reversal and withdrawn analysis is kept on the record in [`DECIS
 
 <br>
 
-Nine project documents (including `REPORT.md`) are withheld at the owner's decision (D038), pending submission. As a result, `scripts/freeze.py --verify` will not fully pass on a public clone. The [full README](../README.md#documents-not-published-here) gives the details. To ask for any of them, open an issue.
+Three project documents are withheld at the owner's decision: `REPORT.md` and `PROJECT_PROMPT.md` pending submission (D041), and `HANDOVER.md` as an operational note with no scientific content (D039). Because checks 3 and 4 read the report, `scripts/freeze.py --verify` will not fully pass on a public clone; the other seven do. `LIMITATIONS.md` ships and carries the limitations ledger in full. The [full README](../README.md#three-documents-not-published-here) gives the details. To ask for any of them, open an issue.
 
 </details>
 

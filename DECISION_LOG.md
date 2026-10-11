@@ -2658,6 +2658,68 @@ entry superseding this one.
 
 ---
 
+## D041 — `REPORT.md` and `PROJECT_PROMPT.md` withheld pending submission · RESOLVED
+
+**Opened:** 2026-10-11 · **Supersedes D039 in part** · **Requested by the
+project owner**
+
+**Decision: untrack `REPORT.md` and `PROJECT_PROMPT.md` from the published
+tree, pending submission. The other six documents D039 restored stay shipped.**
+
+D039 is not edited. It reversed D038 for eight documents on the reasoning that
+withholding the report removed the study's only statement of its own limits.
+That reasoning is answered rather than contradicted: `LIMITATIONS.md`, which
+D039 itself created, now carries the limitations ledger unconditionally, so the
+published tree keeps a full statement of what the numbers do not support even
+with the report withheld. That was the point of extracting it.
+
+### 1. What is withheld, and what carries its content
+
+| document | reason | what carries it |
+|---|---|---|
+| `REPORT.md` | pending submission | `LIMITATIONS.md` (26 entries, status, what would close each); every headline number in `README.md`, `results/` and `freeze_manifest.json` |
+| `PROJECT_PROMPT.md` | the internal brief the project was run from | `PREREGISTRATION.md` for what was specified, `METHODOLOGY.md` for what was done, this log for every departure |
+
+`METHODOLOGY.md`, `SECTIONS.md`, `RUN_LOG.md`, `DECISION_LOG.md`,
+`ENVIRONMENT.md` and `POWER_ANALYSIS.md` remain shipped. An earlier draft of
+this change untracked all eight; it was narrowed to two at the owner's
+instruction before anything was committed.
+
+### 2. What it costs, stated plainly
+
+- **`freeze.py --verify` no longer fully passes on a public clone.** Checks 3
+  and 4 read the report. The other seven run, and they are the ones that bind
+  the published tree. `README.md` and `.github/README.md` now say this.
+- **Section 18's prose is not public**, though every number in it is:
+  `results/predictors/*_test_scores.csv`, `results/qc/predictor_comparison_all.json`
+  and `results/qc/contamination_all.json`. This matters for D040, where DTU's
+  §7(v) consent was requested for publishing the benchmark — the published
+  artefacts are unchanged by this entry, so D040's position is unchanged.
+- **Untracking is not erasure.** Both documents remain in this repository's
+  history and are recoverable by anyone who clones, exactly as D038 section 2
+  recorded for the nine. Removing them from history is a separate decision with
+  separate costs and is not taken here.
+
+### 3. How the references were repaired
+
+Both are entered in `DECLARED_ABSENT` in `scripts/check_references.py`, the
+mechanism D039 built for exactly this: a reference to something deliberately
+unshipped is declared with a reason and printed on every run, never silently
+passed. The gate's validation purpose is unchanged — anything not declared
+still fails it.
+
+Prose that *instructed* a reader to consult the report was rewritten rather
+than declared, because a declaration makes a citation honest, not a pointer
+useful: `README.md` (status banner, the predictor-spread paragraph, the freeze
+checks), `.github/README.md`, `LIMITATIONS.md` and `THIRD_PARTY_NOTICES.md` now
+point at shipped artifacts. `FREEZE_RECORD.md` records a past freeze and is
+annotated, not rewritten.
+
+**RESOLVED.** The gate passes: 33 shipped documents scanned, every reference
+resolves or is declared.
+
+---
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites

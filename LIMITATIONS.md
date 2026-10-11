@@ -3,12 +3,17 @@
 Every limitation of this study, in one place, with its status, what it prevents
 the work from claiming, and what would close it.
 
-**Why this file exists separately.** The limitations were written in `REPORT.md`
-§19. For a period this repository shipped every headline number while
-withholding that report, so the figures were public and the statement of what
-they do not support was not. This ledger is shipped unconditionally so that can
-never recur (D039). `REPORT.md` remains the fuller argument; where the two
-differ in detail, the report is the source and this is the index.
+**Why this file exists separately.** The limitations were first written as §19
+of the project report. For a period this repository shipped every headline
+number while withholding that report, so the figures were public and the
+statement of what they do not support was not. This ledger is shipped
+unconditionally so that can never recur (D039).
+
+**That is no longer a hypothetical.** The report is withheld again under D041,
+pending submission. This file is therefore the published statement of the
+study's limits, not an index to one — it is written to stand alone, and every
+entry names the shipped artifact its evidence is in. If you find a limitation
+that is stated nowhere in this repository, that is a defect; open an issue.
 
 **Status** is one of:
 
@@ -64,7 +69,7 @@ once is not having enough power.**
 | L15 | **The predictor comparison cannot separate architecture from cohort-specific training.** The CNN trained on 42 participants of this cohort — same laboratory, instruments, protocol and negative construction — and the published predictors never saw it | **open** | R10 bounds the instrument part of that head start at 0.04–0.06 AP; **the rest is unquantified.** §18 shows the CNN adds information *on this cohort's task*. It does **not** show the CNN is a better model of HLA presentation | Evaluating on a cohort the CNN never saw. The task is not mismatched: MHCflurry's processing model trains on observed-vs-unobserved at 1:1 with 65% same-protein decoys, nearly the set-C construction |
 | L16 | **The four published predictors span only 0.0046 AP.** Three groups, three corpora, three architectures, one trained on 12,081,588 peptides, agreeing with each other and differing from the CNN together — *measured* | **open** | This **weakens** the architectural reading of the CNN's 0.137–0.142 lead. A better presentation model should show the four spreading by capability; they do not. Training-set size buys nothing — NetMHCpan has ≈18× MHCflurry's data and scores 0.5472 against 0.5479 | A second cohort. This is the finding the design did not set out to produce (R14) |
 | L17 | **Predictor training data overlaps the test rows.** Contamination measured per predictor and per label; NetMHCpan 4.2's overlap is near-symmetric at 20.74% of positives and 16.20% of negatives — *measured* | **resolved as to measurement** | Quantified rather than assumed, which is why NetMHCpan 4.2 appears in the contamination table and in **no comparison**. The others are admitted as quantified `OVERLAPPING` | Nothing further. The measurement is the mitigation (D006, `results/qc/contamination_all.json`) |
-| L18 | *(superseded)* **"Two predictors were never obtained."** | **resolved** | Was true when written, **false as of R14** | Closed by D035 and D036: NetMHCpan 4.1 under the DTU academic licence, MixMHCpred 3.0 from a route the proxy allows. §18 reports all four on a common row set. The superseded paragraph is marked, not deleted, in `REPORT.md` §19 |
+| L18 | *(superseded)* **"Two predictors were never obtained."** | **resolved** | Was true when written, **false as of R14** | Closed by D035 and D036: NetMHCpan 4.1 under the DTU academic licence, MixMHCpred 3.0 from a route the proxy allows. §18 reports all four on a common row set, and the scores are in `results/predictors/`. The superseded paragraph is marked, not deleted, in the withheld report |
 
 ---
 

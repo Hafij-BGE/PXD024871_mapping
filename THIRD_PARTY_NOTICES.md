@@ -21,12 +21,14 @@ licensee may not:**
 > (v) publish any results of benchmark tests run on the Product to a third
 > party without HEALTH's prior written consent.
 
-Section 18 of `REPORT.md` is a benchmark of NetMHCpan 4.1 against four other
-systems and reports its average precision, and
-`results/predictors/netmhcpan_4_1_test_scores.csv` publishes its per-peptide
-scores. **This repository is public, so that clause is engaged.** It was flagged
-as a risk before publication (D037) and publication proceeded; this section now
-records a live position rather than a forecast.
+This study benchmarks NetMHCpan 4.1 against four other systems and reports its
+average precision; `results/predictors/netmhcpan_4_1_test_scores.csv` publishes
+its per-peptide scores and `results/qc/predictor_comparison_all.json` the
+comparison itself. The prose section that discusses them is in the report,
+which is withheld under D041; the published numbers are not. **This repository
+is public, so that clause is engaged.** It was flagged as a risk before
+publication (D037) and publication proceeded; this section now records a live
+position rather than a forecast.
 
 Three things said honestly:
 
@@ -89,7 +91,7 @@ repository redistributes any of them.
 | Terms held | Yes — `netMHCpan-4.1_license.txt`, shipped with the package, retained outside this repository |
 | Grant | Non-exclusive, non-transferable, free of charge, to a non-profit educational/academic/research institution, "for personal and internal use in research only at one Site" |
 | Prohibited | Redistribution or transfer of the software; modification without written consent; any use resulting in commercialization; **publishing benchmark results to third parties without prior written consent (§7(v), see above)** |
-| In this repository | `results/predictors/netmhcpan_4_1_test_scores.csv`; the NetMHCpan rows of `results/qc/predictor_comparison_all.json`, `results/qc/contamination_all.json` and §18 of `REPORT.md`; `data/derived/TEST_PREDICTOR_OVERLAP_NetMHCpan_4_1.csv` and `..._4_2.csv` |
+| In this repository | `results/predictors/netmhcpan_4_1_test_scores.csv`; the NetMHCpan rows of `results/qc/predictor_comparison_all.json`, `results/qc/contamination_all.json`, and §18 of the withheld report; `data/derived/TEST_PREDICTOR_OVERLAP_NetMHCpan_4_1.csv` and `..._4_2.csv` |
 | Not in this repository | The software; its verbatim stdout (`results/predictors/netmhcpan_raw/`, gitignored); the 4.2 training set (`data/raw/S6/`, gitignored) |
 
 Citation, as the service page requires. According to PubMed: Reynisson B,
@@ -108,7 +110,7 @@ Research 2020;48(W1):W449–W454.
 | Grant | Non-exclusive, non-transferable, academic non-commercial research only: download, execute, display, and create bug fixes or modifications |
 | Prohibited | Sublicensing or distributing the program; placing it on a network accessible to anyone who has not accepted the agreement; any commercial purpose |
 | **Output** | §2.1 expressly permits providing results: the licensee "may apply the PROGRAM in a pipeline to data owned by users other than the LICENSEE and provide these users the results of the PROGRAM **provided LICENSEE does so for academic non-commercial purposes only**" |
-| In this repository | `results/predictors/mixmhcpred_3_0_test_scores.csv`; the MixMHCpred rows of the comparison and contamination JSONs and §18 of `REPORT.md`; `data/derived/TEST_PREDICTOR_OVERLAP_MixMHCpred_3_0.csv` |
+| In this repository | `results/predictors/mixmhcpred_3_0_test_scores.csv`; the MixMHCpred rows of the comparison and contamination JSONs, and §18 of the withheld report; `data/derived/TEST_PREDICTOR_OVERLAP_MixMHCpred_3_0.csv` |
 | Not in this repository | The software; its verbatim stdout (`results/predictors/mixmhcpred_raw/`, gitignored); the training table (`data/raw/S6/`, gitignored) |
 
 > **Carve-out from this repository's CC BY 4.0 grant.** CC BY 4.0 permits

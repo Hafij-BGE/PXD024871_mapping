@@ -51,6 +51,14 @@ DECLARED_ABSENT = {
     'HANDOVER.md':
         'withheld under D039: cloud spend and a credential-scope instruction, '
         'no scientific content',
+    'REPORT.md':
+        "withheld under D041 at the owner's instruction, pending submission. "
+        'LIMITATIONS.md carries the limitations ledger separately, and every '
+        'number the report states is in README.md and under results/',
+    'PROJECT_PROMPT.md':
+        "withheld under D041 at the owner's instruction: the internal brief "
+        'the project was run from. PREREGISTRATION.md and METHODOLOGY.md are '
+        'the public record of what was specified and what was done',
     'PXD024871_CNN_Experiment_Proposal.md':
         'withheld under D037: internal, unpreregistered; the STUB records its '
         'title, size and SHA-256',
@@ -175,8 +183,16 @@ def resolves(kind, cands, ship, dirs, basenames, suffixes):
     return tok in suffixes
 
 
-def audit(ship):
-    """Return {citing file: [(raw, kind, first-candidate), ...]} for dangles."""
+def audit(ship, declared_absent=None):
+    """Return {citing file: [(raw, kind, first-candidate), ...]} for dangles.
+
+    `declared_absent` defaults to the module-level map. The selftest passes an
+    empty one: its fixture cites names that are real entries in that map, and a
+    gate whose selftest silently stops exercising a case the moment a document
+    is withheld is a gate that tests less than it appears to (D041).
+    """
+    DECLARED_ABSENT = (declared_absent if declared_absent is not None
+                       else globals()['DECLARED_ABSENT'])
     dirs = {d for f in ship for d in _parents(f)}
     basenames = {f.rsplit('/', 1)[-1] for f in ship}
     suffixes = {'/'.join(f.split('/')[i:]) for f in ship
@@ -222,10 +238,10 @@ def selftest():
             REPO = d
             ship = {'real.md', 'docs/present.md', 'shipped.py', 'bad.md'}
 
-            clean, _ = audit(ship - {'bad.md'})
+            clean, _ = audit(ship - {'bad.md'}, declared_absent={})
             ok &= _assert(not clean, 'a consistent tree reports nothing', clean)
 
-            dirty, _ = audit(ship)
+            dirty, _ = audit(ship, declared_absent={})
             got = {p for v in dirty.values() for _, _, p in v}
             ok &= _assert('bad.md' in dirty, 'the dangling file is named')
             ok &= _assert(got == {'REPORT.md', 'METHODOLOGY.md', 'results/fig.svg'},

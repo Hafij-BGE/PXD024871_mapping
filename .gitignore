@@ -91,3 +91,11 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# ---------------------------------------------------------------------------
+# Withheld at the project owner's instruction, 2026-10-11
+# ---------------------------------------------------------------------------
+# Both remain on local disk and in this repository's history; untracking
+# removes them from the published tree, not from a clone.
+REPORT.md
+PROJECT_PROMPT.md

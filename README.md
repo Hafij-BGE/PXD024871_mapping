@@ -13,7 +13,8 @@ flattering number available and had to be withdrawn.
 > **Not peer reviewed.** One cohort, 52 participants, 10 held-out test units.
 > The limits are not boilerplate — read `LIMITATIONS.md` before reusing any
 > number here. It is the full ledger, 26 entries with status and what would
-> close each; `REPORT.md` §19 carries the longer argument.
+> close each, and it is shipped precisely so that no decision about any other
+> document can take the limitations out of the published tree.
 
 ---
 
@@ -48,8 +49,10 @@ the four predictors should spread out by capability. They do not. Training-set
 size buys nothing: NetMHCpan has roughly 18× MHCflurry's data and scores 0.5472
 against 0.5479. The more likely reading is that the CNN is partly fitting
 properties of **this cohort's negative construction**, which the predictors
-never saw, rather than presentation as such. `REPORT.md` §18–§19 argues this
-at length and does not resolve it. **A second cohort would.**
+never saw, rather than presentation as such. This study does not resolve it:
+`LIMITATIONS.md` carries it as an open entry, and the evidence behind it is
+`results/qc/predictor_comparison_all.json` and `results/qc/contamination_all.json`.
+**A second cohort would.**
 
 Contamination was measured, not assumed: each predictor's training data was
 checked against our test rows and the overlap is reported per predictor and per
@@ -64,7 +67,7 @@ appears in the contamination table and in no comparison.
 ```
 PREREGISTRATION.md      hypotheses, estimand and artifact hashes, committed
                         before any model was trained
-DECISION_LOG.md         D001–D039, every decision and every reversal
+DECISION_LOG.md         D001–D041, every decision and every reversal
 LIMITATIONS.md          every limitation, its status, and what would close it
 DATA_SOURCES.md         twelve provenance fields per source
 FLOWCHART.md            pipeline shape
@@ -80,23 +83,26 @@ notebooks/              Colab runners used for the bulk extraction
 freeze_manifest.json    SHA-256 of every tracked file
 ```
 
-### One document not published here
+### Three documents not published here
 
-`HANDOVER.md` is the only part of this project not in this repository. It is an
-operational note recording the project's cloud spend and a credential-scope
-instruction; it has no scientific content, and the four open issues it lists are
-all recorded in `DECISION_LOG.md` and `SECTIONS.md`. Withheld under D039.
+| document | why | what carries its content here |
+|---|---|---|
+| `HANDOVER.md` | operational note: cloud spend and a credential-scope instruction, no scientific content (D039) | the four open issues it lists are in `DECISION_LOG.md` and `SECTIONS.md` |
+| `REPORT.md` | withheld pending submission, at the owner's instruction (D041) | `LIMITATIONS.md` is the limitations ledger in full; every number the report stated is in this README, in `results/` and in `freeze_manifest.json` |
+| `PROJECT_PROMPT.md` | the internal brief the project was run from, withheld at the owner's instruction (D041) | `PREREGISTRATION.md` is what was specified; `METHODOLOGY.md` is what was done; `DECISION_LOG.md` is every departure from both |
 
-It remains in this repository's git history, as D038 recorded: untracking
-removes a file from the published tree, not from the commits that carried it.
+All three remain in this repository's git history, as D038 first recorded:
+untracking removes a file from the published tree, not from the commits that
+carried it.
 
-**Everything else is here**, including the eight documents an earlier revision
-withheld. D039 reversed that: the findings those documents were meant to protect
-were already public in this README, `DECISION_LOG.md`, `FREEZE_RECORD.md` and
-all 180 files under `results/`, so withholding `REPORT.md` removed the study's
-only statement of its own limits while leaving every number that statement
-qualifies. `LIMITATIONS.md` now carries that ledger separately, so it survives
-any future decision about the report.
+**Withholding `REPORT.md` is the decision in this list with a real cost**, and
+D039 is on the record for the opposite choice. What makes it survivable is that
+the report is no longer the only statement of the study's limits: `LIMITATIONS.md`
+holds that ledger separately, with 26 entries, their status, and what would close
+each. If a limitation is missing from it, that is a defect — report it.
+
+**Everything else is here**, including `METHODOLOGY.md`, `SECTIONS.md`,
+`RUN_LOG.md`, `DECISION_LOG.md`, `ENVIRONMENT.md` and `POWER_ANALYSIS.md`.
 
 `scripts/check_references.py` enforces this: every file a shipped document cites
 must itself be shipped. It runs like the other gates and fails if that stops
@@ -112,10 +118,17 @@ python3 scripts/freeze.py --verify
 ```
 
 Nine checks: working tree clean · the preregistration hashes still hold · every
-path `REPORT.md` names resolves · 44 headline numbers appear verbatim in
-`REPORT.md` · the figures regenerate byte-identically · every gate PASSED ·
-every decision resolved · the manifest agrees with the tree · the trainer's
-selftest passes.
+path the report names resolves · 44 headline numbers appear verbatim in the
+report · the figures regenerate byte-identically · every gate PASSED · every
+decision resolved · the manifest agrees with the tree · the trainer's selftest
+passes.
+
+**Checks 3 and 4 read `REPORT.md`, which is not shipped (D041), so they cannot
+run on a public clone and `freeze.py --verify` will not fully pass there.** The
+other seven do run, and they are the ones that bind the published tree: the
+manifest covers every shipped file, and the figures and the trainer's selftest
+regenerate from artifacts that are all here. The result of checks 3 and 4 at
+the freeze is recorded in `FREEZE_RECORD.md`.
 
 ```bash
 python3 scripts/train_cnn.py --mode selftest   # encoder, AP, gradients, overfit

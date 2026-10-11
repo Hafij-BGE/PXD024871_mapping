@@ -44,6 +44,17 @@ documents it did not ship, including the only statement of its own limits.
 repaired. The items below this line were the THIRD anchor's changes and are kept
 for the record.
 
+> **Annotation added 2026-10-11 (D041), not a rewrite.** Two of the eight
+> documents this freeze restored — `REPORT.md` and `PROJECT_PROMPT.md` — were
+> untracked again under D041, pending submission. The paragraph above records
+> what the D039 freeze did and is left standing. What it means for a reader
+> today: those two are not in the published tree, `LIMITATIONS.md` carries the
+> limitations ledger in their place, and checks 3 and 4 of
+> `scripts/freeze.py --verify` cannot run on a public clone because they read
+> the report. The remaining six are still shipped. This record's file count and
+> its selected-checksum list below describe the D039 freeze; the manifest
+> regenerated under D041 is the current authority.
+
 **Did not change:** every result. `POSITIVES.csv`, `NEGATIVES.csv` and
 `SPLIT.csv` carry the same digests they have had since `f7550f54`, and all 44
 headline numbers still match their artifacts verbatim.
@@ -153,10 +164,10 @@ to check by hand. `FREEZE_RECORD.md` is absent from this list for the same
 reason the manifest excludes itself.
 
 ```
-  124d9ebbf61b19f5acb1dba2fc38ea31e2db24112d5d9247b929187ff5f5ab76  REPORT.md
+  124d9ebbf61b19f5acb1dba2fc38ea31e2db24112d5d9247b929187ff5f5ab76  REPORT.md   [withheld under D041; hash is of the D039 freeze]
   5c625b143f3e46cfd07a3d774477e6aeb1a929d6aec35a5b39bbbcfdd3d385fe  DECISION_LOG.md
   12cd5607f0def6b377a3e6576ec5152f20c781da3280c703a829218716333959  DATA_SOURCES.md
-  cb3e957e8b61d8509cdaa84590815fdc77112309d40fdd98ecf48028132f0324  PROJECT_PROMPT.md
+  cb3e957e8b61d8509cdaa84590815fdc77112309d40fdd98ecf48028132f0324  PROJECT_PROMPT.md   [withheld under D041; hash is of the D039 freeze]
   78fb6d2771ced5e3052b57c9f14aebbf9dd5438ec52268f15b9905808690e35e  PREREGISTRATION.md
   2d3ecd3827387eeca988aba5a35edd9242942a84f366b1f7691711fa8ef75a98  README.md
   9341941a6252f18f018e5d2a0ffc8acfddbfb14e4207071806f6433fbb1c4c55  LICENSE
