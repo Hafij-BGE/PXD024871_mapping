@@ -55,6 +55,14 @@ for the record.
 > its selected-checksum list below describe the D039 freeze; the manifest
 > regenerated under D041 is the current authority.
 
+> **Second annotation, 2026-10-11 (D042).** The history was rewritten to remove
+> `REPORT.md` and `PROJECT_PROMPT.md` from every commit, so **every commit SHA
+> this record quotes from `943a806` onward is void.** D042 carries the old-to-new
+> mapping; read this record through that table. The manifest was regenerated
+> after the rewrite and covers **371 files**. The SHA-256 digests listed below
+> are left standing: a digest is not content, and editing a checksum-verified
+> record to hide a one-way hash would cost more than it buys.
+
 **Did not change:** every result. `POSITIVES.csv`, `NEGATIVES.csv` and
 `SPLIT.csv` carry the same digests they have had since `f7550f54`, and all 44
 headline numbers still match their artifacts verbatim.

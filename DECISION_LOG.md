@@ -2720,6 +2720,92 @@ resolves or is declared.
 
 ---
 
+## D042 — `REPORT.md` and `PROJECT_PROMPT.md` removed from the whole history · RESOLVED as to the rewrite, PUBLICATION PENDING
+
+**Opened:** 2026-10-11 · **Follows D041** · **Requested by the project owner**
+
+**Decision: rewrite every commit so that neither document appears anywhere in
+this repository's history, and republish from the rewritten history.**
+
+D041 untracked both files from the published tree and said plainly what that
+did not do: "untracking is not erasure. Both documents remain in this
+repository's history and are recoverable by anyone who clones." The owner's
+requirement is that they not be publicly accessible at all. That cannot be met
+by any commit added on top, only by rewriting what is already there.
+
+### 1. What was done
+
+`git filter-repo --path REPORT.md --path PROJECT_PROMPT.md --invert-paths`,
+run against a full backup taken first (`git bundle create --all`, 94 MB,
+verified complete). Result: **0 commits and 0 objects** anywhere in the
+repository now carry either path, across every ref.
+
+Both files remain on local disk, gitignored, byte-identical to the copies in
+the owner's private tree (SHA-256 verified before and after the rewrite).
+
+### 2. What changed, and what is now void
+
+- **103 commits became 98.** Five commits whose only content was `REPORT.md`
+  became empty and were pruned: "Write the Introduction section", "Write the
+  Methods section"'s sibling entries — specifically Introduction, Results,
+  Discussion, Limitations and Conclusion. The work they describe survives in
+  the sections' own records; only the commits that carried the report text are
+  gone.
+- **Every commit SHA from `943a806` onward changed.** Anchors quoted in this
+  log and in `FREEZE_RECORD.md` no longer resolve. The mapping for the ones
+  those records name:
+
+| quoted as | now |
+|---|---|
+| `f7550f54` — the preregistration freeze anchor (D009) | `151b6999` |
+| `21048535` — first re-freeze anchor | `5ac29a41` |
+| `c26719d` — public-release preparation (D037) | `a33a079f` |
+| `574b2f8` — the D038 untracking | `4f8efa09` |
+| `4cef8eb` — the D039 reversal | `d1eccaa3` |
+| `c41bd51` — the fourth re-freeze | `b9951105` |
+| `e9ee11d` — the D041 withholding | `0d48ff7f` |
+
+  Earlier entries are **not edited**, per this log's append-only convention.
+  This table is the key for reading them.
+- **`freeze_manifest.json` regenerated:** 373 entries to **371**. All nine
+  checks pass, including the post-write re-hash.
+- **Digests are not content.** `freeze_manifest.json` and `FREEZE_RECORD.md`
+  still record each file's path and SHA-256 at the freezes that carried them.
+  A SHA-256 is one-way; an 86 KB document cannot be reconstructed from it.
+  Scrubbing those digests would mean rewriting a checksum-verified provenance
+  chain to conceal a non-reversible hash, which was rejected as a worse trade.
+
+### 3. Why the remote is deleted and recreated rather than force-pushed
+
+A force-push would **not** have met the requirement. GitHub kept
+`refs/pull/1/head` at `21048535`, a ref the repository owner cannot rewrite or
+delete by pushing, and its tree contained both documents; the pull request's
+own file view would have kept rendering them. Unreachable objects also stay
+fetchable by SHA until GitHub garbage-collects, on no schedule the owner
+controls.
+
+Deleting the GitHub repository and recreating it destroys the pull-request refs
+and every unreachable object outright. The cost was checked before choosing:
+**0 forks, 0 stars, 0 watchers, 0 releases, no tags**, one closed pull request
+and one issue. Lost: that pull request and issue, the 2026-10-06 creation date,
+and any external link to an old SHA. Nothing cites this repository yet and no
+DOI has been minted — D040 is holding that — so this is the cheapest point at
+which the exchange could be made.
+
+### 4. What this does not claim
+
+Anyone who cloned or forked the repository before 2026-10-11 still holds both
+documents, and no action here reaches them. The inspection recorded 0 forks and
+0 watchers at the time of the rewrite, which bounds the exposure but does not
+eliminate it. **No credential was ever committed** — the whole 103-commit
+history was scanned for token, key and quoted-secret patterns and returned
+nothing — so no rotation is required.
+
+**RESOLVED as to the rewrite.** The republication step is the owner's and is
+recorded here when it is done.
+
+---
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites
