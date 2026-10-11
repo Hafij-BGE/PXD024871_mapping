@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-11T19:54:23Z",
- "branch": "claude/mapping-research-project-prompt-glsess",
- "parent_commit": "32306e4c60985fcbc6938f54f9c4553bde17b736",
+ "frozen_utc": "2026-10-11T22:45:14Z",
+ "branch": "main",
+ "parent_commit": "dcdb15f93acc72882beca3b9f2af6dcad4add976",
  "n_files": 371,
- "total_bytes": 113475336,
+ "total_bytes": 113498904,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -36,13 +36,13 @@
   },
   {
    "path": "DATA_SOURCES.md",
-   "bytes": 19243,
-   "sha256": "12cd5607f0def6b377a3e6576ec5152f20c781da3280c703a829218716333959"
+   "bytes": 23396,
+   "sha256": "b545cd2764c5234dba06efa4fe2c6adc34269f7901aa597eae51058b80d91b7c"
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 153011,
-   "sha256": "9fc08c608b9496a93a2d11051044c10e51ee0e9fde79a770a22dfbd7ff5771e0"
+   "bytes": 172426,
+   "sha256": "88c770336858b009c4bf8501bd963542c99f787357256ca19c434c2612d7ab5e"
   },
   {
    "path": "ENVIRONMENT.md",
