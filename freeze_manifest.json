@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-11T17:28:57Z",
+ "frozen_utc": "2026-10-11T19:54:23Z",
  "branch": "claude/mapping-research-project-prompt-glsess",
- "parent_commit": "8a6d7e1aaaceb4dc1b8c36356c472cea32c7174d",
- "n_files": 373,
- "total_bytes": 113553907,
+ "parent_commit": "32306e4c60985fcbc6938f54f9c4553bde17b736",
+ "n_files": 371,
+ "total_bytes": 113475336,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -16,13 +16,13 @@
   },
   {
    "path": ".github/README.md",
-   "bytes": 6833,
-   "sha256": "b6429f7a776a8a4585c57db07e14ac68efc0e56a76e835ca64a14967045d2e82"
+   "bytes": 7042,
+   "sha256": "09bcfb4bb99ca0c5173ae3d39aca0993218ecac9ea2a03327bef113fb491e92d"
   },
   {
    "path": ".gitignore",
-   "bytes": 4132,
-   "sha256": "2327a4af07ff356a9ee1d35a72b6ef8a0bfc5e16323064eab77e858af8e6eb0a"
+   "bytes": 4506,
+   "sha256": "bc94bf574e9d08a5be7f05fa188886343b2cf2ad92f6e011f1bb45121b82932c"
   },
   {
    "path": ".zenodo.json",
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 145282,
-   "sha256": "673e11292b55124ad42c503088bc63baaf16b52faa86817692f6510220cf6702"
+   "bytes": 153011,
+   "sha256": "9fc08c608b9496a93a2d11051044c10e51ee0e9fde79a770a22dfbd7ff5771e0"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -56,8 +56,8 @@
   },
   {
    "path": "FREEZE_RECORD.md",
-   "bytes": 10974,
-   "sha256": "125499396039c5341f8aaaf5b2625fd4cbcbcaaeb22d3ec2346fb8f5d57fb7a5"
+   "bytes": 12348,
+   "sha256": "0f88454bfc6de52e657fd685e335ec7ebb9ce142e31c3fdbcce2923be0a19b3a"
   },
   {
    "path": "LICENSE",
@@ -71,8 +71,8 @@
   },
   {
    "path": "LIMITATIONS.md",
-   "bytes": 16426,
-   "sha256": "6d336c83385b7b13be7955331ae5789fe3a7da89fc55dd29cdc10836cec1abb3"
+   "bytes": 16757,
+   "sha256": "303c7227345bfb05b4f09075c6ba374f5fb484d60226fb942c349fce47dfac51"
   },
   {
    "path": "METHODOLOGY.md",
@@ -90,24 +90,14 @@
    "sha256": "78fb6d2771ced5e3052b57c9f14aebbf9dd5438ec52268f15b9905808690e35e"
   },
   {
-   "path": "PROJECT_PROMPT.md",
-   "bytes": 4332,
-   "sha256": "cb3e957e8b61d8509cdaa84590815fdc77112309d40fdd98ecf48028132f0324"
-  },
-  {
    "path": "PXD024871_CNN_Experiment_Proposal.STUB.md",
    "bytes": 3049,
    "sha256": "56604545b40a4ef142364f1fcbd70b57c41608e7bed42869bf929fbb1f6be2b4"
   },
   {
    "path": "README.md",
-   "bytes": 8495,
-   "sha256": "49c58b3ade5497ddb0751b9c6b4b545741e4f343b3a22932eafb0c761960982d"
-  },
-  {
-   "path": "REPORT.md",
-   "bytes": 86539,
-   "sha256": "ec91572af48816a9981c9fc724d3e5fd59d507ea662382a26f8dfc4d879ab3d7"
+   "bytes": 9600,
+   "sha256": "574804dd0e82e01403da19b19f39dda2e28d8198cc0327b4394debb5c12d1c07"
   },
   {
    "path": "RUN_LOG.md",
@@ -121,8 +111,8 @@
   },
   {
    "path": "THIRD_PARTY_NOTICES.md",
-   "bytes": 10714,
-   "sha256": "ef65edb7606918e9b9ee90be5dedeb046465a63ff11b36749aec46b027419f5a"
+   "bytes": 10892,
+   "sha256": "da6326076c36d69d9505c6a1ee0f54274f981f8b9a37607a882ef4f34331f2e9"
   },
   {
    "path": "data/derived/ALLELE_FREQUENCY.csv",
@@ -1746,8 +1736,8 @@
   },
   {
    "path": "scripts/check_references.py",
-   "bytes": 12156,
-   "sha256": "1f52fcc19c3fe85bc8abbe9f587ed9301c50c85fe06e34e7d3a5cd140b7c488b"
+   "bytes": 13156,
+   "sha256": "df96b1f8c336a4c6aa6b92c1391fd101f52e22dba7382ebba3bdf53a743e4dda"
   },
   {
    "path": "scripts/commit_extracts.sh",
