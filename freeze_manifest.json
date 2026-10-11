@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-11T16:57:04Z",
+ "frozen_utc": "2026-10-11T17:28:57Z",
  "branch": "claude/mapping-research-project-prompt-glsess",
- "parent_commit": "05561630cbd9e6ba3c55337117c949fded7f79b5",
+ "parent_commit": "8a6d7e1aaaceb4dc1b8c36356c472cea32c7174d",
  "n_files": 373,
- "total_bytes": 113549642,
+ "total_bytes": 113553907,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 141770,
-   "sha256": "5656fb3ba7d685e0d75106666b9de8d41e0afbe970d8d979272fbd9a56a2084e"
+   "bytes": 145282,
+   "sha256": "673e11292b55124ad42c503088bc63baaf16b52faa86817692f6510220cf6702"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -56,8 +56,8 @@
   },
   {
    "path": "FREEZE_RECORD.md",
-   "bytes": 10852,
-   "sha256": "deb602a5d6a91c86e890ac027c802564072f062e477e188a0e2c133619fef47a"
+   "bytes": 10974,
+   "sha256": "125499396039c5341f8aaaf5b2625fd4cbcbcaaeb22d3ec2346fb8f5d57fb7a5"
   },
   {
    "path": "LICENSE",
@@ -71,8 +71,8 @@
   },
   {
    "path": "LIMITATIONS.md",
-   "bytes": 16006,
-   "sha256": "03451b8588652ca32427ecd0567ec2b9beb281a4147e84691e0430792c60a086"
+   "bytes": 16426,
+   "sha256": "6d336c83385b7b13be7955331ae5789fe3a7da89fc55dd29cdc10836cec1abb3"
   },
   {
    "path": "METHODOLOGY.md",
@@ -121,8 +121,8 @@
   },
   {
    "path": "THIRD_PARTY_NOTICES.md",
-   "bytes": 10503,
-   "sha256": "13cd59135b693f610c3b65dee54979fe92e4d2a0923ed7f1e2ae256e3f15457d"
+   "bytes": 10714,
+   "sha256": "ef65edb7606918e9b9ee90be5dedeb046465a63ff11b36749aec46b027419f5a"
   },
   {
    "path": "data/derived/ALLELE_FREQUENCY.csv",
