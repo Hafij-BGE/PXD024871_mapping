@@ -1,4 +1,4 @@
-# FINAL FREEZE  (fourth anchor — nine documents untracked)
+# FINAL FREEZE  (fifth anchor — dangling-reference defect closed)
 
 ```
 PXD024871 CNN experiment — public-release freeze
@@ -16,7 +16,7 @@ limitation in full -- and that REPORT.md's removal does NOT hold the findings
 back, because DECISION_LOG.md, README.md, this file and results/ still carry
 them. D038 section 3 says so.
 
-files         361 tracked (freeze_manifest.json excluded: it cannot hash itself)
+files         373 tracked (freeze_manifest.json excluded: it cannot hash itself)
 bytes         see freeze_manifest.json -> total_bytes
 frozen        see freeze_manifest.json -> frozen_utc
 parent        see freeze_manifest.json -> parent_commit
@@ -82,8 +82,8 @@ all nine checks were clean at the moment it was written:
 | 4 | Every headline number in `REPORT.md` appears verbatim in the artifact it came from | **44 numbers** |
 | 5 | The figures regenerate byte-identically from those artifacts | 7 figures |
 | 6 | Every QC gate passed or carries a recorded unavailability | G1–G13, FINAL |
-| 7 | Every decision resolved, none left OPEN | D001–D038 |
-| 8 | An existing manifest still agrees with the tree, and declares its own exclusion | 361 entries |
+| 7 | Every decision resolved, none left OPEN | D001–D039 |
+| 8 | An existing manifest still agrees with the tree, and declares its own exclusion | 373 entries |
 | 9 | The trainer's own selftest passes | encoder, AP, gradients, overfit |
 
 Anyone can re-run `python3 scripts/freeze.py --verify` against this tree and get
@@ -146,7 +146,7 @@ repository should know is unresolved.**
 
 ## Selected checksums (SHA-256)
 
-The manifest carries all 361. These are the ones a reader is most likely to want
+The manifest carries all 373. These are the ones a reader is most likely to want
 to check by hand. `FREEZE_RECORD.md` is absent from this list for the same
 reason the manifest excludes itself.
 

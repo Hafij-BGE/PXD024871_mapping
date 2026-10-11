@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-07T20:29:26Z",
+ "frozen_utc": "2026-10-11T16:56:48Z",
  "branch": "claude/mapping-research-project-prompt-glsess",
- "parent_commit": "574b2f8064844e7fd66193bad28e538837b47c6c",
- "n_files": 361,
- "total_bytes": 113290537,
+ "parent_commit": "4cef8ebde3ee51870deca06833327f96b86b5851",
+ "n_files": 373,
+ "total_bytes": 113549635,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -15,9 +15,19 @@
    "sha256": "0bf410ab23756438ac3ef68d139c81a792298d19263dd00a324822371fb883ec"
   },
   {
+   "path": ".github/README.md",
+   "bytes": 6833,
+   "sha256": "b6429f7a776a8a4585c57db07e14ac68efc0e56a76e835ca64a14967045d2e82"
+  },
+  {
    "path": ".gitignore",
-   "bytes": 3835,
-   "sha256": "02c8269c2da249f3f2b919415372c13edebd4b08051b63842bb5d3182d620853"
+   "bytes": 4132,
+   "sha256": "2327a4af07ff356a9ee1d35a72b6ef8a0bfc5e16323064eab77e858af8e6eb0a"
+  },
+  {
+   "path": ".zenodo.json",
+   "bytes": 3258,
+   "sha256": "00ef3d76e99e6a4972ed81a4a5fafb98e65b38a78759e0005945143bb491f540"
   },
   {
    "path": "CITATION.cff",
@@ -31,8 +41,13 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 135111,
-   "sha256": "5c625b143f3e46cfd07a3d774477e6aeb1a929d6aec35a5b39bbbcfdd3d385fe"
+   "bytes": 141770,
+   "sha256": "5656fb3ba7d685e0d75106666b9de8d41e0afbe970d8d979272fbd9a56a2084e"
+  },
+  {
+   "path": "ENVIRONMENT.md",
+   "bytes": 3355,
+   "sha256": "ec33e8bc9285cb634c853e94c27b84ff674c7b0661d33ade559944ecf2ae2c5a"
   },
   {
    "path": "FLOWCHART.md",
@@ -41,8 +56,8 @@
   },
   {
    "path": "FREEZE_RECORD.md",
-   "bytes": 10612,
-   "sha256": "2f205a9a19587cdef29c58a7af5c9e2d3283feb1d727ae24125f821e264b4fe2"
+   "bytes": 10845,
+   "sha256": "6b3852c26af49a2f7335aede307a5f3ea2161ff535345665ee20b62f40e2f348"
   },
   {
    "path": "LICENSE",
@@ -51,13 +66,33 @@
   },
   {
    "path": "LICENSE-docs",
-   "bytes": 19523,
-   "sha256": "c35d9d8b8bdb44589b37b77d978837d0540211acbd93fd9427f596d7876bbecd"
+   "bytes": 19805,
+   "sha256": "edd6192256ed11c5c0cabe0c20f10c11e1179a25d5409465c1aaf6178a614a50"
+  },
+  {
+   "path": "LIMITATIONS.md",
+   "bytes": 16006,
+   "sha256": "03451b8588652ca32427ecd0567ec2b9beb281a4147e84691e0430792c60a086"
+  },
+  {
+   "path": "METHODOLOGY.md",
+   "bytes": 27308,
+   "sha256": "b36593cb9e6d875d077f470219f0654a579275ccdb9dc41ad20d404905ed84bc"
+  },
+  {
+   "path": "POWER_ANALYSIS.md",
+   "bytes": 10494,
+   "sha256": "52bdf8074b4afbefe43240d48582bf96a1f3a6f37a747ca4c44bd2610768b524"
   },
   {
    "path": "PREREGISTRATION.md",
    "bytes": 3360,
    "sha256": "78fb6d2771ced5e3052b57c9f14aebbf9dd5438ec52268f15b9905808690e35e"
+  },
+  {
+   "path": "PROJECT_PROMPT.md",
+   "bytes": 4332,
+   "sha256": "cb3e957e8b61d8509cdaa84590815fdc77112309d40fdd98ecf48028132f0324"
   },
   {
    "path": "PXD024871_CNN_Experiment_Proposal.STUB.md",
@@ -66,8 +101,28 @@
   },
   {
    "path": "README.md",
-   "bytes": 8221,
-   "sha256": "2d3ecd3827387eeca988aba5a35edd9242942a84f366b1f7691711fa8ef75a98"
+   "bytes": 8495,
+   "sha256": "49c58b3ade5497ddb0751b9c6b4b545741e4f343b3a22932eafb0c761960982d"
+  },
+  {
+   "path": "REPORT.md",
+   "bytes": 86539,
+   "sha256": "ec91572af48816a9981c9fc724d3e5fd59d507ea662382a26f8dfc4d879ab3d7"
+  },
+  {
+   "path": "RUN_LOG.md",
+   "bytes": 25127,
+   "sha256": "b411a262c72c676ea5aafafd052c1130a6a4c0d666bdaa06ce2075d9a0c5e4c4"
+  },
+  {
+   "path": "SECTIONS.md",
+   "bytes": 45442,
+   "sha256": "a0e68854b2ecf7d5a5d8b7552088bcc9c66c2955f5129d3979d6a7cc5ff6f7a2"
+  },
+  {
+   "path": "THIRD_PARTY_NOTICES.md",
+   "bytes": 10503,
+   "sha256": "13cd59135b693f610c3b65dee54979fe92e4d2a0923ed7f1e2ae256e3f15457d"
   },
   {
    "path": "data/derived/ALLELE_FREQUENCY.csv",
@@ -1688,6 +1743,11 @@
    "path": "scripts/capture_environment.py",
    "bytes": 2992,
    "sha256": "1b7449c3189fe579915f995fb1bf370a160bb2ba5cad48d384d7a8ead9d2dfea"
+  },
+  {
+   "path": "scripts/check_references.py",
+   "bytes": 12156,
+   "sha256": "1f52fcc19c3fe85bc8abbe9f587ed9301c50c85fe06e34e7d3a5cd140b7c488b"
   },
   {
    "path": "scripts/commit_extracts.sh",
