@@ -345,6 +345,51 @@ be clear that what changed is identification, not use:
   cheapest remaining way to cross-check M3, and it is the first thing a second
   pass should do.
 
+**ADDENDUM 2026-10-12 — RETRIEVED AND READ (D043).** The article was read in
+full from PMC8297687 and cross-checked against the publisher page. The
+depositor's identification pipeline is now on the record, quoted rather than
+inferred:
+
+| Field | Value as stated by the depositors |
+|---|---|
+| Instruments | "an online-coupled LTQ Orbitrap XL or Orbitrap Fusion Lumos mass spectrometer (both Thermo Fisher)". **Which sample ran on which instrument is NOT stated in the article**; our per-acquisition platform assignment comes from the S2 metadata file |
+| LC-MS/MS parameters | NOT STATED — deferred to prior publications ("analyzed as described previously"). No gradient, column, flow rate, resolution, isolation window, fragmentation mode or dynamic exclusion |
+| Search engine | SequestHT, results integrated by "Proteome Discoverer (v1.3, Thermo Fisher)". **A SequestHT version number is NOT stated** |
+| Database | Swiss-Prot human, **20,279 reviewed sequences, release 27 September 2013**, plus a custom appendix of recurrent CLL mutations (95 point and 3 frameshift mutations in 61 genes, 85 sites). Searched "without enzymatic restriction". Decoy composition not described |
+| **FDR** | **"limited to 5% for HLA class I- and 1% for HLA class II-presented peptides"**, estimated by "the Percolator algorithm 2.04". **The level of application — PSM, peptide or protein — is NOT stated** |
+| Mass tolerances | Precursor 5 ppm. Fragment **0.5 Da for ion trap spectra (LTQ Orbitrap XL)** and **0.02 Da for orbitrap spectra (Orbitrap Fusion Lumos)**. Oxidised methionine as dynamic modification |
+| Class-I annotation | "HLA class I annotation was performed using SYFPEITHI 1.0 and NetMHCpan 4.0" |
+| Search-stage length filter | NOT STATED. The 20-residue and composition restrictions quoted in the article apply to warehouse peptide *selection*, not to the search |
+| HLA typing | Performed by "the Department of Hematology and Oncology, Tubingen, Germany". **Method and resolution NOT stated** |
+| Cohort | 61 primary CLL samples; **n = 52 for HLA class I**, n = 49 for class II. Inclusion: "PBMCs from CLL patients with white blood cell counts >= 20 000 per ul" |
+| Ethics | "Informed consent was obtained in accordance with the Declaration of Helsinki protocol. The study was performed according to the guidelines of the local ethics committees (373/2011B02, 454/2016B02, 406/2019BO2)." Approved by the "Ethics committee of the University Hospital Tubingen"; written informed consent obtained |
+| Class-I yield reported | "a total of 58 554 unique HLA class I ligands representing 10 854 source proteins" |
+
+**Three consequences that bound this project's claims and were not visible
+before the article was read:**
+
+1. **Class-I identifications were accepted at 5% FDR**, not 1%. Every peptide in
+   this project's positive class inherits that threshold. The project's own
+   confidence-level filter removes 0.7% and is not a substitute (D004).
+2. **The fragment mass tolerance differs by instrument** — 0.5 Da on the LTQ
+   Orbitrap XL against 0.02 Da on the Orbitrap Fusion Lumos. This is a concrete
+   mechanism for the platform separability measured at AUROC 0.6451 in R5: the
+   two platforms were not merely acquired differently, they were *searched*
+   under different tolerances, so the identified peptide populations can differ
+   for reasons upstream of biology.
+3. **The depositors annotated class-I ligands with NetMHCpan 4.0.** If that
+   annotation filtered which peptides entered the deposited class-I set, then
+   benchmarking a model against NetMHCpan 4.1 on those peptides is circular to
+   an unknown degree. **This is not yet established** — "annotation" may mean
+   restriction assignment only, with no filtering. It must be resolved before
+   the predictor comparison is published.
+
+The article's own yield of 58,554 unique class-I ligands is far below this
+project's 2,658,972 unique peptides extracted from the 52 class-I containers.
+That gap is expected if the deposited search results contain all identifications
+while the article reports a filtered subset, but **it has not been reconciled**
+and should be.
+
 **Role:** the independent cross-check for M3 class assignment and the
 description of the depositor's identification pipeline that S4's non-retrieval
 makes us dependent on. Not a data source for the analysis table; an evidence

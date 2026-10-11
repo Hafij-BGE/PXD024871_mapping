@@ -2806,6 +2806,370 @@ recorded here when it is done.
 
 ---
 
+## D043 — S7 retrieved and read; two findings and one correction · RESOLVED
+
+**Opened:** 2026-10-12 · **Closes the S7 gap D037 opened**
+
+**Decision: retrieve and read the dataset publication, record the depositors'
+identification pipeline verbatim, and correct one claim this report made about
+it without having read it.**
+
+S7 stood at `PENDING` for the whole working life of the project and at
+IDENTIFIED-NOT-RETRIEVED after D037. The article was read in full from
+PMC8297687. `DATA_SOURCES.md` S7 carries the parameters; this entry records
+what they change.
+
+### 1. Two findings that bound existing claims
+
+**Class-I identifications were accepted at 5% FDR**, not 1% — "limited to 5%
+for HLA class I- and 1% for HLA class II-presented peptides", by Percolator
+2.04. Every peptide in the frozen positive class inherits that threshold.
+Roughly one positive in twenty may be a misidentification. This is an upstream
+source of label noise additional to the 11.78% decoy contamination, it was not
+known when D004 concluded that confidence-based refiltering removes only 0.7%,
+and it places a ceiling on achievable performance independent of any modelling
+choice.
+
+**The fragment mass tolerance differs by instrument** — 0.5 Da for ion-trap
+spectra on the LTQ Orbitrap XL against 0.02 Da for orbitrap spectra on the
+Orbitrap Fusion Lumos. **This is a mechanism for R5's platform separability**
+(AUROC 0.6451 against a 0.5150 control). The platforms were not only acquired
+differently, they were searched under different tolerances, so the identified
+peptide populations can differ for reasons upstream of biology. R5 measured the
+effect without being able to explain it; the explanation is now on the record,
+and it is a documented processing choice rather than an opaque batch effect.
+
+### 2. A circularity risk, raised and closed
+
+The depositors state that "HLA class I annotation was performed using SYFPEITHI
+1.0 and NetMHCpan 4.0". If that annotation had *filtered* which peptides entered
+the deposited class-I set, benchmarking against NetMHCpan 4.1 in §18 would be
+circular to an unknown degree.
+
+**It did not.** The deposited containers are Proteome Discoverer `.msf`
+databases holding the search output: their `Peptides` tables carry **8,361,615
+rows across 51 units** before any length window, against the **58,554 unique
+class-I ligands the article reports**. The deposited results are therefore the
+full Percolator-passing identification set, and the article's figure is a
+curated subset selected downstream for warehouse design. The NetMHCpan 4.0
+annotation belongs to that downstream selection, not to the deposited data this
+project extracted. §18 is not circular.
+
+### 3. A correction
+
+`REPORT.md` Methods states: "The deposited search was already restricted to
+8–12 residues." **That is wrong.** The source article states no search-stage
+length restriction — its only length constraint, 20 residues, applies to
+warehouse peptide selection. The 8–12 window is applied by this project, in
+`scripts/extract_peptides.py` (`LO, HI = 8, 12`, applied in the SQL that reads
+each container), and is recorded per unit as `length_window` in
+`data/derived/peptides/*.meta.json`.
+
+The claim was made about a document that had not been read, which is precisely
+the failure mode D037 flagged when it left S7 unretrieved. **No number changes:**
+the window was applied either way and the frozen dataset is untouched. What
+changes is the attribution of a design choice — from the depositors to this
+project — and that belongs on the record.
+
+`REPORT.md` is withheld under D041 and is not edited here; the correction is
+recorded in this entry and carried into any manuscript drawn from it.
+
+**RESOLVED.**
+
+---
+## D044 — Three construction defects measured; the preregistered result is unchanged and the margins are restated · RESOLVED as to measurement
+
+**Opened:** 2026-10-12 · **Follows D043** · **Requested by the project owner**
+
+**Decision: record three defects with their measured effect, modify no frozen
+artifact, leave the preregistered threshold at 0.647, and report corrected
+figures alongside the preregistered ones rather than in place of them.**
+
+An independent re-derivation was run against the frozen artifacts, sharing no
+code with this repository. It reproduced the primary endpoint **from the 25
+frozen checkpoints** at 0.7550853623 against the recorded 0.7550853665 — a
+difference of **-4.2e-09** — and reproduced the leakage percentage, the four
+predictor average precisions and their 0.0046 span. **The study's results
+stand.** Three construction defects were found in the course of it.
+
+Throughout this entry, three kinds of statement are kept apart and labelled:
+
+- **[FACT]** — read directly from a frozen artifact or from code, or computed
+  exactly from them.
+- **[ESTIMATE]** — a quantity derived under a stated modelling assumption.
+- **[SENSITIVITY]** — the result of a simulation that perturbs the frozen data
+  and re-evaluates. Not a measurement of the study as conducted.
+
+---
+
+### 1. Defect A — the composition floor is measured on a different population from the endpoint it gates
+
+**[FACT]** `scripts/negative_diagnostic.py` draws its positives as
+`rng.sample(sorted(observed), 60000)`: 60,000 peptides taken uniformly at random
+from the 2,658,972-peptide observed union, with no reference to participants. It
+generates its own negatives rather than reading `NEGATIVES.csv`, and evaluates
+on a random 50/50 split of that sample. The recorded result is AUROC 0.6085,
+corresponding to **AP 0.597**, which D008 used as the floor.
+
+**[FACT]** The endpoint is measured on a different population: the frozen
+dataset of 10,000 positives per participant, stratified by that participant's
+own length distribution, evaluated per unit on ten held-out participants.
+
+**[FACT]** The composition-only floor recomputed on the population the endpoint
+actually uses:
+
+| protocol | population | AUROC | AP |
+|---|---|---|---|
+| random 50/50 row split | frozen dataset | 0.6460 | 0.6378 |
+| participant-held-out | frozen dataset | 0.6483 | 0.6367 |
+| **mean per-unit AP** (the endpoint's estimand) | frozen dataset, 10 test units | — | **0.6360** |
+| as recorded in D002/D008 | 60k uniform sample of the union | 0.6085 | **0.5970** |
+
+**[FACT]** The evaluation protocol is not the cause: a random 50/50 split gives
+0.6378 and a participant-held-out split 0.6367 on the same data. The population
+is the cause. 79.9% of the union occurs in exactly one participant, so uniform
+sampling over-weights rare peptides, while per-participant capped sampling
+over-weights abundant and recurrent ones, which separate more easily on
+composition alone.
+
+**[FACT]** The re-derived floor is itself an estimate over 10 units and carries
+a cluster-bootstrap nominal-99% interval of **[0.6057, 0.6673]**. A
+floor-plus-0.05 threshold built from it is therefore **0.6860 point, CI99
+[0.6557, 0.7173]** — an interval, not a number.
+
+**The preregistered threshold of 0.647 is NOT changed by this entry.** Revising
+a threshold after seeing the result it gates is precisely what preregistration
+exists to prevent. 0.647 remains the rule of record; 0.6860 is reported beside
+it as a sensitivity, with its own interval.
+
+### 2. Defect B — the decoy pool is not blind to the test partition
+
+**[FACT]** `build_dataset.py` accumulates `observed` across all 52
+participants, the ten held-out included, and rejects any candidate decoy found
+in it. Its own assertion records the outcome:
+`("no negative is observed", not (allneg & observed))`. A candidate decoy
+presented by a *test* participant is therefore removed using information that
+would not exist prospectively.
+
+**[FACT]** 364,900 peptides — 13.72% of the universe — are observed only in
+test units; 361,740 of them occur in the reference proteome as 8-12-mers. The
+proteome was re-retrieved for this audit and its SHA-256 matches S5's recorded
+value exactly, so the k-mer space is reconstructed from the same bytes. This
+also independently confirms S5's provenance record.
+
+**[FACT]** Eligible pool and test-only overlap, per length:
+
+| L | unique k-mers in expressed proteins | eligible pool as built | test-only, in proteome | negatives drawn |
+|---|---|---|---|---|
+| 8 | 10,313,958 | 9,905,950 | 56,568 | 81,422 |
+| 9 | 10,418,712 | 9,685,563 | 101,711 | 160,700 |
+| 10 | 10,479,904 | 9,783,092 | 97,071 | 132,243 |
+| 11 | 10,523,245 | 10,031,599 | 67,375 | 89,813 |
+| 12 | 10,554,716 | 10,249,119 | 39,015 | 55,822 |
+
+**[ESTIMATE]** Assuming the reservoir draws approximately uniformly from the
+unique eligible pool, a test-blind construction would have admitted
+**4,242.5 false negatives of 520,000 (0.816%)**, of which **815.9 fall in the
+test partition — 81.6 per test unit**. The assumption is imperfect:
+`build_dataset.py` reservoir-samples k-mer *occurrences* and then deduplicates,
+slightly over-representing sequences that occur in several proteins. Direction
+of that bias is not established; magnitude is expected to be small relative to
+0.816%.
+
+### 3. Defect C — ambiguity codes are perfectly label-correlated
+
+**[FACT]** Negatives are filtered to standard residues
+(`not set(c) <= AA`); positives are not. Any peptide containing X, B or Z is
+therefore deducibly positive: **181 positive rows (0.035%), 0 negative rows, 22
+rows inside the test partition (0.011%)**. The encoder compounds this by mapping
+an unknown character to the pad token.
+
+**[SENSITIVITY]** Removing all 22 ambiguity rows from the test partition moves
+the primary endpoint from 0.7550854 to 0.7550806: **-4.81e-06**, largest
+per-unit change 4.69e-05. **No reported decimal changes.** Recorded because the
+two classes were drawn from different alphabets, which is a construction defect
+whatever its magnitude.
+
+### 4. Statistical procedure, and the margins
+
+**[FACT]** Method of record, unchanged: the estimand is the mean per-participant
+average precision; uncertainty is a cluster bootstrap over the 10 test
+participants, B = 10,000, percentile interval at 0.5/99.5 (nominal 99%, chosen
+because R6 measured nominal 95% to deliver only 0.884-0.890 actual coverage).
+D008 rejects the null when the nominal-99% lower bound exceeds 0.647.
+
+**[SENSITIVITY]** The counterfactual for defect B was simulated holding row
+count and prevalence fixed: for each test unit, 82 randomly chosen negatives
+were replaced by rows carrying the 25-model score vectors of that unit's own
+leakage-free positives — peptides the model never saw in training — relabelled
+0. Ten independent replicates; each re-bootstrapped from its own per-unit
+values.
+
+**[FACT/SENSITIVITY]** Lower bounds and margins. Every bound below is a fresh
+cluster bootstrap on the relevant per-unit values; none is obtained by shifting
+another bound.
+
+| partition | treatment | mean AP | CI99 lower |
+|---|---|---|---|
+| primary | as frozen | 0.755085 | 0.7372 |
+| primary | counterfactual, k = 82/unit | 0.752213 (sd 0.00028) | 0.7343 (sd 0.0003) |
+| leakage-free | as frozen | 0.705579 | 0.6923 |
+| leakage-free | counterfactual, k = 82/unit | 0.702253 (sd 0.00028) | 0.6894 (sd 0.0003, min 0.6889) |
+
+Margins against three thresholds — the preregistered one, the re-derived point
+estimate, and the upper end of the re-derived threshold's own interval:
+
+| partition | treatment | vs 0.647 (preregistered) | vs 0.6860 (re-derived point) | vs 0.7173 (re-derived CI99 upper) |
+|---|---|---|---|---|
+| primary | as frozen | **+0.0902** | **+0.0512** | **+0.0199** |
+| primary | counterfactual | **+0.0873** | **+0.0483** | **+0.0169** |
+| leakage-free | as frozen | **+0.0454** | **+0.0064** | **-0.0249** |
+| leakage-free | counterfactual | **+0.0424** | **+0.0034** | **-0.0279** |
+
+**What this supports, stated precisely:**
+
+- **Against the preregistered threshold of 0.647, every test rejects**, on both
+  partitions, with and without the defect-B counterfactual. The preregistered
+  claim is intact.
+- **Against the re-derived floor's point estimate**, every test still rejects,
+  but the leakage-free margin is **+0.0064 as frozen and +0.0034 under the
+  counterfactual**.
+- **Against the upper end of the re-derived threshold's interval**, the primary
+  endpoint still rejects (+0.0169) while **the leakage-free sensitivity does
+  not** (-0.0279). This is a deliberately conservative treatment — carrying a
+  nuisance parameter at its interval's unfavourable end is not a standard
+  procedure — but it bounds the claim and is recorded rather than omitted.
+
+**The honest summary of the unpaired analysis:** the primary endpoint survives
+every treatment. The leakage-free sensitivity survives the preregistered rule
+comfortably and the re-derived floor narrowly, and fails only under the most
+conservative handling of the floor's own uncertainty.
+
+#### 4a. The paired analysis, which supersedes the fragility above
+
+**[FACT]** The floor and the endpoint are estimated on **the same ten units**,
+so comparing a bootstrap bound on one against a point estimate of the other
+treats two dependent quantities as independent and discards the pairing. The
+correct statistic for "does the model beat composition by at least 0.05" is the
+**per-unit difference**, bootstrapped over units.
+
+**[FACT]** Doing so also exposes a second population mismatch in the unpaired
+comparison above: the leakage-free CNN endpoint was being compared against a
+floor measured on the **full** test partition. The composition classifier scores
+differently on the leakage-free subset, and the matched floor there is 0.5830,
+not 0.6360.
+
+| partition | CNN mean | composition mean | **paired difference** | paired CI99 | units with diff > 0.05 | smallest unit |
+|---|---|---|---|---|---|---|
+| primary | 0.7551 | 0.6360 | **0.1191** | [0.0988, 0.1394] | **10 / 10** | 0.0844 |
+| leakage-free | 0.7056 | 0.5830 | **0.1226** | [0.1005, 0.1446] | **10 / 10** | 0.0842 |
+
+**[FACT]** Against the preregistered lift of 0.05, the paired lower bound clears
+by **+0.0488** on the primary partition and **+0.0505** on the leakage-free
+subset. Every one of the ten held-out participants shows a difference above
+0.05, the smallest being 0.0842.
+
+**Why this matters.** The wide floor interval — CI99 [0.6057, 0.6673] — is
+dominated by between-unit variance: units that are easy for the CNN are easy for
+the composition classifier. Pairing cancels that shared variance, and the paired
+interval is correspondingly tight. **The apparent fragility of the leakage-free
+margin (+0.0034) is an artefact of the unpaired comparison and of the
+population mismatch, not a property of the result.** On the matched, paired
+analysis the conclusion is not marginal on any partition.
+
+The paired statistic is **not** what D008 preregistered, and does not replace
+it. It is reported as the statistically appropriate sensitivity, and it
+strengthens rather than weakens the preregistered finding.
+
+### 5. What this entry does NOT do
+
+- **No frozen artifact is modified and no result is restated.** The dataset,
+  split and endpoint remain byte-identical to what `PREREGISTRATION.md`
+  committed to. `freeze_manifest.json` is untouched by this entry.
+- **The preregistered threshold stays 0.647.**
+- **The defect-B sensitivity is not the counterfactual.** The complete
+  counterfactual would regenerate the negative pool excluding only
+  training-unit peptides, rebuild the frozen dataset, re-run model selection and
+  refit all 25 models. That changes *training* data as well as test data, and
+  was not done. What was measured is the test-side effect only, with the
+  training set held at what it actually was. A full rebuild could move the
+  result in either direction and is the only way to settle defect B.
+- **Only the primary and leakage-free endpoints were re-evaluated.** Every
+  secondary analysis — cross-platform transfer, allele-exclusive, multi-allele
+  — inherits the same decoy construction and was not re-examined.
+
+### 6. Correction to an earlier draft of this entry
+
+An earlier draft of this entry reported a leakage-free margin of "+0.0036" obtained by taking the
+recorded CI99 lower bound and adding a point-estimate delta. **That is not a
+valid interval operation** and the figure is withdrawn. The bound must be
+recomputed by bootstrapping the perturbed per-unit values, which gives **+0.0034
+against the re-derived point threshold** — numerically close, but arrived at
+correctly, and accompanied here by the interval on the threshold itself, which
+that draft omitted entirely.
+
+**RESOLVED as to measurement.** Three defects are quantified. None reverses a
+conclusion under the preregistered rule. Carrying the corrected figures and the
+floor's interval into any publication is required, and `LIMITATIONS.md` should
+gain an entry for each defect.
+
+---
+
+## D045 — Two further withheld documents remain in the published history, by decision · RESOLVED
+
+**Opened:** 2026-10-12 · **Scopes D042** · **Requested by the project owner**
+
+**Decision: accept that `HANDOVER.md` and `PXD024871_CNN_Experiment_Proposal.md`
+remain recoverable from this repository's public history, and record that
+rather than leave the record implying otherwise.**
+
+D042 rewrote the history to remove `REPORT.md` and `PROJECT_PROMPT.md` from
+every commit, and they are gone: **0 commits and 0 objects** carry either path.
+That rewrite was scoped to those two files alone. The other two withheld
+documents were not touched and are still present in commits that are ancestors
+of `origin/main`:
+
+| document | content-bearing commit | public fetch, verified 2026-10-12 |
+|---|---|---|
+| `HANDOVER.md` | `24a99dd` | HTTP 200 |
+| `PXD024871_CNN_Experiment_Proposal.md` | `8537ba9` | HTTP 200 |
+
+Both were verified by fetching them from `raw.githubusercontent.com`. Note that
+the *removal* commits — `4f8efa0` and `a33a079` — return 404, because the files
+are absent from those trees; the content lives in the parent commits, and a
+check against the removal commit alone would wrongly report the material as
+gone.
+
+### Why this is accepted rather than fixed
+
+- **Neither document carries a credential.** `HANDOVER.md` records the project's
+  cloud spend and an instruction to create a GitHub token with `repo` scope as a
+  Colab secret. It states a scope, never a value. A scan of the entire history
+  for token, key and quoted-secret patterns returned nothing. **No rotation is
+  required.**
+- **Neither carries personal or patient data.** The experiment proposal is an
+  internal T-A4 planning document withheld under D037 for being unpreregistered,
+  not for being sensitive.
+- **A second rewrite would void D042's own mapping table.** That table is the
+  key by which every earlier entry in this log is read. Rewriting again would
+  invalidate the new SHAs as well, require deleting and recreating the GitHub
+  repository a second time, and buy little against material that carries no
+  secret.
+
+### What this entry fixes
+
+D038 §2 and D041 both state in general terms that untracking does not remove a
+file from history. Neither names which documents are actually still there. This
+entry names them, with the commits and the verification, so that a reader
+checking the claim finds an accurate answer rather than an implication that all
+withheld material was purged.
+
+**RESOLVED.** Revisit only if a future decision requires these two to be
+unrecoverable, in which case the procedure is D042's, applied to these paths.
+
+---
+
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites
