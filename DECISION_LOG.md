@@ -1190,6 +1190,11 @@ without it. Neither changes a number.
 
 ## D036 — Two more predictors, and how the §18 row sets must change · RESOLVED
 
+> **Pointer, added 2026-10-12 by D050:** the four row counts in the row-set
+> table below are each 20 rows high. They were projected from the overlap lists
+> before scoring was run, and did not yet carry the ambiguity-code exclusion.
+> The corrected counts are in D050. No decision in this entry depends on them.
+
 **Opened:** 2026-10-07, **before any MixMHCpred or NetMHCpan 4.2 score existed**
 **Extends:** D035 (which reopened the freeze for NetMHCpan 4.1 only) · **Requested by the project owner**
 
@@ -3392,6 +3397,12 @@ corrected.
 
 ## D048 — The NetMHCpan 4.1 withdrawal is precomputed, and the wait is given dates · RESOLVED as to preparation
 
+> **Pointer, added 2026-10-12 by D050:** the two row counts and the two
+> prevalences in the withdrawal table below are each 20 rows high, and the
+> upper CNN lead is given as +0.1419 where the artifact gives +0.1418. Every
+> average precision in that table is correct and reproduces exactly. D050
+> carries the corrected table; the conclusion of this entry is unchanged.
+
 **Opened:** 2026-10-12 · **Addendum to D040**, which is not edited beyond its
 status pointer, per this log's append-only convention · **Requested by the
 project owner**
@@ -3542,6 +3553,110 @@ split, endpoint, preregistered rule and every reported number are untouched.
 The manuscript that uses these figures remains private and unpublished.
 
 **RESOLVED.**
+
+---
+
+
+## D050 — A transcribed row count, corrected in three places · RESOLVED
+
+**Opened:** 2026-10-12 · **Corrects D036 and D048**, neither edited beyond its
+status pointer, per this log's append-only convention · **Requested by the
+project owner**
+
+**Decision: correct the common-row-set count wherever the repository states it,
+make `F14` read that count from the artifact instead of carrying it as a
+literal, and record that no average precision, interval or conclusion moves.**
+
+### 1. The error
+
+`results/qc/predictor_comparison_all.json` gives the row set naive to the CNN
+and to all four predictors as **165,574 rows at prevalence 0.439628**. Three
+places in the repository stated **165,594** instead, and one stated a
+withdrawal count of 170,074 against a true 170,054.
+
+The gap is **20 rows in every case**, and it has one cause. The test partition
+holds 22 rows whose sequences carry ambiguity codes — X, B or Z — which
+`results/predictors/ambiguity_skipped.csv` lists and which no predictor scored;
+the scored files hold 199,978 rows, which is 200,000 less those 22. **Two of
+those 22 sequences also occur in the model-selection partition**, so they are
+removed by the naivety filter regardless. The remaining **20** are the entire
+discrepancy, in all four of D036's row sets and in both of D048's columns.
+
+D036's table was written while MixMHCpred 3.0 was still unscored — the entry
+says so — so its counts were projected from the overlap lists, before the
+exclusion existed in any scored file. D048 then took its first column from that
+table rather than from the artifact.
+
+### 2. The corrected counts
+
+Recomputed from `SPLIT.csv`, `POSITIVES.csv`, `NEGATIVES.csv`, the four
+`TEST_PREDICTOR_OVERLAP_*.csv` and the four `*_test_scores.csv`, by the row-set
+construction in `scripts/compare_predictors_all.py`, unmodified:
+
+| Row set (D036 §"The row-set problem this creates") | stated | correct |
+|---|---|---|
+| CNN + both MHCflurry | 175,544 | **175,524** |
+| + NetMHCpan 4.1 | 170,648 | **170,628** |
+| + MixMHCpred 3.0 | 165,594 | **165,574** |
+| + NetMHCpan 4.2 | 141,276 | **141,256** |
+
+Prevalence is unchanged at three decimals in all four — 0.440, 0.441, 0.440,
+0.443 — and D036's argument rests on the deletion that admitting 4.2 would
+cause, which is 29,372 rows either way. **No decision in D036 changes.**
+
+### 3. D048's table, corrected
+
+| | As published, 4 predictors | Withdrawal, 3 predictors |
+|---|---|---|
+| Common naive rows | **165,574** | **170,054** |
+| Prevalence | **0.4396** | **0.4385** |
+| CNN | 0.6852 | 0.6846 |
+| MHCflurry 2.3.0 | 0.5479 | 0.5476 |
+| MHCflurry 2.0.0 | 0.5443 | 0.5439 |
+| MixMHCpred 3.0 | 0.5434 | 0.5429 |
+| **Predictor span** | **0.0046** | **0.0047** |
+| CNN lead | **+0.1373 to +0.1418** | +0.1370 to +0.1417 |
+
+**Every average precision in D048 was already correct.** The recomputation
+reproduces the frozen artifact exactly: the same 165,574 rows, the same
+prevalence to six decimals, the same four predictor intervals bit-for-bit, and
+a CNN mean of 0.6851994691 against the artifact's 0.6851994669 — a difference
+of 2.2e-09, which is floating-point accumulation order across the 25
+checkpoints, not a change in the quantity. Only the row counts, the two
+prevalences and one interval endpoint were wrong, and only in the log.
+
+**D048's conclusion stands unaltered**: the predictor span moves 0.0046 to
+0.0047, no figure moves by more than 0.0006, and the licensing decision still
+carries no scientific cost.
+
+### 4. The figure, which is the part that was public
+
+`F14_study_design.svg` carried `165,594 rows naive to every system` as a
+hard-coded string, under a subtitle reading **"Counts are read from the frozen
+artifacts, not transcribed."** It was the one count in that figure which was
+transcribed, and it was transcribed from D036.
+
+`fig_design` now takes `results/qc/predictor_comparison_all.json` as an
+argument and derives all three quantities in that panel — the row count, the
+predictor span and the CNN lead range — the way every other count in the figure
+is already derived. The hard-coded literal is gone, so the figure cannot drift
+from the artifact again.
+
+Regenerating produced a one-line change in `F14_study_design.svg` and left the
+other eight figures byte-identical. The manuscript, which states 165,574 in all
+three places it appears and +0.1418 in its comparison table, needed no change.
+
+### 5. What is not affected
+
+The endpoint, the split, the preregistered rule, `predictor_comparison_all.json`
+itself, `comparison_with_predictors_all.csv`, `contamination_all.json` and F13
+are untouched. The recomputation wrote nothing into the repository; its outputs
+were held outside the tree and compared against the frozen artifact.
+
+**RESOLVED.** The discrepancy was 0.012% of the row set and moved no reported
+quantity. It is corrected because the figure stated a published number that the
+artifact did not support, and because a count that is derived cannot be
+transcribed wrongly a second time.
 
 ---
 

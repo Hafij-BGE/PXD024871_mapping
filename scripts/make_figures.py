@@ -317,7 +317,8 @@ MARKER = ('<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" 
           '<path d="M0 0 L10 5 L0 10 z" fill="var(--axis)"/></marker>')
 
 
-def fig_design(path, F, SF, sel, fin, endp, leak, n_acq, n_class1, n_test, n_cv, leak_real):
+def fig_design(path, F, SF, sel, fin, endp, leak, pc, n_acq, n_class1, n_test,
+               n_cv, leak_real):
     """F14 - study design. Every count is an argument read from an artifact."""
     H = 620
     s = [head(H, 'Study design, from deposited submission to read endpoint',
@@ -401,14 +402,18 @@ def fig_design(path, F, SF, sel, fin, endp, leak, n_acq, n_class1, n_test, n_cv,
     s.append(_arrow(RX + 40, gy - 78 + BH, RX + 40, gy + 22))
     s.append(_arrow(RX + 40, gy + 26 + BH, RX + 40, gy + 26 + BH + 26))
     yc = gy + 26 + BH + 30 + BH + 30
+    pap = [v['mean_ap'] for k, v in pc['common']['systems'].items() if k != 'CNN']
+    plead = [c['difference'] for c in pc['common']['contrasts']]
     s.append(_stage(RX, yc, RW, BH, 'Comparison with published predictors',
-                    ['165,594 rows naive to every system',
-                     'four predictors span 0.0046; the CNN leads by 0.137–0.142']))
+                    [f"{pc['common']['n_rows']:,} rows naive to every system",
+                     f'{len(pap)} predictors span {max(pap) - min(pap):.4f}; the CNN '
+                     f'leads by {min(plead):.3f}–{max(plead):.3f}']))
     s.append(_arrow(RX + 40, gy + 26 + BH + 30 + BH, RX + 40, yc - 4))
 
     s.append(txt(28, H - 34, 'Sources: data/derived/FREEZE.json, SPLIT.csv, FILE_MAP.csv; '
                  'results/model/selection.json, final.json, endpoint.json; '
-                 'results/qc/leakage_audit.json.', 'note'))
+                 'results/qc/leakage_audit.json, predictor_comparison_all.json.',
+                 'note'))
     s.append(txt(28, H - 18, f'The realised split leaks {leak_real:.2f}%, near the top of the '
                  f'{leak["leakage_min_pct"]:.2f}–{leak["leakage_max_pct"]:.2f}% range; the '
                  f'leakage-free subset is reported alongside the primary.', 'note'))
@@ -709,6 +714,7 @@ def main():
     tp = [r for r in pos if split[r['unit_id']] == 'test']
     leak_real = 100.0 * sum(1 for r in tp if r['sequence'] in tr) / len(tp)
     fig_design('F14_study_design.svg', F, SF, sel, fin, endp, leak,
+               J('qc/predictor_comparison_all.json'),
                len(fm), sum(1 for r in fm if r['hla_class'] == 'I'),
                sum(1 for v in split.values() if v == 'test'),
                sum(1 for v in split.values() if v == 'cv'), leak_real)
