@@ -417,6 +417,64 @@ settling the counts. Whether file payloads transfer from that host or from the
 FTP host is not knowable until the manifest can be read, so the second host may
 also be required for S3.
 
+### S8 — External replication cohort, PXD004023
+
+| Field | Value |
+|---|---|
+| `source_id` | S8 |
+| `origin` | PRIDE Archive, EMBL-EBI |
+| `accession_or_url` | PXD004023 · `https://ftp.pride.ebi.ac.uk/pride/data/archive/2016/12/PXD004023` |
+| `version` | Deposit as published, December 2016 |
+| `retrieval_date` | 2026-10-12 |
+| `original_filename` | 160 `.raw` acquisition files, 37 `.mzid` identification containers; names in `data/external/PXD004023/raw_manifest.txt` and `mzid_manifest.txt` |
+| `local_path` | `data/external/PXD004023/` — **payloads not committed**; see below |
+| `checksum` | SHA-256 of the first 1,048,576 bytes of all 160 acquisition files, in `data/external/PXD004023/header_checksums.txt`. **These are this project's own hashes, computed from the bytes we received**; they detect local corruption or substitution after retrieval, and cannot establish that those bytes are the ones the depositor uploaded. The 37 containers were not checksummed at retrieval, which is a gap, recorded in D054 |
+| `published_checksum` | Not retrieved. PRIDE publishes per-file checksums; they were not collected for this deposit |
+| `file_size` | ~161 MB of headers retrieved by range request; ~1.1 GB of containers |
+| `license` | **NOT ESTABLISHED.** This blocks committing `units.json`, which holds derived peptide sequences. The committed files carry counts, labels and checksums only. S6's rule applies: redistribution terms are checked before any output file enters |
+| `reference` | Pearson H, Daouda T, Granados DP, Durette C, Bonneil E, Courcelles M, Rodenbrock A, Laverdure JP, Côté C, Mader S, Lemieux S, Thibault P, Perreault C. *MHC class I-associated peptides derive from selective regions of the human genome.* J Clin Invest 2016;126(12):4690–4701. PMID 27841757 |
+| `acquisition_method` | `scripts/fetch_px4023.sh headers` — HTTP range requests, bytes 0–1048576, for the instrument model string. `scripts/fetch_px4023.sh mzid` — full containers |
+| `processing_history` | `scripts/label_px4023_runs.py` reads the instrument model out of each header, at both byte alignments, and writes `runmap.csv`; it reproduces the committed table byte-identically from the 160 headers and refuses to write if any header is missing, carries no model string, or carries more than one. **`confidence=verified` means exactly one recognised model string was found in the retrieved header — not verification by the depositor, and not agreement with any record PRIDE publishes.** `scripts/extract_px4023.py` parses the containers to accepted, non-decoy, standard-residue peptides and aggregates to donor × workflow. No re-searching, no re-scoring, no FDR recomputation |
+
+**Status: RETRIEVED, PARTIALLY COMMITTED, LICENCE NOT ESTABLISHED.**
+
+**Why the payloads are not committed.** The same rule the registry already
+applies to S3 and S4. The tracked payload of this repository is 110 MB; the
+headers alone are 161 MB and the containers 1.1 GB. What is committed is what
+makes an absent payload verifiable: the two file manifests, the 160 header
+checksums, the per-container accepted counts (`perfile.json`), and the
+run-to-workflow map. `scripts/fetch_px4023.sh verify` re-hashes local headers
+against the record.
+
+**What the deposit establishes, read from the headers.** All 160 runs carry a
+verified instrument label, derived by `scripts/label_px4023_runs.py` and
+re-checkable with `--check`. The three factors are perfectly confounded:
+
+| | 2013 arm | 2014 arm |
+|---|---|---|
+| Instrument | Orbitrap Elite — 95 runs | Q Exactive Plus — 65 runs |
+| Acquisition year | 2013 — 95 | 2014 — 65 |
+| Fractionation | SCX, 5 fractions — 95 | none — 65 |
+
+**No run breaks the pattern.** 18 donors, of which **6** — C, CELG, J, MA, PF1,
+RT — have data on both workflows and are the only ones the paired comparison
+uses. 37 containers yielded 148,966 accepted peptide identifications.
+
+**This is not an instrument replication and must not be described as one.** SCX
+fractionation separates peptides by charge, a direct function of amino-acid
+composition, which is the feature space the classifier uses. A positive result
+supports a claim about the acquisition workflow and cannot attribute it to the
+instrument. `data/external/PXD004023/ANALYSIS_PLAN.md`, written before the
+classifier was run on this cohort, states this and is committed alongside the
+data.
+
+**Two gaps recorded rather than closed.** The containers were not checksummed
+at retrieval, so their integrity rests on the size floor in
+`extract_px4023.py` and on successful XML parsing — which is how a truncated
+container was caught once already (D047). And PRIDE's published per-file
+checksums were not collected, so nothing here is checked against the
+depositor's own record.
+
 ### S2 is additionally blocked behind S1
 
 Independently of the policy, S2's retrieval URL is **not yet known**. Two

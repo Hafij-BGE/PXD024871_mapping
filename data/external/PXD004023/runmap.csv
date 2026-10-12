@@ -1,0 +1,161 @@
+file,donor,date,era,fraction,instrument,confidence,evidence,all_strings
+CELG_rep3_021213_Fx300mM.raw,CELG,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep3_021213_Fx50mM.raw,CELG,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep3_021213_Fx600mM.raw,CELG,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep3_021213_Fx75mM.raw,CELG,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep4_021213_Fx50mM.raw,CELG,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep4_021213_Fx600mM.raw,CELG,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep4_021213_Fx75mM.raw,CELG,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep5_021213_Fx300mM.raw,CELG,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep5_021213_Fx600mM.raw,CELG,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep5_021213_Fx75mM.raw,CELG,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep6_021213_Fx100mM.raw,CELG,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep6_021213_Fx300mM.raw,CELG,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep6_021213_Fx50mM.raw,CELG,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep6_021213_Fx600mM.raw,CELG,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+CELG_rep6_021213_Fx75mM.raw,CELG,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep3_021213_Fx100mM.raw,C,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep3_021213_Fx300mM.raw,C,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep3_021213_Fx600mM.raw,C,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep3_021213_Fx75mM.raw,C,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep4_021213_Fx100mM.raw,C,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep4_021213_Fx300mM.raw,C,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep4_021213_Fx50mM.raw,C,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep4_021213_Fx600mM.raw,C,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep4_021213_Fx75mM.raw,C,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep5_021213_Fx100mM.raw,C,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep5_021213_Fx300mM.raw,C,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep5_021213_Fx50mM.raw,C,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep5_021213_Fx600mM.raw,C,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep5_021213_Fx75mM.raw,C,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep6_021213_Fx100mM.raw,C,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep6_021213_Fx300mM.raw,C,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep6_021213_Fx50mM.raw,C,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep6_021213_Fx600mM.raw,C,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+C_rep6_021213_Fx75mM.raw,C,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep3_021213_Fx100mM.raw,J,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep3_021213_Fx300mM.raw,J,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep3_021213_Fx50mM.raw,J,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep3_021213_Fx75mM.raw,J,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep4_021213_Fx100mM.raw,J,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep4_021213_Fx300mM.raw,J,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep4_021213_Fx50mM.raw,J,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep5_021213_Fx100mM.raw,J,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep5_021213_Fx50mM.raw,J,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep5_021213_Fx600mM.raw,J,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep6_021213_Fx100mM.raw,J,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep6_021213_Fx300mM.raw,J,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+J_rep6_021213_Fx75mM.raw,J,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep3_021213_Fx100mM.raw,MA,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep3_021213_Fx300mM.raw,MA,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep3_021213_Fx50mM.raw,MA,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep3_021213_Fx600mM.raw,MA,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep3_021213_Fx75mM.raw,MA,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep4_021213_Fx300mM.raw,MA,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep4_021213_Fx50mM.raw,MA,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep4_021213_Fx600mM.raw,MA,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep4_021213_Fx75mM.raw,MA,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep5_021213_Fx300mM.raw,MA,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep5_021213_Fx50mM.raw,MA,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep5_021213_Fx600mM.raw,MA,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+MA_rep5_021213_Fx75mM.raw,MA,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep3_021213_Fx100mM.raw,PF1,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep3_021213_Fx300mM.raw,PF1,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep3_021213_Fx50mM.raw,PF1,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep3_021213_Fx600mM.raw,PF1,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep3_021213_Fx75mM.raw,PF1,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep4_021213_Fx100mM.raw,PF1,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep4_021213_Fx50mM.raw,PF1,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep4_021213_Fx600mM.raw,PF1,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep4_021213_Fx75mM.raw,PF1,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep5_021213_Fx100mM.raw,PF1,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep5_021213_Fx300mM.raw,PF1,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep5_021213_Fx50mM.raw,PF1,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep6_021213_Fx100mM.raw,PF1,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep6_021213_Fx300mM.raw,PF1,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep6_021213_Fx50mM.raw,PF1,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep6_021213_Fx600mM.raw,PF1,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+PF1_rep6_021213_Fx75mM.raw,PF1,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep3_021213_Fx100mM.raw,RT,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep3_021213_Fx300mM.raw,RT,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep3_021213_Fx50mM.raw,RT,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep3_021213_Fx600mM.raw,RT,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep3_021213_Fx75mM.raw,RT,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep4_021213_Fx100mM.raw,RT,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep4_021213_Fx300mM.raw,RT,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep4_021213_Fx600mM.raw,RT,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep5_021213_Fx100mM.raw,RT,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep5_021213_Fx300mM.raw,RT,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep5_021213_Fx50mM.raw,RT,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep5_021213_Fx600mM.raw,RT,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep5_021213_Fx75mM.raw,RT,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep6_021213_Fx100mM.raw,RT,021213,2013,100mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep6_021213_Fx300mM.raw,RT,021213,2013,300mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep6_021213_Fx50mM.raw,RT,021213,2013,50mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep6_021213_Fx600mM.raw,RT,021213,2013,600mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+RT_rep6_021213_Fx75mM.raw,RT,021213,2013,75mM,Orbitrap Elite,verified,raw header bytes 0-1048576,Orbitrap Elite
+pat_AC2_04092014_rep4.raw,AC2,04092014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_AC2_22072014_rep1.raw,AC2,22072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_AC2_22072014_rep2.raw,AC2,22072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_CELG_14072014_rep1.raw,CELG,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_CELG_14072014_rep3.raw,CELG,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_CP2_06082014_rep2.raw,CP2,06082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_CP2_06082014_rep3.raw,CP2,06082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_C_22072014_rep2.raw,C,22072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_C_22072014_rep3.raw,C,22072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_C_23072014_rep4.raw,C,23072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_FL_03062014_rep1.raw,FL,03062014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_FL_03062014_rep2.raw,FL,03062014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_FL_03062014_rep3.raw,FL,03062014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_FL_03062014_rep4.raw,FL,03062014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_FL_13082014_rep6.raw,FL,13082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_FL_13082014_rep7.raw,FL,13082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_FL_13082014_rep8.raw,FL,13082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_JPB3_24102014_rep1.raw,JPB3,24102014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_JPB3_24102014_rep2.raw,JPB3,24102014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_JPB3_24102014_rep3.raw,JPB3,24102014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_JT2_14072014_rep1.raw,JT2,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_JT2_14072014_rep2.raw,JT2,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_JT2_14072014_rep3.raw,JT2,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_J_07082014_rep4.raw,J,07082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_J_07082014_rep5.raw,J,07082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_J_07082014_rep6.raw,J,07082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_J_14072014_rep1.raw,J,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_J_14072014_rep2.raw,J,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_J_14072014_rep3.raw,J,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_MA_07082014_rep2.raw,MA,07082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_MA_07082014_rep3.raw,MA,07082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_ML_13052014_rep1.raw,ML,13052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_ML_13052014_rep2.raw,ML,13052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_ML_16052014_rep3.raw,ML,16052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_ML_16052014_rep4.raw,ML,16052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_M_11072014_rep1.raw,M,11072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_M_11072014_rep3.raw,M,11072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NS2_14072014_rep1.raw,NS2,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NS2_14072014_rep3.raw,NS2,14072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NT_03062014_rep5.raw,NT,03062014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NT_03062014_rep6.raw,NT,03062014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NT_13052014_rep1.raw,NT,13052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NT_13052014_rep2.raw,NT,13052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NT_15082014_rep7.raw,NT,15082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NT_15082014_rep8.raw,NT,15082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NT_16052014_rep3.raw,NT,16052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_NT_16052014_rep4.raw,NT,16052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_PF1_22072014_rep1.raw,PF1,22072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_PF1_22072014_rep2.raw,PF1,22072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_PF1_22072014_rep3.raw,PF1,22072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_RT_06082014_rep1.raw,RT,06082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_RT_06082014_rep2.raw,RT,06082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_RT_06082014_rep3.raw,RT,06082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_R_11072014_rep1.raw,R,11072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_R_11072014_rep3.raw,R,11072014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_SR_03062014_rep5.raw,SR,03062014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_SR_03062014_rep6.raw,SR,03062014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_SR_13052014_rep1.raw,SR,13052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_SR_13052014_rep2.raw,SR,13052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_SR_15082014_rep7.raw,SR,15082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_SR_15082014_rep8.raw,SR,15082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_SR_15082014_rep9_2.raw,SR,15082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_SR_16052014_rep3.raw,SR,16052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_SR_16052014_rep4.raw,SR,16052014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus
+pat_ST_13082014_rep3.raw,ST,13082014,2014,none,Q Exactive Plus,verified,raw header bytes 0-1048576,Q Exactive Plus

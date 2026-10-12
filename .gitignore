@@ -64,6 +64,24 @@ data/raw/**
 !data/raw/S2/*.tsv
 
 # ---------------------------------------------------------------------------
+# PXD004023, the external replication cohort (D054)
+# ---------------------------------------------------------------------------
+# Retrieved payloads are not committed, by the same rule that applies to S3 and
+# S4: the identification containers are 1.1 GB and the acquisition-file headers
+# 161 MB, against a tracked payload of 110 MB. Provenance IS committed --
+# header_checksums.txt and the two manifests -- which is what makes an absent
+# payload verifiable. scripts/fetch_px4023.sh retrieves both on demand.
+data/external/PXD004023/mzid/
+data/external/PXD004023/hdr/
+
+# units.json holds derived peptide sequences from the deposit. It is withheld
+# pending the redistribution position for PXD004023, which is not established
+# (D054 section 4). It is declared absent in scripts/check_references.py, so the
+# reference gate reports it rather than passing silently. Lifting this line is
+# the whole of the change if the terms permit redistribution.
+data/external/PXD004023/units.json
+
+# ---------------------------------------------------------------------------
 # Transient
 # ---------------------------------------------------------------------------
 # Transient stdout/stderr capture from runs. The provenance artifacts are the

@@ -3177,6 +3177,15 @@ unrecoverable, in which case the procedure is D042's, applied to these paths.
 
 ## D046 — The workflow signature replicates in an independent cohort; the instrument-specific claim does not · RESOLVED
 
+> **Pointer, added 2026-10-12 by D054:** the code and provenance behind this
+> entry are now in the repository (`scripts/extract_px4023.py`,
+> `scripts/replicate_px4023.py`, `data/external/PXD004023/`, run-011). The
+> figures below — 0.6597, 0.5998, +0.0598 — are **one draw from a
+> distribution, not a reproducible value**: the classifier samples from a
+> hash-ordered list, so re-runs give 0.0579 to 0.0625 for the excess within the
+> 8–12 window. The direction and the 6-of-6 donor count hold in every run.
+> Q1-002 supersedes the numbers; this entry is not otherwise edited.
+
 **Opened:** 2026-10-12 · **Follows D044** · **Requested by the project owner**
 
 **Decision: test the composition-only platform finding on an independent public
@@ -4034,6 +4043,163 @@ after.
 
 **RESOLVED.** The measurement is deterministic, the published value is on the
 record as irreproducible, and the conclusion it supported is unchanged.
+
+---
+
+
+## D054 — The external replication enters the tree, minus one input · RESOLVED as to promotion
+
+**Opened and resolved:** 2026-10-12 · **Stage 3 of the Q1 correction plan, task
+Q1-003** · **Precedes Q1-002, which cannot act on a script outside the
+repository** · **Points D046** · **Requested by the project owner**
+
+**Decision: commit the PXD004023 replication's code, run map and provenance;
+commit no result; withhold `units.json` until the redistribution position is
+established; and keep the raw payloads out of the tree under the rule the
+registry already applies to S3 and S4.**
+
+### 1. Why this was necessary
+
+**[FACT]** D046's figures are cited in the manuscript Abstract, Results and
+Discussion. **Nothing about that analysis was tracked** — no script, no input,
+no result. Its only provenance was a session scratch directory under `/tmp`,
+which is cleared without warning. An audit on 2026-10-12 found this and the
+essential 1.3 MB was copied out the same day.
+
+A manuscript claim whose code no longer exists cannot be defended in review,
+and `/tmp` is not storage. That is the whole of the motivation; nothing
+scientific changes in this entry.
+
+### 2. What is committed
+
+| Path | What it is |
+|---|---|
+| `scripts/fetch_px4023.sh` | retrieval: 160 header range requests, 37 containers, and a `verify` mode that re-hashes local headers |
+| `scripts/label_px4023_runs.py` | raw header → instrument label; writes `runmap.csv` |
+| `scripts/extract_px4023.py` | mzIdentML → accepted peptides per donor × workflow |
+| `scripts/replicate_px4023.py` | the classifier, **in its original non-deterministic state** — see §3 |
+| `data/external/PXD004023/runmap.csv` | 160 runs, each labelled instrument / year / fraction, all at `confidence=verified` |
+| `data/external/PXD004023/perfile.json` | per-container accepted counts; **counts only, no sequences** |
+| `data/external/PXD004023/header_checksums.txt` | SHA-256 of the first 1,048,576 bytes of all 160 acquisition files |
+| `data/external/PXD004023/{raw,mzid}_manifest.txt` | the two file lists |
+| `data/external/PXD004023/ANALYSIS_PLAN.md` | fixed **before** the classifier was run on this cohort |
+
+Registered as **S8** in `DATA_SOURCES.md`, with run record **run-011**.
+
+**64 KB in place of 162 MB.** The raw payloads stay out: the tracked payload is
+110 MB, the headers alone are 161 MB and the containers 1.1 GB. This repository
+does not archive raw payloads — `.gitignore` already carries `data/raw/**` — it
+records what makes an absent payload verifiable. The owner took that decision
+on 2026-10-12. `scripts/fetch_px4023.sh` retrieves both on demand and `verify`
+checks the headers against the committed hashes.
+
+### 3. The classifier is committed with its defect, deliberately
+
+**[FACT]** `replicate_px4023.py` holds peptides in `set`s of strings and hands
+a hash-ordered list to `rng.choice`. It is the same defect D053 fixed in
+`leakage_audit.py`, and it means D046's figures are **one draw**: re-runs give
+0.0579 to 0.0625 for the excess within the published 8–12 window, against the
+0.0598 reported. Two further weaknesses travel with it — the control averages
+**5** replicates and is quoted to four decimals, and nothing carries an
+interval.
+
+All of this is written into the script's own docstring, under a warning that
+ends **"Do not cite output from this version."**
+
+**Why not fix it here.** Q1-002 fixes it as a separate task so that its diff
+shows exactly what changed, against code already under checksum. Promoting the
+code as it ran, then correcting it in the open, is the same pattern D053 used
+for the frozen audit: the superseded thing stays legible.
+
+**No result artifact is committed.** Tracking D046's numbers now would put a
+single draw under checksum and invite it to be cited.
+
+### 4. The input that is withheld, and why
+
+**`units.json` is not committed.** It holds the derived peptide sequences, 1.2 MB,
+aggregated per donor × workflow. Two facts pull against each other:
+
+- It **must** eventually be committed, because the 1.1 GB of containers was not
+  preserved. Without it, reproducing the analysis requires re-downloading the
+  deposit.
+- Its redistribution position is **not established.** PXD004023 was not in
+  `DATA_SOURCES.md` at all before today, S8's `license` field reads **NOT
+  ESTABLISHED**, and S6 fixed the rule that redistribution terms are checked
+  before any output file enters. `perfile.json` ships because it carries counts
+  and labels, not sequences.
+
+So it is withheld, declared absent in `scripts/check_references.py` with that
+reason, and gitignored with a comment saying that lifting one line is the whole
+of the change if the terms permit it. **The consequence is stated plainly: the
+tracked analysis cannot be run end to end from the repository alone.**
+`extract_px4023.py` rebuilds the file from the retrieved containers.
+
+### 5. Two gaps recorded rather than closed
+
+**[FACT]** The 37 containers were **not checksummed at retrieval**. Their
+integrity rests on the 10 MB size floor in `extract_px4023.py` and on
+successful XML parsing. That is not nothing — it is exactly what caught a
+container which matched its declared byte count while containing
+`<Error><Code>ConnectionClosedException</Code>` (D047) — but it is weaker than a
+hash.
+
+**[FACT]** PRIDE's published per-file checksums were **not collected**, so
+nothing here is checked against the depositor's own record. The same limitation
+L10 records for the PXD024871 metadata file.
+
+**A third gap was found during review and closed rather than recorded.**
+`runmap.csv` was first built ad hoc in the session that ran the replication, and
+the labelling step was never written to a file. The committed table therefore
+asserted `confidence=verified` and `evidence=raw header bytes 0-1048576` while
+**nothing in the tree could reproduce it** — the same defect this stage exists
+to fix, reproduced in miniature. `scripts/label_px4023_runs.py` now derives it,
+reproduces the committed table **byte-identically** from the 160 headers, and
+refuses to write when a header is missing or carries no unique model string.
+It reads the file list from `raw_manifest.txt` rather than globbing, so a stray
+file in `hdr/` cannot add a row.
+
+**A defect in that generator was then found by reviewing it, and fixed before
+it was committed.** The first version decoded each header as UTF-16LE from
+offset 0 only. These headers are 1,048,577 bytes — an odd length — so a model
+string at an odd byte offset was invisible to it, and a header carrying a
+*second* model there would have been labelled `verified` on the one model the
+decoder could see. That is a silent failure, not a safe one. The fix scans both
+byte alignments. It was verified by constructing exactly that case: a real
+header with `Q Exactive Plus` appended in UTF-16LE at an odd offset, which the
+first version accepted silently and the current one refuses.
+
+**What `confidence` means is now stated in the generator rather than implied.**
+`verified` records that exactly one recognised model string was found in the
+retrieved header. It is **not** verification by the depositor and **not**
+agreement with anything PRIDE publishes; the SHA-256 in `header_checksums.txt`
+are this project's own, computed from the bytes we received, and they detect
+local corruption rather than establishing that those bytes are what was
+uploaded. The word carried that implication without bounding it.
+
+Six behaviours were tested, each with its precondition proven first: byte-
+identical reproduction of all 160 rows, a missing header, a header with no
+model string, two models at an odd offset, a header shifted by one byte, and a
+stray file in `hdr/`. The shifted header is labelled rather than refused, which
+is the intended division of labour: integrity is `fetch_px4023.sh verify`'s
+job, not the labeller's.
+
+### 6. What this does not claim
+
+Instrument, acquisition year and SCX fractionation are perfectly confounded
+across all 160 runs — 95 / 95 / 95 against 65 / 65 / 65, no exceptions. SCX
+separates peptides by charge, a direct function of amino-acid composition,
+which is the feature space the classifier uses. **This cohort cannot attribute
+a signature to the instrument**, and nothing committed here describes it as an
+instrument replication. `ANALYSIS_PLAN.md` says so and ships with the data.
+
+Nor is this independent validation of the PXD024871 finding. The two cohorts
+test different contrasts: platform nested in participant there, workflow paired
+within donor here. They share a feature space, not a design.
+
+**RESOLVED as to promotion.** The code and provenance are under checksum and the
+analysis has a run record naming its environment. It is incomplete by one input,
+by decision, and that is visible in the gate rather than silent. Q1-002 is now
+unblocked.
 
 ---
 

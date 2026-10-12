@@ -1,0 +1,187 @@
+{
+ "CELG_rep3_021213": {
+  "donor": "CELG",
+  "era": "2013_Elite_SCX",
+  "n": 7244
+ },
+ "CELG_rep4_021213": {
+  "donor": "CELG",
+  "era": "2013_Elite_SCX",
+  "n": 4586
+ },
+ "CELG_rep5_021213": {
+  "donor": "CELG",
+  "era": "2013_Elite_SCX",
+  "n": 4361
+ },
+ "CELG_rep6_021213": {
+  "donor": "CELG",
+  "era": "2013_Elite_SCX",
+  "n": 3924
+ },
+ "C_rep4_021213": {
+  "donor": "C",
+  "era": "2013_Elite_SCX",
+  "n": 4742
+ },
+ "C_rep5_021213": {
+  "donor": "C",
+  "era": "2013_Elite_SCX",
+  "n": 4825
+ },
+ "C_rep6_021213": {
+  "donor": "C",
+  "era": "2013_Elite_SCX",
+  "n": 4444
+ },
+ "J_rep3_021213": {
+  "donor": "J",
+  "era": "2013_Elite_SCX",
+  "n": 4380
+ },
+ "J_rep4_021213": {
+  "donor": "J",
+  "era": "2013_Elite_SCX",
+  "n": 4660
+ },
+ "J_rep5_021213": {
+  "donor": "J",
+  "era": "2013_Elite_SCX",
+  "n": 4473
+ },
+ "J_rep6_021213": {
+  "donor": "J",
+  "era": "2013_Elite_SCX",
+  "n": 3841
+ },
+ "MA_rep3_021213": {
+  "donor": "MA",
+  "era": "2013_Elite_SCX",
+  "n": 5371
+ },
+ "MA_rep4_021213": {
+  "donor": "MA",
+  "era": "2013_Elite_SCX",
+  "n": 4920
+ },
+ "PF1_rep3_021213": {
+  "donor": "PF1",
+  "era": "2013_Elite_SCX",
+  "n": 6089
+ },
+ "PF1_rep4_021213": {
+  "donor": "PF1",
+  "era": "2013_Elite_SCX",
+  "n": 4934
+ },
+ "PF1_rep6_021213": {
+  "donor": "PF1",
+  "era": "2013_Elite_SCX",
+  "n": 4355
+ },
+ "RT_rep3_021213": {
+  "donor": "RT",
+  "era": "2013_Elite_SCX",
+  "n": 5011
+ },
+ "pat_CELG_14072014_rep1": {
+  "donor": "CELG",
+  "era": "2014_QEplus_unfrac",
+  "n": 3609
+ },
+ "pat_CELG_14072014_rep2": {
+  "donor": "CELG",
+  "era": "2014_QEplus_unfrac",
+  "n": 3809
+ },
+ "pat_CELG_14072014_rep3": {
+  "donor": "CELG",
+  "era": "2014_QEplus_unfrac",
+  "n": 3127
+ },
+ "pat_C_22072014_rep2": {
+  "donor": "C",
+  "era": "2014_QEplus_unfrac",
+  "n": 3785
+ },
+ "pat_C_22072014_rep3": {
+  "donor": "C",
+  "era": "2014_QEplus_unfrac",
+  "n": 2747
+ },
+ "pat_C_23072014_rep4": {
+  "donor": "C",
+  "era": "2014_QEplus_unfrac",
+  "n": 3491
+ },
+ "pat_J_07082014_rep5": {
+  "donor": "J",
+  "era": "2014_QEplus_unfrac",
+  "n": 2962
+ },
+ "pat_J_07082014_rep6": {
+  "donor": "J",
+  "era": "2014_QEplus_unfrac",
+  "n": 3238
+ },
+ "pat_J_14072014_rep1": {
+  "donor": "J",
+  "era": "2014_QEplus_unfrac",
+  "n": 3252
+ },
+ "pat_J_14072014_rep2": {
+  "donor": "J",
+  "era": "2014_QEplus_unfrac",
+  "n": 2740
+ },
+ "pat_J_14072014_rep3": {
+  "donor": "J",
+  "era": "2014_QEplus_unfrac",
+  "n": 2722
+ },
+ "pat_MA_07082014_rep1": {
+  "donor": "MA",
+  "era": "2014_QEplus_unfrac",
+  "n": 3172
+ },
+ "pat_MA_07082014_rep2": {
+  "donor": "MA",
+  "era": "2014_QEplus_unfrac",
+  "n": 2615
+ },
+ "pat_MA_07082014_rep3": {
+  "donor": "MA",
+  "era": "2014_QEplus_unfrac",
+  "n": 3340
+ },
+ "pat_PF1_22072014_rep1": {
+  "donor": "PF1",
+  "era": "2014_QEplus_unfrac",
+  "n": 4053
+ },
+ "pat_PF1_22072014_rep2": {
+  "donor": "PF1",
+  "era": "2014_QEplus_unfrac",
+  "n": 4391
+ },
+ "pat_PF1_22072014_rep3": {
+  "donor": "PF1",
+  "era": "2014_QEplus_unfrac",
+  "n": 4314
+ },
+ "pat_RT_06082014_rep1": {
+  "donor": "RT",
+  "era": "2014_QEplus_unfrac",
+  "n": 3095
+ },
+ "pat_RT_06082014_rep2": {
+  "donor": "RT",
+  "era": "2014_QEplus_unfrac",
+  "n": 3006
+ },
+ "pat_RT_06082014_rep3": {
+  "donor": "RT",
+  "era": "2014_QEplus_unfrac",
+  "n": 3338
+ }
+}

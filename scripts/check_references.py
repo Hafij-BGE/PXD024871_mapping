@@ -46,8 +46,25 @@ SKIP = re.compile(r'^(?:https?:|mailto:|ftp:|#|data:)', re.I)
 # stops being true gets noticed. Anything NOT in this map still fails the gate.
 #
 # Adding an entry here is a decision. Record it in DECISION_LOG.md.
+_PX4023_UNITS = ('derived peptide sequences from PXD004023, withheld pending the '
+                 'redistribution position for that deposit (D054 section 4). It '
+                 'exists locally and is rebuilt by scripts/extract_px4023.py; '
+                 'the retrieval is scripts/fetch_px4023.sh mzid')
+
 DECLARED_ABSENT = {
     # Withheld on purpose
+    # Referenced both bare and by full path, so both forms are declared: the
+    # gate matches the literal reference text or the resolved path, not the
+    # basename of a declared key.
+    'units.json': _PX4023_UNITS,
+    'data/external/PXD004023/units.json': _PX4023_UNITS,
+    'data/external/PXD004023/mzid':
+        'identification containers, 1.1 GB, retrieved on demand and not '
+        'archived here (D054). Manifest and acceptance rule are committed',
+    'data/external/PXD004023/hdr':
+        'acquisition-file headers, 161 MB, retrieved on demand and not archived '
+        "here (D054). Their SHA-256 are in the same directory's "
+        'header_checksums.txt',
     'HANDOVER.md':
         'withheld under D039: cloud spend and a credential-scope instruction, '
         'no scientific content',

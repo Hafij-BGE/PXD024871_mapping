@@ -485,3 +485,57 @@ cross-platform transfer analysis (D025).
 
 **Status:** RESOLVED as an audit. G5 passes only in the sense that both failures
 are declared and have mandated handling; nothing here was fixed.
+
+---
+
+## run-011 — PXD004023 retrieval and extraction, promoted into the tree (Q1-003)
+
+| Element | Value |
+|---|---|
+| Timestamp | 2026-10-12, UTC |
+| Stage | Secondary analysis, external cohort. Promotion only; no result artifact produced |
+| Purpose | Put the PXD004023 replication's code and provenance under version control. It was run outside the tree on 2026-10-12 and its numbers, cited in D046, had no tracked artifact behind them |
+| Serves | D046 (supersession pending), D054; Q1-002 depends on this record |
+| Code | `scripts/label_px4023_runs.py`, blob `58cd9c45302390de5de09143606c48833be22159`; `scripts/extract_px4023.py`, blob `eb4b39495a32a4e193126a638e78e56eec920f4e`; `scripts/replicate_px4023.py`, blob `21243f27d9f819c51869f7319374ccad1fbdf662`; `scripts/fetch_px4023.sh` |
+| Environment | **env-004** (`ENVIRONMENT.md`), pinned by `requirements.lock` under D052 |
+| Inputs | PXD004023 from PRIDE: 160 acquisition-file headers by range request, 37 identification containers. Neither committed; manifests and header checksums are |
+| Parameters | Acceptance as deposited — `passThreshold="true"`, not exclusively decoy evidence, 20 standard residues. Container size floor 10 MB. No re-searching, no re-scoring |
+| Outputs | `data/external/PXD004023/`: `runmap.csv`, `perfile.json`, `header_checksums.txt`, two manifests, `ANALYSIS_PLAN.md`. **`units.json` withheld — licence position not established** |
+| Software versions | Python 3.14.4, numpy 2.4.6, scipy 1.17.1, torch 2.14.1+cpu |
+| Random seed | 20261012 (classifier; not used by the extractor) |
+| CPU/RAM/GPU | 12 cores, 14.8 GiB, no GPU |
+| Runtime | Retrieval ~25 min; extraction ~4 min |
+| Errors/warnings | One container was refused by the size floor in the original run, and was found to contain `<Error><Code>ConnectionClosedException</Code>` despite matching its declared byte count (D047) |
+| Metrics | 160 runs labelled, all `confidence=verified` (exactly one model string found per header, at either byte alignment; not depositor verification), `runmap.csv` reproduced byte-identically by `label_px4023_runs.py --check`; 95 Orbitrap Elite / 2013 / SCX against 65 Q Exactive Plus / 2014 / unfractionated, no exceptions; 18 donors, **6** with both workflows; 37 containers, 148,966 accepted peptides |
+
+### Research record
+
+**This record exists partly to close a gap in this file.** L27 notes that
+`RUN_LOG.md` stops at run-010, so model selection, the final fit, the endpoint
+read and the predictor comparison have no run record and their environment is
+inferred rather than recorded. That cannot be fixed retroactively for runs that
+were not logged. It can be fixed forward, and this is the first record written
+under that rule: it names `env-004` and the exact versions.
+
+**Promotion, not analysis.** No result artifact was produced and none is
+committed. The classifier script is committed **in its original,
+non-deterministic state**, carrying a warning in its own docstring: peptides
+are held in `set`s, `rng.choice` draws from a hash-ordered list, and the
+figures D046 reports — 0.6597, 0.5998, +0.0598 — are one draw from a
+distribution rather than a reproducible value. Re-runs give 0.0579 to 0.0625
+for the excess within the published 8-12 window. Committing it as it ran, and
+fixing it under Q1-002, keeps the correction legible as a diff against code
+already under checksum.
+
+**What the cohort can support.** Instrument, acquisition year and SCX
+fractionation are perfectly confounded across all 160 runs. SCX separates
+peptides by charge, a direct function of composition, which is the feature
+space the classifier uses. The deposit can support a statement about
+acquisition workflow and cannot attribute one to the instrument.
+`data/external/PXD004023/ANALYSIS_PLAN.md`, fixed before the classifier was
+run on this cohort, says so and travels with the data.
+
+**Status:** PROMOTED. Incomplete by one input: `units.json` is withheld pending
+the redistribution position for PXD004023, so the tracked analysis cannot be
+run end to end from the repository alone. `extract_px4023.py` rebuilds it from
+the retrieved containers.
