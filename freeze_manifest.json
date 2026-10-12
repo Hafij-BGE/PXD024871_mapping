@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T08:41:56Z",
+ "frozen_utc": "2026-10-12T10:31:47Z",
  "branch": "main",
- "parent_commit": "1364dfb432c15984599498b4e3a12b96b0a953b6",
- "n_files": 374,
- "total_bytes": 113589665,
+ "parent_commit": "7db37e203f6c542a8e11b4ef596550f38b40148d",
+ "n_files": 375,
+ "total_bytes": 113599117,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 210233,
-   "sha256": "a06d7e0992aeb6b3dc6dae4e9b658cd10d8f593e8676dba74ebb7d4f5d86f8c0"
+   "bytes": 216316,
+   "sha256": "13b0157f2c9db4060ece58c835d7d5ad068ad1f583be9ad6a16acc138c4e6d10"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -71,8 +71,8 @@
   },
   {
    "path": "LIMITATIONS.md",
-   "bytes": 17815,
-   "sha256": "7dff73c0c2a51d6ecf41c26d28b2dd7e3528748615ea017d3e93ebd24222ce79"
+   "bytes": 18034,
+   "sha256": "dc2f05504e1124701f110b6285f83b2182d95e748640a3d29570c127cefd9473"
   },
   {
    "path": "METHODOLOGY.md",
@@ -831,13 +831,13 @@
   },
   {
    "path": "results/figures/F14_study_design.svg",
-   "bytes": 9129,
-   "sha256": "6bae4d7d7b416aa819bc56447943ed950dd6f8ef8a30e04721a9bc0733c7a8f0"
+   "bytes": 9132,
+   "sha256": "3b8a3d76b8a9263727d62a948d12716cb031117edfeda90124c6503848e43368"
   },
   {
    "path": "results/figures/F15_four_confounds.svg",
-   "bytes": 19788,
-   "sha256": "20447492f8f7202e7444f8d502b4e7eb2fe3d52cb68a399063340a651c0ebde0"
+   "bytes": 19791,
+   "sha256": "29b3f2b6636e3bfb5500ffaa59b1f845d86b4d37ed3ecf3fdac195b584b6619e"
   },
   {
    "path": "results/figures/F7_endpoint.svg",
@@ -1661,8 +1661,8 @@
   },
   {
    "path": "results/qc/QC_G5.md",
-   "bytes": 4096,
-   "sha256": "f7da1ce3f816a589b7d1432c4f56757006d8c9b4993c8ddc0b519f693aeeea2e"
+   "bytes": 4952,
+   "sha256": "e9c45cf21a2910b5c4d6a8211a5e16d4f29c189b894cd0c6910553b6b98ee431"
   },
   {
    "path": "results/qc/QC_G6.md",
@@ -1683,6 +1683,11 @@
    "path": "results/qc/leakage_audit.json",
    "bytes": 730,
    "sha256": "c4dd22fcef5694511a010f8d9103f057bdde2e422bf8af5b992d68160922d53d"
+  },
+  {
+   "path": "results/qc/leakage_audit_v2.json",
+   "bytes": 833,
+   "sha256": "f38c8745b840f0334be95d56949e77dc09e97ccc2dd12d2cc08dfd72f1a58771"
   },
   {
    "path": "results/qc/negative_diagnostic.json",
@@ -1791,13 +1796,13 @@
   },
   {
    "path": "scripts/leakage_audit.py",
-   "bytes": 5601,
-   "sha256": "653c808bf3b04980fa142f121d93b466b4a221fbb103b979b0b6d764a1f14ca7"
+   "bytes": 6895,
+   "sha256": "b4e75c73450c5a79e50ac2f194fafe95e8a2b73bd73c21590c54334a028cc959"
   },
   {
    "path": "scripts/make_figures.py",
-   "bytes": 38791,
-   "sha256": "52324fc0baa91b5bead7c24689732cee78f618b93535ca089060aaf39af3cc56"
+   "bytes": 38952,
+   "sha256": "1e6eca173377b470610a0054c4b02a73dbd90202c7d0191b230cceb35784a701"
   },
   {
    "path": "scripts/multi_allele.py",
