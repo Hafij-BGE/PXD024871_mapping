@@ -99,9 +99,9 @@ all nine checks were clean at the moment it was written:
 | 2 | Preregistration checksums still hold — the dataset and split have not moved since `f7550f54` (D009) | 6 artifacts, all unchanged |
 | 3 | Every artifact, script and figure `REPORT.md` names resolves | pass |
 | 4 | Every headline number in `REPORT.md` appears verbatim in the artifact it came from | **44 numbers** |
-| 5 | The figures regenerate byte-identically from those artifacts | 7 figures |
+| 5 | The figures regenerate byte-identically from those artifacts | 9 figures |
 | 6 | Every QC gate passed or carries a recorded unavailability | G1–G13, FINAL |
-| 7 | Every decision resolved, none left OPEN | D001–D040 |
+| 7 | Every decision resolved, none left OPEN | D001–D051 |
 | 8 | An existing manifest still agrees with the tree, and declares its own exclusion | 373 entries |
 | 9 | The trainer's own selftest passes | encoder, AP, gradients, overfit |
 
@@ -159,11 +159,13 @@ step and states what a reader who rejects it should conclude instead.
 **That publishing §18 is cleared.** The NetMHCpan 4.1 academic licence §7(v)
 bars publishing benchmark results to third parties without DTU Health Tech's
 prior written consent, and §18 is such a benchmark. **Consent was requested on
-2026-10-11 and the reply is pending** (D040); the licence grant itself is not
-consent, because §7(v) is a term inside it.
-`THIRD_PARTY_NOTICES.md` §1 and D037 §2 set out the reading, the countervailing
-practice, and the options. **This is the one item that a reader of a public
-repository should know is unresolved.**
+2026-10-11 and granted on 2026-10-12** (D040, D051); the licence grant itself
+was not consent, because §7(v) is a term inside it, so it was asked for
+separately and in advance.
+`THIRD_PARTY_NOTICES.md` §1 and D037 §2 set out the reading. **§18 therefore
+publishes by permission, within the scope D051 records** — the average-precision
+comparison and the score table, not the software, its model files or its
+verbatim output.
 
 ## Selected checksums (SHA-256)
 

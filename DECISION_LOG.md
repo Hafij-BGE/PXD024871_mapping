@@ -798,7 +798,7 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
-## D040 — NetMHCpan §7(v) consent requested; the licence grant is not consent · RESOLVED as to the action, AWAITING REPLY · **see D048 for the precomputed withdrawal and the decision dates**
+## D040 — NetMHCpan §7(v) consent requested; the licence grant is not consent · **RESOLVED — CONSENT GRANTED 2026-10-12, see D051** · (D048 precomputed the withdrawal, now retired)
 
 **Opened:** 2026-10-11 · **Acts on** L26 in `LIMITATIONS.md`, opened by D037
 
@@ -3397,6 +3397,12 @@ corrected.
 
 ## D048 — The NetMHCpan 4.1 withdrawal is precomputed, and the wait is given dates · RESOLVED as to preparation
 
+> **Pointer, added 2026-10-12 by D051:** DTU Health Tech granted consent on
+> 2026-10-12, so the withdrawal this entry prepared is **not executed**. The
+> computation stays on the record: it is what established, before the answer
+> arrived, that the licensing decision carried no scientific cost. The two
+> decision dates it set — 2026-10-25 and 2026-11-08 — are cancelled.
+
 > **Pointer, added 2026-10-12 by D050:** the two row counts and the two
 > prevalences in the withdrawal table below are each 20 rows high, and the
 > upper CNN lead is given as +0.1419 where the artifact gives +0.1418. Every
@@ -3657,6 +3663,100 @@ were held outside the tree and compared against the frozen artifact.
 quantity. It is corrected because the figure stated a published number that the
 artifact did not support, and because a count that is derived cannot be
 transcribed wrongly a second time.
+
+---
+
+
+## D051 — DTU Health Tech consent granted; §18 publishes by permission, within a stated scope · RESOLVED
+
+**Opened and resolved:** 2026-10-12 · **Closes D040** and **retires the
+withdrawal arm of D048**, neither edited beyond its status pointer · **Closes
+L26**
+
+**Decision: record the consent verbatim with its scope, publish §18 by
+permission rather than by argument, retire the withdrawal, cancel the two
+decision dates, and unblock the DOI.**
+
+### 1. What arrived
+
+Morten Nielsen replied on 2026-10-12 at 10:10 to the request D040 sent on
+2026-10-11, copying `health-software@dtu.dk` and `health-master@dtu.dk`, under
+the subject *"Re: Request for written consent to publish a NetMHCpan-4.1
+benchmark (academic licence, §7(v))"*. The operative sentence, quoted exactly:
+
+> "This is all fine. You can forward forward and published the results as
+> described in your email below"
+
+The repetition and the tense are in the original. The intent is unambiguous:
+consent to publish the results the request described.
+
+**This is written consent under §7(v).** The clause requires DTU Health Tech's
+"prior written consent" to publish benchmark results to a third party. A reply
+from the NetMHCpan corresponding author, to a request that quoted the clause and
+enumerated what would be published, copied to two DTU Health Tech addresses, is
+that consent.
+
+### 2. The scope, which is the part that will be forgotten
+
+Consent attaches to "the results as described in your email below", so the scope
+is exactly what D040's request enumerated, and no more:
+
+| Covered | Not covered |
+|---|---|
+| the average-precision comparison across five systems on the 165,574-row common set, NetMHCpan 4.1 at mean AP 0.5472 | the NetMHCpan software itself |
+| per-peptide `Score_EL` and `%Rank_EL` for 199,978 rows, in `results/predictors/netmhcpan_4_1_test_scores.csv` | any part of its code or model files |
+| | its verbatim program output, which `.gitignore` already excludes |
+
+**Anything published from NetMHCpan 4.1 beyond those two items is outside this
+consent**, including a benchmark on a different row set, a new metric, or the
+raw stdout. A future analysis that extends the arm needs a fresh request. This
+is recorded because a granted permission is easy to read as broader than it is.
+
+### 3. Two things worth noting on the record
+
+**The request quoted the corrected row count.** It states 165,574 rows and
+199,978 scored rows — the artifact's figures, not the 165,594 that D036 and D048
+carried until D050 corrected them this same day. The letter to DTU was right
+while the decision log was wrong. That is luck, not process, and it is the
+second time in two days that a transcribed count has been caught only by going
+back to the artifact.
+
+**The sender address is not a dtu.dk address.** The reply displays as
+`Morten Nielsen <dtu-software@eirsciences.com>`, with the two DTU Health Tech
+addresses in copy. Nothing here casts doubt on it — Morten Nielsen is the
+NetMHCpan corresponding author (R2), the subject line is the thread's, and the
+DTU addresses are copied. It is recorded because a consent record that does not
+state what actually arrived is a weak record. **Required follow-up:** archive
+the original message with full headers alongside the licence correspondence, so
+the permission rests on a retained artifact rather than on a screenshot.
+
+### 4. What changes
+
+- **L26 closes.** It was the one item `FREEZE_RECORD.md` told readers of the
+  public repository to know was unresolved. It is now resolved in the permitted
+  direction.
+- **The D048 withdrawal is not executed.** NetMHCpan 4.1 stays in §18,
+  `results/predictors/`, the comparison and contamination artifacts, and F13.
+  The computation is kept: it is the evidence that the decision carried no
+  scientific cost, which is why the answer could be accepted whatever it was.
+- **The dates are cancelled.** 2026-10-25 follow-up and 2026-11-08 decision no
+  longer apply.
+- **The Zenodo DOI is unblocked.** It was held only by this question.
+- **No artifact changes.** No result, figure, score table or manifest entry is
+  touched by this entry. Nothing was recomputed, because nothing depended on the
+  answer.
+
+### 5. What does not change
+
+The scientific caveats D040 volunteered to DTU stand, and they were volunteered
+rather than extracted: the comparison is not a like-for-like test of
+presentation prediction, because the network was trained on this cohort and
+NetMHCpan was not; training-set overlap with the test rows was measured rather
+than assumed, and is reported per predictor. Consent removes a licensing
+obstacle. It does not strengthen the comparison, and §18's wording is unchanged.
+
+**RESOLVED.** §18 publishes by permission. The scope of that permission is in
+§2 above, and it is narrower than "NetMHCpan results may be published".
 
 ---
 
