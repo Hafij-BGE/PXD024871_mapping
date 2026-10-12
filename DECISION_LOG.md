@@ -3170,6 +3170,129 @@ unrecoverable, in which case the procedure is D042's, applied to these paths.
 ---
 
 
+## D046 — The workflow signature replicates in an independent cohort; the instrument-specific claim does not · RESOLVED
+
+**Opened:** 2026-10-12 · **Follows D044** · **Requested by the project owner**
+
+**Decision: test the composition-only platform finding on an independent public
+dataset, report what replicates and what does not, and change no PXD024871
+result.**
+
+R5 measured the acquisition platform to be separable from peptide composition
+alone at AUROC 0.6451 against a 0.5150 control. D044 confirmed that figure on
+re-derivation. It rested on one submission, and no published work was found that
+reports the same phenomenon, so it had no external support.
+
+### 1. What was tested, and why it is not an instrument replication
+
+**PXD004023** (Pearson et al., *J Clin Invest* 2016, PMID 27841757): HLA class-I
+immunopeptidomes of B-lymphoblastoid cell lines from 18 volunteers, Thibault
+laboratory, IRIC Montreal. An independent cohort, laboratory and instrument
+pair.
+
+PRIDE reports a submission's `instruments` field as a **union across the
+submission**, not per file, so it cannot label a run. All 160 raw files were
+therefore labelled from their own headers, by HTTP range request over bytes
+0-1048576 — 161 MB against a 97 GB raw dataset. **Every run resolved; none was
+ambiguous or conflicting:**
+
+| Era | Runs | Instrument | Fractionation |
+|---|---|---|---|
+| December 2013 | 95 | Orbitrap Elite | SCX, 5 fractions — 95 of 95 |
+| May-October 2014 | 65 | Q Exactive Plus | none — 0 of 65 |
+
+**No run breaks the pattern.** Instrument, acquisition year and fractionation
+are perfectly collinear in this cohort and cannot be separated. The analysis is
+therefore a test of the acquisition **workflow**, not of the instrument, and
+that distinction is load-bearing: **SCX fractionates by charge, a direct
+function of amino-acid composition**, which is the classifier's feature space.
+Fractionation alone could produce a positive result.
+
+### 2. Design
+
+Six donors — C, CELG, J, MA, PF1, RT — have data on both workflows, giving a
+paired within-donor design that PXD024871 cannot provide, since no participant
+there spans both platforms. All material is B-LCL, so material type is constant.
+
+**The evaluation unit is the donor.** Runs and SCX fractions are technical
+subdivisions of one sample; treating them as replicates would be
+pseudoreplication.
+
+The frozen procedure of `scripts/leakage_audit.py` is preserved: 20-dimensional
+amino-acid composition, no positional information, Fisher linear discriminant,
+AUROC with midrank ties, class balance by subsampling. The classifier is
+refitted on the new cohort — that is the method, not a deviation, since it was
+never a portable fitted model. **Evaluation is strengthened** to
+leave-one-donor-out, where the original split peptides 50/50 and permitted a
+donor to appear on both sides.
+
+### 3. Result
+
+| Donor | Elite | Q Exactive Plus | Held-out AUROC |
+|---|---|---|---|
+| C | 7,188 | 5,987 | 0.6630 |
+| CELG | 9,737 | 5,798 | 0.6422 |
+| J | 8,511 | 6,810 | 0.6192 |
+| MA | 5,839 | 4,785 | 0.6766 |
+| PF1 | 8,056 | 6,248 | 0.6715 |
+| RT | 3,910 | 4,411 | 0.6856 |
+| **mean** | | | **0.6597** (sd 0.0247) |
+
+Control, random halves of donors as in the frozen procedure: **0.5998**.
+**Excess over control: +0.0598.** Without the 8-12 window: 0.6582 against
+0.6039, excess +0.0544. Separable in **6 of 6 donors**.
+
+**The excess, not the raw AUROC, is the comparable quantity.** Donors are more
+separable in this cohort (control 0.5998) than in ours (0.5150), so +0.0598
+against +0.1301 is the honest comparison, not 0.6597 against 0.6451.
+
+A length mechanism recurs: 9-mers are 50.8% of the unfractionated set against
+38.6% of the fractionated one; 12-mers 1.8% against 4.4%.
+
+### 4. What this does and does not establish
+
+**Establishes:** a composition-only classifier separates acquisition workflows
+in a second cohort, a second laboratory and a different instrument pair. The
+phenomenon is not a property of one submission, which is what R5 could not show.
+
+**Does not establish:** any instrument-specific claim. **R5's finding is not
+replicated** — it is adjacent. In PXD024871 platform was confounded with
+participant but *not* with sample preparation; here it is confounded with both
+year and fractionation. The two results support the same practical warning and
+different mechanisms.
+
+**What would settle it:** a cohort in which the same samples are acquired on
+different instruments under one preparation protocol. No public dataset is known
+to provide this, and the search that found PXD004023 did not surface one.
+
+### 5. A provenance finding worth keeping
+
+One identification file, `CELG_rep3_021213.mzid`, arrived at **exactly the
+manifest byte count** while containing `<Error><Code>ConnectionClosedException</Code>`
+injected into its body mid-stream. **Size agreement did not detect it; only XML
+parsing did.** An earlier run of this analysis used the truncated file and its
+figures were discarded; the numbers above are from the re-fetched file, after
+all 37 files were verified well-formed.
+
+This is the same failure mode `scripts/extract_peptides.py` already guards
+against by refusing any container whose publisher checksum is unverified, and it
+is evidence that the guard earns its cost. **A size check is not an integrity
+check.**
+
+### 6. Scope
+
+No PXD024871 artifact, result, figure, manifest or preregistered rule is changed
+by this entry. The replication is recorded in the manuscript draft and in
+Supplementary Methods S6, both of which are private and unpublished. Data
+retrieved: 161 MB of headers and 1.13 GB of identification results, against a
+3 GB ceiling agreed in advance.
+
+**RESOLVED.** The workflow claim has independent support. The instrument claim
+remains single-cohort and is reported as such.
+
+---
+
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites
