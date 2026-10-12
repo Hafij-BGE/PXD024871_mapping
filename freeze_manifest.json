@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T02:33:52Z",
+ "frozen_utc": "2026-10-12T02:37:46Z",
  "branch": "main",
- "parent_commit": "80dcba44eb9b8e9cb285a3d8f02ee1d34f78a8e7",
+ "parent_commit": "437457f9526e1baf5fbc55be096a102156f95191",
  "n_files": 371,
- "total_bytes": 113498910,
+ "total_bytes": 113504721,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 172426,
-   "sha256": "88c770336858b009c4bf8501bd963542c99f787357256ca19c434c2612d7ab5e"
+   "bytes": 178237,
+   "sha256": "eff11f8555c2f9b50fa37fb3fb88bcd29187473cfc754a1d072729b8b317f09f"
   },
   {
    "path": "ENVIRONMENT.md",
