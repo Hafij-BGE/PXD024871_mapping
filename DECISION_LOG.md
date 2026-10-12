@@ -798,7 +798,7 @@ still leaves the test set's composition altered relative to the universe.
 
 ---
 
-## D040 — NetMHCpan §7(v) consent requested; the licence grant is not consent · RESOLVED as to the action, AWAITING REPLY
+## D040 — NetMHCpan §7(v) consent requested; the licence grant is not consent · RESOLVED as to the action, AWAITING REPLY · **see D048 for the precomputed withdrawal and the decision dates**
 
 **Opened:** 2026-10-11 · **Acts on** L26 in `LIMITATIONS.md`, opened by D037
 
@@ -3388,6 +3388,85 @@ parsing it establishes a good deal more; neither replaces a trusted digest.
 **RESOLVED.** The failure mode is recorded, the one exposed source is named, the
 protections are stated with their limits, and one propagated factual error is
 corrected.
+
+
+## D048 — The NetMHCpan 4.1 withdrawal is precomputed, and the wait is given dates · RESOLVED as to preparation
+
+**Opened:** 2026-10-12 · **Addendum to D040**, which is not edited beyond its
+status pointer, per this log's append-only convention · **Requested by the
+project owner**
+
+**Decision: compute the withdrawal arm before the answer arrives, so that the
+licensing decision costs a text edit rather than an analysis, and replace an
+open-ended wait with two dated decision points.**
+
+D040 asked DTU Health Tech for §7(v) consent on 2026-10-11 and specified what
+happens on each answer. It left one gap: on refusal or silence, the withdrawal
+was described but never computed, so the cost of that outcome was unknown while
+the decision was pending. **A decision whose cost is unmeasured is not really
+prepared for.**
+
+### 1. The withdrawal, computed
+
+Removing NetMHCpan 4.1 removes its overlap constraint, so the comparator
+population **grows**. The honest withdrawal recomputes the common naive row set
+over the three systems actually compared, rather than reporting three
+predictors on a row set defined by a fourth that is no longer cited.
+
+| | As published, 4 predictors | Withdrawal, 3 predictors |
+|---|---|---|
+| Common naive rows | 165,594 | **170,074** |
+| Prevalence | 0.4397 | 0.4386 |
+| CNN | 0.6852 | **0.6846** |
+| MHCflurry 2.3.0 | 0.5479 | 0.5476 |
+| MHCflurry 2.0.0 | 0.5443 | 0.5439 |
+| MixMHCpred 3.0 | 0.5434 | 0.5429 |
+| **Predictor span** | **0.0046** | **0.0047** |
+| CNN lead | +0.1373 to +0.1419 | +0.1370 to +0.1417 |
+
+**The finding survives, marginally strengthened.** Three groups, three training
+corpora, three architectures still agree to within half a percentage point while
+differing from the CNN together. No figure moves by more than 0.0006.
+
+**The licensing decision therefore carries no scientific cost.** That is worth
+knowing in advance: it means the answer can be accepted whatever it is, and
+neither waiting nor withdrawing distorts what the study reports.
+
+These numbers are recomputed from the frozen artifacts — `SPLIT.csv`,
+`POSITIVES.csv`, `NEGATIVES.csv`, the four `TEST_PREDICTOR_OVERLAP_*.csv` and
+the four `*_test_scores.csv` — using the 25 frozen checkpoints for the CNN arm,
+under D027's mean-across-models rule. **Nothing is written into any artifact by
+this entry**; `predictor_comparison_all.json`, `contamination_all.json`,
+`comparison_with_predictors_all.csv` and F13 are untouched, and the published
+§18 still reports four predictors.
+
+### 2. Two dates, so silence is not a decision by default
+
+D040 states that on no reply, "L26 stays open with the request on the record.
+Not silently closed by the passage of time." That is right about what must not
+happen and silent about when to act. Two dates fix it:
+
+| Date | Action |
+|---|---|
+| **2026-10-25** | First follow-up to `health-software@dtu.dk`, two weeks after the request. Reference the 2026-10-07 licence grant and the 2026-10-11 request so DTU can locate both |
+| **2026-11-08** | If still no reply, **treat silence as a non-answer and execute the withdrawal** using the numbers above. Record the outcome as a new entry, re-freeze, and proceed to submission and the DOI |
+
+Four weeks total. The deadline is not a claim about what DTU owes; it is a limit
+on how long this project will hold a result hostage to an unanswered email.
+
+### 3. What does not change
+
+The DOI still waits. A Zenodo deposit is immutable, and archiving before the
+§18 arm is settled would permanently publish a tree that may then have to lose
+one. That constraint is D040's and stands unaltered.
+
+L26 in `LIMITATIONS.md` stays open until the answer arrives or 2026-11-08
+passes.
+
+**RESOLVED as to preparation.** The outcome remains external. What has changed
+is that both branches are now costed, and the wait has an end.
+
+---
 
 
 ## Conventions
