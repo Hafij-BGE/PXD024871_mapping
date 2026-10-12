@@ -3293,6 +3293,103 @@ remains single-cohort and is reported as such.
 ---
 
 
+## D047 — A size check is not an integrity check; the exposure at S2 · RESOLVED
+
+**Opened:** 2026-10-12 · **Follows D046 section 5** · **Requested by the project owner**
+
+**Decision: record where this project's own retrieval path is exposed to
+size-preserving corruption, state what currently protects it, and say plainly
+what that protection does and does not establish.**
+
+D046 section 5 records the incident that prompted this: a file arriving at its
+declared byte count with an error payload inside it. That narrative is not
+repeated here. This entry concerns the distinct question of **where the same
+failure mode could reach this project's own data**, and it makes no claim that
+any file here is corrupted or that any reported result is wrong.
+
+### 1. The exposed source
+
+Retrieval here is checksum-verified wherever a publisher checksum exists.
+`scripts/extract_peptides.py` refuses any container whose provenance record does
+not show `published_checksum_verified` as true, and that guard caught a real
+truncation during the extraction run — a transfer that stopped at 77%
+(`REPORT.md` Methods).
+
+**One source has no publisher checksum.** S2, the community-annotated sample
+metadata file, records `"published_checksum": "ABSENT"` in
+`data/raw/S2/provenance.jsonl`. It is also the most load-bearing single file in
+the project: the only evidence for sample class, participant identity and
+genotype, with M1, M2, M3 and M4 all resolving through it.
+
+### 2. What currently stands in for publisher verification, and what each
+establishes
+
+**Our own SHA-256**, `cdda54ce…f2a85`, recomputed for this entry and matching the
+provenance record exactly. **What it establishes:** the file on disk is
+byte-identical to what was received on 2026-10-06, so nothing has altered it
+since. **What it does not:** that the bytes received faithfully reproduce the
+publisher's file. A hash computed after download fingerprints the transfer's
+output, whatever that output was; a corrupted transfer hashes consistently and
+stably.
+
+**Agreement with the manifest's declared 317,806 bytes**, verified on disk and
+asserted as a check in `scripts/phase_a_mapping.py` line 175. **What it does
+not establish:** anything about corruption that preserves file length. That is
+exactly the class of failure D046 observed.
+
+**Structural validation and the bidirectional join.** The file parses as 402
+data rows, and M1 matched 402 acquisitions against 402 metadata rows in both
+directions with zero manifest-only and zero metadata-only rejects
+(`results/qc/QC_G1.md`). **What this establishes:** several classes of
+corruption — truncation, injected payloads, row loss — would break the row
+count or the join, and did not. **What it does not establish:** authenticity or
+semantic correctness. A file could be internally consistent, join perfectly, and
+still differ from what the depositors published.
+
+**Taken together these are partial protection. They are not equivalent to
+verification against a trusted publisher digest**, and the distinction is worth
+holding because the project's own documentation of S2 emphasises the SHA-256,
+which is the weakest of the three for this purpose.
+
+### 3. A correction found while verifying this entry
+
+A draft of this entry stated that S2 carries 37 columns, following `REPORT.md`
+Methods, which says "402 rows, 37 columns". **The file on disk has 39
+tab-separated header fields.** The row count of 402 is correct; the column count
+is not. No analysis in this project selects columns by count or position — M1
+through M4 address fields by name — so no result depends on the figure, and
+nothing is recomputed.
+
+`REPORT.md` is withheld under D041 and is not edited by this entry. The error is
+recorded here so that the figure is not carried forward again; it had already
+propagated into one unpublished manuscript draft.
+
+This is also a small illustration of the entry's own point: a number that no
+check tests can stay wrong indefinitely. `freeze.py` check 4 verifies headline
+numbers in `REPORT.md` against their artifacts, and a column count is not among
+them.
+
+### 4. Scope
+
+**No artifact, result, script or number is changed by this entry.** S2 is
+byte-identical to its retrieval and remains so. The frozen dataset, split and
+endpoint are untouched. This records a provenance risk and the safeguards that
+currently cover it.
+
+### 5. For anyone reusing this repository or its methods
+
+Where a publisher checksum exists, verify against it. Where none exists, record
+that absence in the provenance entry — as S2 does — and rely on structural
+validation of the content rather than on the byte count, while recognising that
+structural validation bounds corruption rather than proving fidelity.
+Re-downloading a file and finding the same length establishes very little;
+parsing it establishes a good deal more; neither replaces a trusted digest.
+
+**RESOLVED.** The failure mode is recorded, the one exposed source is named, the
+protections are stated with their limits, and one propagated factual error is
+corrected.
+
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites
