@@ -20,14 +20,14 @@ type: software
 authors:
   - family-names: Rahman
     given-names: Md Hafijur
-    alias: hafijbd
+    alias: Hafij-BGE
 version: 1.0.0
 date-released: '2026-10-07'
 license:
   - MIT
   - CC-BY-4.0
-license-url: https://github.com/hafijbd/PXD024871_mapping/blob/main/LICENSE
-repository-code: https://github.com/hafijbd/PXD024871_mapping
+license-url: https://github.com/Hafij-BGE/PXD024871_mapping/blob/main/LICENSE
+repository-code: https://github.com/Hafij-BGE/PXD024871_mapping
 keywords:
   - immunopeptidomics
   - HLA class I
