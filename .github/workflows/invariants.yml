@@ -1,0 +1,51 @@
+# Q1-009. Runs the scientific invariants on every push, and runs each test
+# against the defect it exists to catch. A test nobody has seen fail is a
+# decoration, so CI asserts both halves: the invariants hold, AND every test
+# fails when its defect is injected. The second half is the one that rots.
+#
+# Deliberately not the freeze gate. scripts/freeze.py --verify regenerates
+# figures and re-runs the artifact scripts, needs torch and the 25 checkpoints,
+# and writes to the tree. It is run by a person at a freeze. This job installs
+# numpy, touches nothing, and finishes in about four minutes.
+name: invariants
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  invariants:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # numpy is the only import. The suite reads CSV and JSON and hashes
+      # files; nothing here needs torch, and pinning keeps a numpy release
+      # from turning a data check into a dependency failure. 2.4.6 and
+      # Python 3.11 are what ENVIRONMENT.md records for this project.
+      - name: install
+        run: python -m pip install --disable-pip-version-check 'numpy==2.4.6'
+
+      - name: invariants, and every injected defect
+        env:
+          PYTHON: python
+        run: tests/run.sh
+
+      # The suite claims to write nothing. Checking that claim costs one line,
+      # and a gate that quietly modifies the tree it is auditing is worse than
+      # no gate.
+      - name: the suite modified nothing
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "the test run modified the working tree:"
+            git status --porcelain
+            exit 1
+          fi
+          echo "working tree clean"

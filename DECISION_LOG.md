@@ -4842,6 +4842,129 @@ have not moved.
 ---
 
 
+## D060 — The invariants get tests, and the tests get defects · RESOLVED
+
+**Opened and resolved:** 2026-10-13 · **Task Q1-009** · **Builds on D059** ·
+**Requested by the project owner**
+
+**Decision: assert the dataset's scientific invariants in a read-only suite,
+separate properties that must hold from known defects pinned at their measured
+size, and require every test to be demonstrated failing against an injected
+defect before it counts as a test.**
+
+### 1. What was open
+
+**[FACT]** Every construction defect this project has found was found by a
+person reading code: the negative pool drawn with knowledge of the held-out
+participants (D044 defect B), the recurrence oracle (D056), the prevalence
+confound (D057), the non-deterministic audit (D053). D059 closed the gap
+between "the tree has not moved" and "the artifacts can be made again". Neither
+gate asks whether what they protect is correct. For a study whose subject is
+construction defects, finding them by audit rather than by test is the
+methodology the manuscript criticises.
+
+### 2. What was built
+
+`tests/test_invariants.py` — 11 tests over the frozen artifacts, 21 injected
+defects, a runner at `tests/run.sh`, and a CI invocation at
+`.github/workflows/invariants.yml`. The eleven failure modes Q1-009 names are
+mapped to tests in the module docstring; the map is deliberately not
+one-to-one, because "split disjointness and stability" is two claims and
+"label and preprocessing leakage" fails in two different ways.
+
+**Two kinds of assertion, kept apart.** PROPERTY (T03, T04, T06–T11) is
+something that must hold or the study does not mean what it says; a failure is
+a bug. MAGNITUDE (T01, T02, T05) pins a **known defect at its measured size**,
+so that drift is loud in either direction. **Pinning a defect is not endorsing
+it.** T05 asserts that 82,900 sequences were withheld from the decoy pool
+*using held-out information* — it asserts the defect is still exactly that
+large, and `LIMITATIONS.md` L2 is where the defect is argued.
+
+**Read-only by construction.** The suite contains no write primitive. Its only
+subprocess call is `git ls-files`. Injections replace fields of a frozen
+dataclass rather than mutating a shared snapshot, so no injection can
+contaminate a later result; this was verified by fingerprinting the snapshot
+across all 21 injections and re-running the baseline afterwards. The CI job
+asserts `git status --porcelain` is empty after the run.
+
+### 3. Two defects found in the tests themselves
+
+**[FACT]** The first draft of T08 recomputed the recurrence oracle against
+`per_unit_ap_file_order`, which is **exactly 1.0 for every participant** —
+`POSITIVES.csv` precedes `NEGATIVES.csv` and a stable sort leaves every
+remaining positive ahead of every negative. The test was reproducing a
+constant and passed against an injected defect. This is the artefact D056
+warns about, met from the other direction.
+
+It was replaced with a closed-form expectation of AP under random tie-breaking,
+derived from the hypergeometric position distribution within each tie block.
+It gives **0.642600** against the artifact's 200-draw Monte Carlo **0.642631**
+— D056's headline number now confirmed by a second, non-simulated method.
+
+**[FACT]** That still could not catch a single-row defect, and the reason is
+structural: one flipped row moves E[AP] by about **6e-05**, below the **~1e-04**
+noise the stored Monte Carlo carries at 200 draws. **No tolerance against that
+artifact can see one row.** The fix was exact integer recomputation of the
+oracle's conditional counts, which move by one when one row moves. **That exact
+check is the primary one and must not be replaced by the tolerance comparison**;
+the closed form is additional evidence, not a substitute.
+
+### 4. New findings
+
+**[FACT]** The realised split's exact train/test overlap is **15.988%**, which
+**exceeds the 95th percentile of 2,000 random splits (15.958%)** recorded in
+`leakage_audit_v2.json`. The chosen split leaks more than most random splits
+would, not less.
+
+**[FACT]** **402 leak-free test positive rows (0.479%)** are one substitution
+from a training positive. The leakage-free subset removes exact matches only;
+near-duplicates were never measured before. Recorded as L29.
+
+**[FACT]** `TEST_LEAKFREE.csv` holds **84,012 rows** over **82,900 distinct
+sequences** — 1,112 sequences occur in two held-out participants each.
+`train_cnn.py` and `prevalence_matched.py` read the file into a **set keyed by
+sequence** and apply it to rows keyed by (unit, sequence). The two keyings
+select the same 84,012 rows, because a sequence absent from training is absent
+for every participant. T01 asserts that equivalence, which is load-bearing and
+not obvious.
+
+**[FACT]** **181 positive rows over 165 distinct sequences** contain B, X or Z;
+**no decoy does**, because decoys are alphabet-filtered and observed peptides
+are not. Pinned in T06.
+
+### 5. What was deliberately not done
+
+The 21-injection suite is **not** wired into `freeze.py` as an eleventh check.
+It costs about three minutes and duplicates what CI does on every push.
+
+**[FACT]** `freeze.py --verify` **cannot serve as a lightweight CI integration
+check**, for two reasons that are structural rather than about cost.
+`freeze.py:70` reads `REPORT.md` through `R = lambda p: (REPO/p).read_text()`,
+and `REPORT.md` is **untracked** under D041 — a fresh clone has no such file,
+so checks 3 and 4 raise `FileNotFoundError` rather than failing cleanly. And
+check 5 is **not read-only**: it executes `make_figures.py`, overwriting all
+nine SVGs in place, with **no `finally` restore** of the kind `regen_check.py`
+carries, so an interrupted run leaves drifted bytes and nothing to restore
+them. Cost is not the obstacle — `make_figures.py` imports only `json` and
+`pathlib`. **No change was made to `freeze.py`.** Closing this would require
+either tracking `REPORT.md` or making checks 3 and 4 conditional on its
+presence, and neither was authorised.
+
+### 6. What this does not do
+
+It does not test the model. Nothing here retrains, scores a checkpoint, or
+touches `train_cnn.py` beyond reading its outputs; the trainer's own selftest
+is freeze check 9. It does not prove the dataset is free of defects — it
+asserts the defects that are known and the properties that were thought to
+check. **A defect nobody has imagined still has no test.** And the suite's
+sensitivity against any Monte Carlo artifact is bounded by that artifact's own
+precision, which §3 states rather than hides.
+
+**RESOLVED.** The invariants are asserted, and every assertion has been seen to
+fail.
+
+---
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites
