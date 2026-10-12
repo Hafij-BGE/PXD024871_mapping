@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T03:25:11Z",
+ "frozen_utc": "2026-10-12T03:54:14Z",
  "branch": "main",
- "parent_commit": "2f33506535a1125ed3ebc426818d73a350f19090",
+ "parent_commit": "6f08ba95f908e7be0dc0c557f3d5053d6fa7801e",
  "n_files": 373,
- "total_bytes": 113562566,
+ "total_bytes": 113568652,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 190854,
-   "sha256": "e5c1156f6cdaeeb2f14ab50340583f5967d4c275a946d889e0e6e5cfe9ca8540"
+   "bytes": 196550,
+   "sha256": "fd82f465cbc5a38c69bcff438113045955be97b058557bcbdb77a49f6be87243"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -826,8 +826,8 @@
   },
   {
    "path": "results/figures/F14_study_design.svg",
-   "bytes": 9101,
-   "sha256": "993c952a6422eb47eada46c67ae728be750303a0a7c5818107244c47c8581c50"
+   "bytes": 9129,
+   "sha256": "6bae4d7d7b416aa819bc56447943ed950dd6f8ef8a30e04721a9bc0733c7a8f0"
   },
   {
    "path": "results/figures/F15_four_confounds.svg",
@@ -1791,8 +1791,8 @@
   },
   {
    "path": "scripts/make_figures.py",
-   "bytes": 38429,
-   "sha256": "bbee84893bc646b7ad53f1450111c02fa3562736a9a15db3c396b0e41d63b3c5"
+   "bytes": 38791,
+   "sha256": "52324fc0baa91b5bead7c24689732cee78f618b93535ca089060aaf39af3cc56"
   },
   {
    "path": "scripts/multi_allele.py",
