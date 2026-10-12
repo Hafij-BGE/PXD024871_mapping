@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T15:26:29Z",
+ "frozen_utc": "2026-10-12T15:46:54Z",
  "branch": "main",
- "parent_commit": "90776ece07ca040604dd42c0d3a16c7ad0eb2cb5",
- "n_files": 386,
- "total_bytes": 113708645,
+ "parent_commit": "0265d05a045a0e62224a1318a2da84ccbe5881df",
+ "n_files": 390,
+ "total_bytes": 113746744,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 234228,
-   "sha256": "069c5bde221c36fb993d22598c831374488d177b1bc9599ede622d40d48d997f"
+   "bytes": 242687,
+   "sha256": "0c684938400ed98f7ee6fff2a22ca6d16492b52aac42012fd7fd6b308d41955f"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -71,8 +71,8 @@
   },
   {
    "path": "LIMITATIONS.md",
-   "bytes": 18034,
-   "sha256": "dc2f05504e1124701f110b6285f83b2182d95e748640a3d29570c127cefd9473"
+   "bytes": 19592,
+   "sha256": "1c03d68386af503d635516565029d8663dd60aae0b57b3500fee8e67da5b9233"
   },
   {
    "path": "METHODOLOGY.md",
@@ -1681,8 +1681,8 @@
   },
   {
    "path": "results/qc/QC_G4.md",
-   "bytes": 3596,
-   "sha256": "2ee4c59c0085094ffd14f30992f4e0a5ea4c0b5cf1d857bb7430bf4b2035ba9e"
+   "bytes": 4538,
+   "sha256": "75a92de7a842f33f893db22a82b78379575691ca184df14f31d9c7597a60cf76"
   },
   {
    "path": "results/qc/QC_G4_prep.md",
@@ -1743,6 +1743,16 @@
    "path": "results/qc/predictor_task_mismatch.json",
    "bytes": 1412,
    "sha256": "cd63015b39e019ae05a314689281b5dd7004b80f5b910d474d910cae2a2a6d0a"
+  },
+  {
+   "path": "results/qc/prevalence_matched.json",
+   "bytes": 6108,
+   "sha256": "5607b7dc2de6f9779716676a4f9450ca3be7870637fcc240c0325c8231eb2d7d"
+  },
+  {
+   "path": "results/qc/recurrence_oracle.json",
+   "bytes": 2322,
+   "sha256": "204c6aae7e4787faa19a2914e156ae1fe748e0416347e44428a59caa86fab43d"
   },
   {
    "path": "results/qc/union_stats.json",
@@ -1895,6 +1905,11 @@
    "sha256": "8f1ba559d536cacda55d86791f2d6988f22723fcfad0dd5873897384b6db22ef"
   },
   {
+   "path": "scripts/prevalence_matched.py",
+   "bytes": 9918,
+   "sha256": "4f16d9a38673bfcd6db51dd3556c2de36e7aeeb474565ff99d92d2b79c5aea65"
+  },
+  {
    "path": "scripts/progress.sh",
    "bytes": 2087,
    "sha256": "852e3a354ddb2d8e1f56fe49f84412532ec753d5c9633634e965398dc2801d06"
@@ -1903,6 +1918,11 @@
    "path": "scripts/reconcile_provenance.py",
    "bytes": 4698,
    "sha256": "67257da41adfe93e778ce8f10c394ab84f1585e9eb8edd57a72b63cd8c85d7d7"
+  },
+  {
+   "path": "scripts/recurrence_oracle.py",
+   "bytes": 8358,
+   "sha256": "881bdc06f926b05dfe6a76b01233728c70f6ae47e548d770ab4a8af922311d14"
   },
   {
    "path": "scripts/replicate_px4023.py",
@@ -1926,8 +1946,8 @@
   },
   {
    "path": "scripts/train_cnn.py",
-   "bytes": 50023,
-   "sha256": "fd47c18f53e4d85a902a3b314efae4f42900e3d35e30a8d9d462d91f87c2f025"
+   "bytes": 50457,
+   "sha256": "b2c9ddb5e8d3c4d5ceae826bfdc71c74b8c360be85f9a23eb57a9168c81421ea"
   },
   {
    "path": "scripts/union_analysis.py",
