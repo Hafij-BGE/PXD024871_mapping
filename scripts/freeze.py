@@ -116,13 +116,26 @@ def verify(writing=False):
        '' if not bad else f'absent: {bad}')
 
     print("\n5. figures regenerate byte-identically")
+    # The expected set is named, not counted. A count alone would pass if a
+    # figure were renamed or swapped for another; naming them means a missing
+    # or unexpected file fails here rather than silently (D049).
+    EXPECTED_FIGS = {
+        'F7_endpoint.svg', 'F8_endpoint_by_length.svg', 'F9_transfer_vs_floor.svg',
+        'F10_platform_effect.svg', 'F11_multi_allele_partA.svg',
+        'F12_sign_reversal.svg', 'F13_predictor_comparison.svg',
+        'F14_study_design.svg', 'F15_four_confounds.svg',
+    }
     before = {p.name: sha(p) for p in sorted((REPO/'results'/'figures').glob('*.svg'))}
     subprocess.run([sys.executable, str(REPO/'scripts'/'make_figures.py')],
                    capture_output=True)
     after = {p.name: sha(p) for p in sorted((REPO/'results'/'figures').glob('*.svg'))}
-    ok(before == after and len(before) == 7,
+    missing = EXPECTED_FIGS - set(before)
+    extra = set(before) - EXPECTED_FIGS
+    drift = [k for k in before if before[k] != after.get(k)]
+    ok(not missing and not extra and not drift,
        f'{len(before)} figures reproduce from the artifacts',
-       '' if before == after else 'DRIFT: ' + str([k for k in before if before[k] != after.get(k)]))
+       '' if not (missing or extra or drift) else
+       f'missing {sorted(missing)} extra {sorted(extra)} DRIFT {drift}')
 
     print("\n6. gates")
     sec = R('SECTIONS.md')

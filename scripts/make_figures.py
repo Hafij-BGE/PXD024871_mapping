@@ -284,6 +284,249 @@ def grouped(path, title, sub, groups, series, lo, hi, ticks, xlabel, note=None,
     print(f'  {path}')
 
 
+
+# ---------------------------------------------------------------------------
+# F14 and F15 are manuscript figures (D049). They use the same CSS block and
+# class set as F7-F13 -- no class or custom property is added, so the seven
+# earlier figures are byte-unchanged by their presence. Anything the shared
+# classes do not cover is an inline attribute referencing an existing variable.
+# ---------------------------------------------------------------------------
+
+def _box(x, y, w, h, stroke='var(--grid)', sw=1):
+    return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="4" '
+            f'fill="var(--surface)" stroke="{stroke}" stroke-width="{sw}"/>')
+
+
+def _stage(x, y, w, h, title, lines, frozen=False):
+    s = [_box(x, y, w, h, 'var(--s1)' if frozen else 'var(--grid)', 1.5 if frozen else 1)]
+    s.append(f'<text x="{x+12}" y="{y+20}" fill="var(--ink)" font-size="12.5" '
+             f'font-weight="600">{esc(title)}</text>')
+    for i, ln in enumerate(lines):
+        s.append(txt(x + 12, y + 37 + i * 15, ln, 'cat'))
+    return ''.join(s)
+
+
+def _arrow(x1, y1, x2, y2, dashed=False, col='var(--axis)'):
+    d = ' stroke-dasharray="4 3"' if dashed else ''
+    return (f'<path d="M{x1} {y1} L{x2} {y2}" stroke="{col}" stroke-width="1.5" '
+            f'fill="none"{d} marker-end="url(#a)"/>')
+
+
+MARKER = ('<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
+          'markerHeight="6" orient="auto-start-reverse">'
+          '<path d="M0 0 L10 5 L0 10 z" fill="var(--axis)"/></marker>')
+
+
+def fig_design(path, F, SF, sel, fin, endp, leak, n_acq, n_class1, n_test, n_cv, leak_real):
+    """F14 - study design. Every count is an argument read from an artifact."""
+    H = 620
+    s = [head(H, 'Study design, from deposited submission to read endpoint',
+              f'A deposited submission of {n_acq} acquisitions, of which {n_class1} are '
+              f'HLA class I over {F["n_units"]} participants, yields '
+              f'{F["observed_universe"]:,} unique peptides. A frozen dataset of '
+              f'{F["n_positives"]:,} positives and {F["n_negatives"]:,} decoys is split '
+              f'into {n_cv} participants for model selection and {n_test} held out. A '
+              f'{sel["grid_size"]}-point grid and {fin["n_models"]} checkpoints precede a '
+              f'single read of the held-out partition at '
+              f'{endp["primary"]["mean_ap"]:.4f} average precision against a '
+              f'preregistered threshold of {endp["threshold"]}.')]
+    s.append(f'<defs>{MARKER}</defs>')
+    s.append(txt(28, 26, 'Study design: everything left of the dashed line was fixed '
+                 'before the endpoint was read', 'ttl'))
+    s.append(txt(28, 46, 'Counts are read from the frozen artifacts, not transcribed. '
+                 'A blue outline marks an artifact under checksum.', 'sub'))
+
+    CX, BW, BH = 28, 318, 56
+    y = 76
+    s.append(_stage(CX, y, BW, BH, 'Deposited submission  PXD024871',
+                    [f'{n_acq} acquisitions · {n_class1} HLA class I · '
+                     f'{F["n_units"]} participants',
+                     'identifications taken as deposited, 5% class-I FDR']))
+    s.append(txt(CX + BW + 14, y + 22, 'no new mass spectrometry', 'ref'))
+    s.append(txt(CX + BW + 14, y + 38, 'exact joins only; approximate matching prohibited', 'note'))
+
+    y2 = y + BH + 26
+    s.append(_arrow(CX + 40, y + BH, CX + 40, y2 - 4))
+    s.append(_stage(CX, y2, BW, BH, 'Peptide extraction',
+                    [f'{F["observed_universe"]:,} unique peptides, '
+                     f'{F["length_window"][0]}–{F["length_window"][1]} residues',
+                     'every container checksum-verified before use']))
+    s.append(txt(CX + BW + 14, y2 + 34, '79.9% of the union occurs in one participant only', 'note'))
+
+    y3 = y2 + BH + 26
+    s.append(_arrow(CX + 40, y2 + BH, CX + 40, y3 - 4))
+    s.append(_stage(CX, y3, BW, BH, 'Frozen dataset',
+                    [f'{F["n_positives"]:,} positives ({F["cap_per_unit"]:,} per participant) '
+                     f'+ {F["n_negatives"]:,} decoys',
+                     f'decoys from {F["expressed_proteins"]:,} of '
+                     f'{F["proteome_sequences"]:,} expressed proteins, 1:{F["ratio"]}'], True))
+    s.append(txt(CX + BW + 14, y3 + 34, 'decoy set chosen on a composition diagnostic', 'note'))
+
+    y4 = y3 + BH + 26
+    s.append(_arrow(CX + 40, y3 + BH, CX + 40, y4 - 4))
+    s.append(_stage(CX, y4, BW, BH, 'Split, stratified by platform',
+                    [f'{n_cv} participants for selection · {n_test} held out',
+                     f'{leak["leakage_mean_pct"]:.2f}% mean sequence leakage over '
+                     f'{leak["n_splits"]:,} splits'], True))
+    s.append(txt(CX + BW + 14, y4 + 34, 'not re-drawn: choosing on leakage is selection', 'note'))
+
+    y5 = y4 + BH + 26
+    s.append(_arrow(CX + 40, y4 + BH, CX + 40, y5 - 4))
+    s.append(_stage(CX, y5, BW, BH, 'Preregistered decision rule',
+                    [f'reject when the nominal-99% lower bound exceeds {endp["threshold"]}',
+                     'floor + 0.05; power 0.98 at AUROC 0.75'], True))
+
+    RX, RW = 452, 390
+    s.append(_stage(RX, y, RW, BH, 'Measured before any model was fitted',
+                    ['composition floor · sequence leakage',
+                     'platform separability · decoy contamination']))
+    s.append(txt(RX + 12, y + BH + 18, 'Figure 2. Each bounds what the endpoint can mean.', 'note'))
+    s.append(f'<line x1="{RX-26}" y1="{y+BH+36}" x2="{RX-26}" y2="{H-74}" '
+             f'stroke="var(--s2)" stroke-width="1.5" stroke-dasharray="4 3"/>')
+    s.append(txt(RX - 20, y + BH + 52, 'the endpoint is read once, after this line', 'ref'))
+
+    gy = y3
+    s.append(_stage(RX, gy - 78, RW, BH, 'Model selection',
+                    [f'{sel["grid_size"]}-point grid over 5 grouped folds',
+                     f'selected at {sel["selected"]["mean_val_ap"]:.4f} mean validation AP']))
+    s.append(txt(RX + 12, gy - 78 + BH + 18,
+                 'grid spread 0.0129 against fold spread 0.0117 — flat', 'note'))
+    s.append(_stage(RX, gy + 26, RW, BH, 'Final fit',
+                    [f'{fin["n_models"]} checkpoints, 5 folds × 5 seeds',
+                     'performance governed by which participants are held out']))
+    s.append(_stage(RX, gy + 26 + BH + 30, RW, BH, 'Endpoint, read once',
+                    [f'{endp["primary"]["mean_ap"]:.4f} mean per-participant AP  '
+                     f'(99% {endp["primary"]["ci99_lo"]:.4f}–{endp["primary"]["ci99_hi"]:.4f})',
+                     f'leakage-free {endp["leakage_free"]["mean_ap"]:.4f} — both reported'], True))
+    s.append(_arrow(RX + 40, gy - 78 + BH, RX + 40, gy + 22))
+    s.append(_arrow(RX + 40, gy + 26 + BH, RX + 40, gy + 26 + BH + 26))
+    yc = gy + 26 + BH + 30 + BH + 30
+    s.append(_stage(RX, yc, RW, BH, 'Comparison with published predictors',
+                    ['165,594 rows naive to every system',
+                     'four predictors span 0.0046; the CNN leads by 0.137–0.142']))
+    s.append(_arrow(RX + 40, gy + 26 + BH + 30 + BH, RX + 40, yc - 4))
+
+    s.append(txt(28, H - 34, 'Sources: data/derived/FREEZE.json, SPLIT.csv, FILE_MAP.csv; '
+                 'results/model/selection.json, final.json, endpoint.json; '
+                 'results/qc/leakage_audit.json.', 'note'))
+    s.append(txt(28, H - 18, f'The realised split leaks {leak_real:.2f}%, near the top of the '
+                 f'{leak["leakage_min_pct"]:.2f}–{leak["leakage_max_pct"]:.2f}% range; the '
+                 f'leakage-free subset is reported alongside the primary.', 'note'))
+    s.append('</svg>')
+    FIG.joinpath(path).write_text(''.join(s))
+    print(f'  {path}')
+
+
+def fig_confounds(path, leak, negd, mism, endp, leak_real):
+    """F15 - the four confounds in one panel."""
+    H = 600
+    PLAT = leak['platform_auroc_composition']
+    CTRL = leak['random_unit_half_control_auroc']
+    FLOOR = endp['floor']; AP = endp['primary']['mean_ap']
+    APLF = endp['leakage_free']['mean_ap']
+    CONTAM = mism['strong_presenter_pct_le_2']['negatives']
+    s = [head(H, 'Four confounds measured before any model was fitted',
+              f'Composition floor {FLOOR:.3f} average precision against a 0.500 chance '
+              f'baseline and a {AP:.4f} endpoint; sequence leakage {leak_real:.2f} percent '
+              f'on the realised split within an {leak["leakage_min_pct"]:.2f} to '
+              f'{leak["leakage_max_pct"]:.2f} percent range over {leak["n_splits"]} random '
+              f'splits; acquisition platform separable at AUROC {PLAT:.4f} against a '
+              f'{CTRL:.4f} control; {100*CONTAM:.2f} percent of constructed decoys called '
+              f'presented by an independent predictor.')]
+    s.append(txt(28, 26, 'Four properties of the data, measured before any model was fitted', 'ttl'))
+    s.append(txt(28, 46, 'Each bounds what the endpoint can mean. All four are cheap to '
+                 'compute and all four move the headline number.', 'sub'))
+    PW = 396; X0, X1 = 28, 456; Y0, Y1 = 82, 342
+
+    def panel(x, y, letter, title, sub):
+        return (f'<text x="{x}" y="{y}" fill="var(--ink)" font-size="12.5" '
+                f'font-weight="600">{esc(letter)}  {esc(title)}</text>'
+                + txt(x, y + 17, sub, 'sub'))
+
+    s.append(panel(X0, Y0, 'A', 'Performance is not read against chance',
+                   'Amino-acid composition alone, no positional information'))
+    ax, ay, aw = X0, Y0 + 36, PW - 36
+    lo, hi = 0.45, 0.80
+    for i, (lab, v, col) in enumerate((('chance', 0.500, 'var(--muted)'),
+                                       ('composition floor', FLOOR, 'var(--s2)'),
+                                       ('endpoint, leakage-free', APLF, 'var(--s1lo)'),
+                                       ('endpoint', AP, 'var(--s1)'))):
+        yy = ay + 14 + i * 34
+        bw = (v - lo) / (hi - lo) * aw
+        s.append(f'<rect x="{ax}" y="{yy}" width="{bw:.1f}" height="16" fill="{col}" rx="2"/>')
+        s.append(txt(ax, yy - 4, lab, 'cat'))
+        s.append(txt(ax + bw + 7, yy + 13, f'{v:.4f}', 'val'))
+    fx = ax + (FLOOR - lo) / (hi - lo) * aw
+    s.append(f'<line x1="{fx:.1f}" y1="{ay+8}" x2="{fx:.1f}" y2="{ay+130}" '
+             f'stroke="var(--axis)" stroke-width="1" stroke-dasharray="3 3"/>')
+    s.append(txt(ax, ay + 152, 'Over half the apparent discrimination is reachable '
+                 'without sequence structure.', 'note'))
+
+    s.append(panel(X1, Y0, 'B', 'Participant-disjoint is not sequence-disjoint',
+                   f'{leak["n_splits"]:,} random ten-participant splits'))
+    bx, by, bw_ = X1, Y0 + 36, PW - 60
+    blo, bhi = 11.0, 18.0
+    def bxp(v): return bx + (v - blo) / (bhi - blo) * bw_
+    yy = by + 42
+    s.append(f'<line x1="{bxp(leak["leakage_min_pct"]):.1f}" y1="{yy}" '
+             f'x2="{bxp(leak["leakage_max_pct"]):.1f}" y2="{yy}" class="axis"/>')
+    s.append(f'<rect x="{bxp(leak["leakage_p5_pct"]):.1f}" y="{yy-11}" '
+             f'width="{bxp(leak["leakage_p95_pct"])-bxp(leak["leakage_p5_pct"]):.1f}" '
+             f'height="22" fill="var(--s1lo)" rx="2"/>')
+    s.append(f'<line x1="{bxp(leak["leakage_median_pct"]):.1f}" y1="{yy-13}" '
+             f'x2="{bxp(leak["leakage_median_pct"]):.1f}" y2="{yy+13}" '
+             f'stroke="var(--axis)" stroke-width="2"/>')
+    s.append(f'<circle cx="{bxp(leak_real):.1f}" cy="{yy}" r="6" fill="var(--s2)" class="ring"/>')
+    for v in (leak['leakage_min_pct'], leak['leakage_max_pct']):
+        s.append(txt(bxp(v), yy + 30, f'{v:.2f}%', 'tick', 'middle'))
+    s.append(txt(bxp(leak['leakage_median_pct']), yy - 20,
+                 f'median {leak["leakage_median_pct"]:.2f}%', 'tick', 'middle'))
+    s.append(txt(bxp(leak_real), yy + 52, f'realised split {leak_real:.2f}%', 'val', 'middle'))
+    s.append(txt(bx, by + 130, 'Shaded: 5th–95th percentile. The realised split was '
+                 'not re-drawn —', 'note'))
+    s.append(txt(bx, by + 146, 'choosing a split on its leakage would be selection on '
+                 'the data.', 'note'))
+    s.append(txt(bx, by + 166, f'Cost of the leaked rows: {AP-APLF:.4f} average precision.', 'note'))
+
+    s.append(panel(X0, Y1, 'C', 'The acquisition platform is learnable from sequence',
+                   'Composition-only classifier, LTQ Orbitrap XL vs Orbitrap Fusion Lumos'))
+    cx, cy, cw = X0, Y1 + 36, PW - 36
+    clo, chi = 0.48, 0.70
+    for i, (lab, v, col) in enumerate((('control: random halves of participants', CTRL, 'var(--muted)'),
+                                       ('platform', PLAT, 'var(--s3)'))):
+        yy = cy + 16 + i * 40
+        bw2 = (v - clo) / (chi - clo) * cw
+        s.append(f'<rect x="{cx}" y="{yy}" width="{bw2:.1f}" height="18" fill="{col}" rx="2"/>')
+        s.append(txt(cx, yy - 5, lab, 'cat'))
+        s.append(txt(cx + bw2 + 7, yy + 14, f'{v:.4f}', 'val'))
+    s.append(txt(cx, cy + 118, f'excess attributable to platform  +{PLAT-CTRL:.4f}', 'ref'))
+    s.append(txt(cx, cy + 138, 'No participant spans both platforms, so no split over', 'note'))
+    s.append(txt(cx, cy + 154, 'participants can separate the two.', 'note'))
+
+    s.append(panel(X1, Y1, 'D', 'The negative class is contaminated',
+                   'Independent predictor scoring the constructed decoys'))
+    dx, dy_ = X1, Y1 + 46
+    ncol, nrow, cell, gap = 20, 9, 13, 4
+    filled = round(CONTAM * ncol * nrow)
+    for i in range(ncol * nrow):
+        r, c = divmod(i, ncol)
+        col = 'var(--neg)' if i < filled else 'var(--grid)'
+        s.append(f'<rect x="{dx+c*(cell+gap)}" y="{dy_+r*(cell+gap)}" width="{cell}" '
+                 f'height="{cell}" fill="{col}" rx="2"/>')
+    base = dy_ + nrow * (cell + gap)
+    s.append(txt(dx, base + 20, f'{100*CONTAM:.2f}% of decoys called presented', 'val'))
+    s.append(txt(dx, base + 38, 'Roughly one in nine. Each square is one per cent of the', 'note'))
+    s.append(txt(dx, base + 54, 'negative class; shaded squares are mislabelled.', 'note'))
+
+    s.append(txt(28, H - 16, 'Sources: results/qc/leakage_audit.json, '
+                 'negative_diagnostic.json, predictor_task_mismatch.json, '
+                 f'results/model/endpoint.json. Floor {FLOOR:.3f} is the preregistered '
+                 'figure; recomputed on the frozen dataset it is 0.636.', 'note'))
+    s.append('</svg>')
+    FIG.joinpath(path).write_text(''.join(s))
+    print(f'  {path}')
+
+
 def main():
     FIG.mkdir(parents=True, exist_ok=True)
     J = lambda p: json.loads((RES/p).read_text())
@@ -449,6 +692,27 @@ def main():
                  'absolute values compare only within a band. The CNN also trained on this '
                  'cohort’s own instruments and negative construction, which no subsetting '
                  'removes.')
+
+    # ---- F14  study design (D049), and F15  the four confounds (D049)
+    import csv as _csv
+    D = REPO/'data'/'derived'
+    F = json.loads((D/'FREEZE.json').read_text())
+    SF = json.loads((D/'SPLIT_FREEZE.json').read_text())
+    sel, fin = J('model/selection.json'), J('model/final.json')
+    endp, leak = J('model/endpoint.json'), J('qc/leakage_audit.json')
+    negd, mism = J('qc/negative_diagnostic.json'), J('qc/predictor_task_mismatch.json')
+    fm = list(_csv.DictReader((D/'FILE_MAP.csv').open()))
+    split = {r['unit_id']: r['primary_partition']
+             for r in _csv.DictReader((D/'SPLIT.csv').open())}
+    pos = list(_csv.DictReader((D/'POSITIVES.csv').open()))
+    tr = {r['sequence'] for r in pos if split[r['unit_id']] != 'test'}
+    tp = [r for r in pos if split[r['unit_id']] == 'test']
+    leak_real = 100.0 * sum(1 for r in tp if r['sequence'] in tr) / len(tp)
+    fig_design('F14_study_design.svg', F, SF, sel, fin, endp, leak,
+               len(fm), sum(1 for r in fm if r['hla_class'] == 'I'),
+               sum(1 for v in split.values() if v == 'test'),
+               sum(1 for v in split.values() if v == 'cv'), leak_real)
+    fig_confounds('F15_four_confounds.svg', leak, negd, mism, endp, leak_real)
 
     print(f'\nwrote {len(list(FIG.glob("*.svg")))} figures to results/figures/')
 
