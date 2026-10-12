@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-11T22:45:14Z",
+ "frozen_utc": "2026-10-12T02:33:52Z",
  "branch": "main",
- "parent_commit": "dcdb15f93acc72882beca3b9f2af6dcad4add976",
+ "parent_commit": "80dcba44eb9b8e9cb285a3d8f02ee1d34f78a8e7",
  "n_files": 371,
- "total_bytes": 113498904,
+ "total_bytes": 113498910,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -31,8 +31,8 @@
   },
   {
    "path": "CITATION.cff",
-   "bytes": 4981,
-   "sha256": "5591593069557cb775eae8ae787b75371d8beda36e6a314b13a0ebb9f5bec728"
+   "bytes": 4987,
+   "sha256": "90032bd1535ba1b1d6d6279ebba4a5014858a0d260be43a393fbed6c46c422eb"
   },
   {
    "path": "DATA_SOURCES.md",
