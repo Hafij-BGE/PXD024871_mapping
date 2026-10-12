@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T07:38:41Z",
+ "frozen_utc": "2026-10-12T08:41:56Z",
  "branch": "main",
- "parent_commit": "e4c332f09fff1610cc5e13cb1273c3274a4b3fe1",
- "n_files": 373,
- "total_bytes": 113573980,
+ "parent_commit": "1364dfb432c15984599498b4e3a12b96b0a953b6",
+ "n_files": 374,
+ "total_bytes": 113589665,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,13 +41,13 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 201757,
-   "sha256": "793c86686647713c429ffdb57e6d97c7f70b1052e4413db8183c1de091d68755"
+   "bytes": 210233,
+   "sha256": "a06d7e0992aeb6b3dc6dae4e9b658cd10d8f593e8676dba74ebb7d4f5d86f8c0"
   },
   {
    "path": "ENVIRONMENT.md",
-   "bytes": 3355,
-   "sha256": "ec33e8bc9285cb634c853e94c27b84ff674c7b0661d33ade559944ecf2ae2c5a"
+   "bytes": 6605,
+   "sha256": "4464f983257bd1cecb75975316306f3fb751ee31f7da46af98511ee4a0e4f2ca"
   },
   {
    "path": "FLOWCHART.md",
@@ -71,8 +71,8 @@
   },
   {
    "path": "LIMITATIONS.md",
-   "bytes": 16768,
-   "sha256": "ecbc8ce68db070b00e5dbbf494ce2ec6f96de1bd792df9604d98cee82b5e63d0"
+   "bytes": 17815,
+   "sha256": "7dff73c0c2a51d6ecf41c26d28b2dd7e3528748615ea017d3e93ebd24222ce79"
   },
   {
    "path": "METHODOLOGY.md",
@@ -795,9 +795,14 @@
    "sha256": "c5fd3330ca0e7207986a9d82309e074a2fe264c0a7a2dba8f1146dac7c947d92"
   },
   {
+   "path": "requirements.lock",
+   "bytes": 2001,
+   "sha256": "4a9578d9b7792fa5da63e53972bdb675ebc53a061fd16dd3fb8cb403214d3ebd"
+  },
+  {
    "path": "requirements.txt",
-   "bytes": 630,
-   "sha256": "c66c3538754c12bd9198f78b5cb76ea8fbd0b65208b819234778f916c4cd9025"
+   "bytes": 1541,
+   "sha256": "12e9077d27c5d75bef950f95b0fd476d036d32f8896acf3545b0330786e4cf1c"
   },
   {
    "path": "results/compute/benchmark.json",
