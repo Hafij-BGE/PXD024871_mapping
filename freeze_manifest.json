@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T16:45:09Z",
+ "frozen_utc": "2026-10-12T19:56:27Z",
  "branch": "main",
- "parent_commit": "ea12759617c4c3ea302541656f2892f0ffdd3c13",
- "n_files": 392,
- "total_bytes": 113782846,
+ "parent_commit": "bfcf6c8630ba3c1fa4e8c15d3d3442fddf32260c",
+ "n_files": 393,
+ "total_bytes": 113799891,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 250601,
-   "sha256": "af814731ec23fd51eb8b7b8fdee3386454d77e48af13e9e10ebe6e63809838a7"
+   "bytes": 255823,
+   "sha256": "9d35b5f7b748b86c8af7a6a269378c2a6cbcc9eea9dbea95210af5bf7db0c6dc"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -1856,8 +1856,8 @@
   },
   {
    "path": "scripts/freeze.py",
-   "bytes": 12453,
-   "sha256": "f12cd84f3361b2b04d5c370e5deb7e6578c14838667dfc29373ae55c8dcdd111"
+   "bytes": 13593,
+   "sha256": "e1943a0d71c4298bc88bd23f42c82ee574a0db6d5cea69cf0d18f1d9cec9125a"
   },
   {
    "path": "scripts/label_px4023_runs.py",
@@ -1933,6 +1933,11 @@
    "path": "scripts/recurrence_oracle.py",
    "bytes": 8358,
    "sha256": "881bdc06f926b05dfe6a76b01233728c70f6ae47e548d770ab4a8af922311d14"
+  },
+  {
+   "path": "scripts/regen_check.py",
+   "bytes": 10683,
+   "sha256": "f5705361e8e378ad32b7a33869cb25130bc352f2d7de651f19b8bf16fb8facb5"
   },
   {
    "path": "scripts/replicate_px4023.py",
