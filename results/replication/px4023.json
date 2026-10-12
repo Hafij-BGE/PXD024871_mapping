@@ -1,0 +1,108 @@
+{
+ "supersedes": "D046 figures, which were one draw from a hash-order-dependent procedure and not reproducible",
+ "decision": "D055",
+ "interval_method": "cluster bootstrap over donors for the AUROC arm (train_cnn.cluster_ci, D008); percentile over 200 replicates for the control; the excess resamples both arms independently, B=10000. CAVEAT: the two arms are NOT independent -- the control draws halves of the same donors -- so the excess interval is likely narrower than a correct one. And D008/L5 measured nominal-99% coverage at ten units, not six; coverage here is unverified (D055 section 2a).",
+ "nominal": 0.99,
+ "seeds": {
+  "subsample": 1116089761,
+  "control": 3151182590,
+  "bootstrap": 4210226876
+ },
+ "caveat": "Instrument, acquisition year and SCX fractionation are perfectly confounded in this cohort (95 against 65, no exceptions). SCX separates peptides by charge, a function of composition. This measures acquisition workflow and cannot attribute a signature to the instrument.",
+ "windows": [
+  {
+   "window": "8-12",
+   "n_donors": 6,
+   "per_donor_auroc": {
+    "C": 0.6630167238637894,
+    "CELG": 0.6429452811754502,
+    "J": 0.619382925688016,
+    "MA": 0.6783052446418569,
+    "PF1": 0.6708076546082454,
+    "RT": 0.6880914567539459
+   },
+   "mean_auroc": 0.6604248811218839,
+   "sd_auroc": 0.02525725622866352,
+   "auroc_ci": [
+    0.6347614067802433,
+    0.6815673153458865
+   ],
+   "control_mean": 0.6135197288155048,
+   "control_sd": 0.0481176341938391,
+   "control_se": 0.0034024305433117317,
+   "control_n_replicates": 200,
+   "control_interval": [
+    0.5605205781141126,
+    0.6953118489879195
+   ],
+   "excess": 0.04690515230637915,
+   "excess_ci": [
+    0.019383693563620342,
+    0.069904684252824
+   ],
+   "donors_above_control_mean": 6
+  },
+  {
+   "window": "all lengths",
+   "n_donors": 6,
+   "per_donor_auroc": {
+    "C": 0.643401204153866,
+    "CELG": 0.6538190934349634,
+    "J": 0.6207692457886209,
+    "MA": 0.6693438512617735,
+    "PF1": 0.6798628572513155,
+    "RT": 0.6879670551965879
+   },
+   "mean_auroc": 0.6591938845145211,
+   "sd_auroc": 0.024951447266251658,
+   "auroc_ci": [
+    0.6343733213085367,
+    0.6804092748564144
+   ],
+   "control_mean": 0.60446047835443,
+   "control_sd": 0.045408121568448895,
+   "control_se": 0.0032108390681993343,
+   "control_n_replicates": 200,
+   "control_interval": [
+    0.5533760668744575,
+    0.6744707906172924
+   ],
+   "excess": 0.05473340616009115,
+   "excess_ci": [
+    0.029370874944967318,
+    0.07782325298426916
+   ],
+   "donors_above_control_mean": 6
+  }
+ ],
+ "length_distribution": {
+  "2013_Elite_SCX": {
+   "n": 53184,
+   "pct": {
+    "8": 12.411627557160049,
+    "9": 38.643200962695545,
+    "10": 16.467358604091455,
+    "11": 9.344915764139591,
+    "12": 4.437424789410349
+   }
+  },
+  "2014_QEplus_unfrac": {
+   "n": 39048,
+   "pct": {
+    "8": 13.345113706207744,
+    "9": 50.81182134808441,
+    "10": 15.373386601106331,
+    "11": 5.885064535955747,
+    "12": 1.7568121286621594
+   }
+  }
+ },
+ "donors_with_both_workflows": [
+  "C",
+  "CELG",
+  "J",
+  "MA",
+  "PF1",
+  "RT"
+ ]
+}

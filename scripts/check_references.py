@@ -72,6 +72,13 @@ DECLARED_ABSENT = {
         "withheld under D041 at the owner's instruction, pending submission. "
         'LIMITATIONS.md carries the limitations ledger separately, and every '
         'number the report states is in README.md and under results/',
+    'MANUSCRIPT_MCP.md':
+        'the manuscript in preparation, private and unpublished. It is not part '
+        'of the repository and is cited only where a decision entry records '
+        'which of its passages a correction touched',
+    'SUPPLEMENTARY_METHODS.md':
+        'the supplement in preparation, private and unpublished. Same standing '
+        'as MANUSCRIPT_MCP.md',
     'PROJECT_PROMPT.md':
         "withheld under D041 at the owner's instruction: the internal brief "
         'the project was run from. PREREGISTRATION.md and METHODOLOGY.md are '

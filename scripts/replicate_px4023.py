@@ -4,29 +4,26 @@
 Secondary analysis. Promoted into the repository by D054 **as it was run**, so
 that the figures D046 reports have the code that produced them on the record.
 
-=============================== WARNING ================================
-THIS SCRIPT IS NOT DETERMINISTIC, AND IS COMMITTED IN THAT STATE ON PURPOSE.
+Determinism (D055). An earlier version held peptides in `set`s, so the list
+handed to `balance()` came out in a different order in every process and
+`rng.choice` drew a different subsample each run despite a fixed seed. That is
+why the figures D046 reported -- 0.6597 held-out AUROC, 0.5998 control, +0.0598
+excess -- were one draw rather than a value: re-runs gave 0.0579 to 0.0625 for
+the excess within the published 8-12 window. `units.json` already stores each
+peptide set sorted, so holding the values as lists is both the fix and the
+simpler code.
 
-`U` holds peptides in `set`s of strings. `get()` iterates one, so the list
-handed to `balance()` comes out in a different order in every process, because
-Python randomises string hashing per process. `rng.choice` then draws a
-different subsample each run even though `rng` is seeded.
+Two further weaknesses are also fixed here. The control averaged **5**
+replicates and was reported to four decimals, a precision its standard error
+did not support; it now averages N_CONTROL and carries an interval. And the
+analysis and control arms shared one generator, so changing the replicate count
+would have reshuffled the per-donor draws; each purpose now has its own stream
+(D010, scripts/seeds.py).
 
-It is the same defect D053 fixed in scripts/leakage_audit.py. The figures in
-D046 -- 0.6597 held-out AUROC, 0.5998 control, +0.0598 excess -- are therefore
-one draw, not a reproducible value: re-runs give 0.0579 to 0.0625 for the
-excess within the published 8-12 window. The direction and the 6-of-6 donor
-count hold in every run.
-
-Two further weaknesses, recorded here rather than silently carried:
-  * the control averages 5 replicates and is reported to four decimals. Its
-    standard error is larger than the effect it bounds.
-  * there is no interval on anything.
-
-Q1-002 fixes all three. It is a separate task so that its diff shows exactly
-what changed, against code that is already under checksum. **Do not cite output
-from this version.**
-========================================================================
+**The numbers therefore differ from D046 and supersede it.** They differ for
+three reasons at once -- determinism, the decoupled streams, and the control
+count -- so no single-cause delta is quoted. D046's value was never
+reproducible, so there is no stable figure to take a difference from.
 
 Input:  data/external/PXD004023/units.json, written by
         scripts/extract_px4023.py. **Not committed** -- it holds derived peptide
@@ -61,14 +58,28 @@ from pathlib import Path
 import numpy as np
 
 REPO = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO/'scripts'))
+from seeds import seed                                              # noqa: E402
+from train_cnn import cluster_ci                                    # noqa: E402
+
 EXT = REPO/'data'/'external'/'PXD004023'
 UNITS = EXT/'units.json'
+OUT = REPO/'results'/'replication'/'px4023.json'
 
 AA = 'ACDEFGHIKLMNPQRSTVWY'
 IDX = {a: i for i, a in enumerate(AA)}
 ELITE, QE = '2013_Elite_SCX', '2014_QEplus_unfrac'
-SEED = 20261012
-rng = np.random.default_rng(SEED)
+
+N_CONTROL = 200          # D055; was 5, whose standard error exceeded the effect
+NOMINAL = 0.99           # D008's level, which delivers about 95% at this n
+B_BOOT = 10000
+
+# One stream per purpose (D010, scripts/seeds.py). The arms were previously
+# coupled through a single generator, so raising the control replicate count
+# would have silently reshuffled the per-donor draws as well.
+rng_sub = np.random.default_rng(seed('px4023_subsample'))
+rng_ctl = np.random.default_rng(seed('px4023_control'))
+rng_boot = np.random.default_rng(seed('px4023_bootstrap'))
 
 
 def comp(seqs):
@@ -108,7 +119,7 @@ def auroc(y, s):
         (r[yy == 1].sum() - n1*(n1+1)/2)/(n1*n0)
 
 
-def balance(a, b, cap=120000):
+def balance(a, b, rng, cap=120000):
     n = min(len(a), len(b), cap)
     return list(rng.choice(a, n, replace=False)), list(rng.choice(b, n, replace=False))
 
@@ -120,7 +131,11 @@ def main():
                  f"Build it locally:  ./scripts/fetch_px4023.sh mzid && "
                  f"python3 scripts/extract_px4023.py")
 
-    U = {tuple(k.split('|')): set(v) for k, v in json.loads(UNITS.read_text()).items()}
+    # D055: sorted lists, not sets. units.json already stores each value sorted;
+    # holding them as sets reintroduced hash-dependent iteration order, which is
+    # what made this analysis irreproducible.
+    U = {tuple(k.split('|')): sorted(v)
+         for k, v in json.loads(UNITS.read_text()).items()}
     donors = sorted({d for d, _ in U})
     both = [d for d in donors if (d, ELITE) in U and (d, QE) in U]
     print('donors with both workflows:', both)
@@ -138,52 +153,125 @@ def main():
         for held in both:
             tr_a = [s for d in both if d != held for s in get(d, ELITE)]
             tr_b = [s for d in both if d != held for s in get(d, QE)]
-            tr_a, tr_b = balance(tr_a, tr_b)
+            tr_a, tr_b = balance(tr_a, tr_b, rng_sub)
             Xtr = comp(tr_a + tr_b)
             ytr = np.array([1]*len(tr_a) + [0]*len(tr_b))
             w = lda(Xtr, ytr)
-            te_a, te_b = balance(get(held, ELITE), get(held, QE))
+            te_a, te_b = balance(get(held, ELITE), get(held, QE), rng_sub)
             Xte = comp(te_a + te_b)
             yte = np.array([1]*len(te_a) + [0]*len(te_b))
             a = auroc(yte, Xte @ w)
             per.append(a)
             print(f'{held:6s} {len(get(held, ELITE)):8d} {len(get(held, QE)):8d}   {a:.4f}')
         per = np.array(per)
+        # Interval over DONORS, the independent sampling unit, by the project's
+        # method of record (train_cnn.cluster_ci, D008). Six clusters is few;
+        # the interval is correspondingly wide and that is the honest width.
+        a_lo, a_hi = cluster_ci(per, rng_boot, B=B_BOOT, nominal=NOMINAL)
         print(f'{"MEAN":6s} {"":8s} {"":8s}   {per.mean():.4f}  '
               f'(sd {per.std(ddof=1):.4f}, min {per.min():.4f}, max {per.max():.4f})')
+        print(f'{"":6s} {"":8s} {"":8s}   nominal-{NOMINAL:.0%} over donors '
+              f'[{a_lo:.4f}, {a_hi:.4f}]')
 
-        # Control, as in the frozen procedure: random halves of donors, pooled
-        # across workflows. Five replicates only -- see the docstring.
+        # Control: random halves of donors, pooled across workflows, as in the
+        # frozen procedure. D055 raises this from 5 replicates to N_CONTROL --
+        # at 5 the standard error of the mean exceeded the effect it bounds.
         ctrls = []
-        for _ in range(5):
-            p = list(rng.permutation(both))
-            h1, h2 = set(p[:len(p)//2]), set(p[len(p)//2:])
+        for _ in range(N_CONTROL):
+            p = list(rng_ctl.permutation(both))
+            # D055: sorted lists, not sets. Iterating a set of donor names is
+            # hash-ordered, which fed `balance` a differently ordered pool and
+            # left the control arm alone irreproducible after the first fix.
+            h1, h2 = sorted(p[:len(p)//2]), sorted(p[len(p)//2:])
             ga = [s for d in h1 for e in (ELITE, QE) for s in get(d, e)]
             gb = [s for d in h2 for e in (ELITE, QE) for s in get(d, e)]
-            ga, gb = balance(ga, gb)
+            ga, gb = balance(ga, gb, rng_ctl)
             X = comp(ga + gb)
             y = np.array([1]*len(ga) + [0]*len(gb))
             n = len(y)//2
-            idx = rng.permutation(len(y))
+            idx = rng_ctl.permutation(len(y))
             tr, te = idx[:n], idx[n:]
             ctrls.append(auroc(y[te], X[te] @ lda(X[tr], y[tr])))
-        print(f'CONTROL random halves of donors: {np.mean(ctrls):.4f} '
-              f'(sd {np.std(ctrls, ddof=1):.4f}, {len(ctrls)} replicates)')
-        print(f'EXCESS over control: {per.mean()-np.mean(ctrls):+.4f}')
-        return per.mean(), float(np.mean(ctrls))
+        ctrls = np.array(ctrls)
+        q = (1-NOMINAL)/2*100
+        c_lo, c_hi = np.percentile(ctrls, [q, 100-q])
+        c_se = ctrls.std(ddof=1)/np.sqrt(len(ctrls))
+        print(f'CONTROL random halves of donors: {ctrls.mean():.4f}  '
+              f'(sd {ctrls.std(ddof=1):.4f}, se {c_se:.4f}, {len(ctrls)} replicates)')
+        print(f'{"":32s} {NOMINAL:.0%} of replicates in [{c_lo:.4f}, {c_hi:.4f}]')
 
+        # Excess. The two arms resample different things -- donors on one side,
+        # random splits on the other -- so the interval is built by resampling
+        # both independently rather than pretending they are paired.
+        bd = per[rng_boot.integers(0, per.size, size=(B_BOOT, per.size))].mean(axis=1)
+        bc = ctrls[rng_boot.integers(0, ctrls.size, size=(B_BOOT, ctrls.size))].mean(axis=1)
+        e_lo, e_hi = np.percentile(bd - bc, [q, 100-q])
+        excess = float(per.mean() - ctrls.mean())
+        above = int((per > ctrls.mean()).sum())
+        print(f'EXCESS over control: {excess:+.4f}  '
+              f'nominal-{NOMINAL:.0%} [{e_lo:+.4f}, {e_hi:+.4f}]')
+        print(f'  donors above the control mean: {above} of {len(per)}')
+        return {
+            'window': tag,
+            'n_donors': len(per),
+            'per_donor_auroc': {d: float(v) for d, v in zip(both, per)},
+            'mean_auroc': float(per.mean()),
+            'sd_auroc': float(per.std(ddof=1)),
+            'auroc_ci': [float(a_lo), float(a_hi)],
+            'control_mean': float(ctrls.mean()),
+            'control_sd': float(ctrls.std(ddof=1)),
+            'control_se': float(c_se),
+            'control_n_replicates': int(len(ctrls)),
+            'control_interval': [float(c_lo), float(c_hi)],
+            'excess': excess,
+            'excess_ci': [float(e_lo), float(e_hi)],
+            'donors_above_control_mean': above,
+        }
+
+    report = {
+        'supersedes': 'D046 figures, which were one draw from a '
+                      'hash-order-dependent procedure and not reproducible',
+        'decision': 'D055',
+        'interval_method': f'cluster bootstrap over donors for the AUROC arm '
+                           f'(train_cnn.cluster_ci, D008); percentile over '
+                           f'{N_CONTROL} replicates for the control; the excess '
+                           f'resamples both arms independently, B={B_BOOT}. '
+                           f'CAVEAT: the two arms are NOT independent -- the '
+                           f'control draws halves of the same donors -- so the '
+                           f'excess interval is likely narrower than a correct '
+                           f'one. And D008/L5 measured nominal-99% coverage at '
+                           f'ten units, not six; coverage here is unverified '
+                           f'(D055 section 2a).',
+        'nominal': NOMINAL,
+        'seeds': {'subsample': seed('px4023_subsample'),
+                  'control': seed('px4023_control'),
+                  'bootstrap': seed('px4023_bootstrap')},
+        'caveat': 'Instrument, acquisition year and SCX fractionation are '
+                  'perfectly confounded in this cohort (95 against 65, no '
+                  'exceptions). SCX separates peptides by charge, a function of '
+                  'composition. This measures acquisition workflow and cannot '
+                  'attribute a signature to the instrument.',
+        'windows': [],
+    }
     for window in ((8, 12), None):
-        run(window)
+        report['windows'].append(run(window))
 
     print('\n=== length distribution by workflow (donors with both) ===')
+    lengths = {}
     for e, lab in ((ELITE, 'Elite/SCX 2013'), (QE, 'QEplus/unfrac 2014')):
         c = Counter(len(s) for d in both for s in U[(d, e)])
-        t = sum(c.values())
-        print(f'{lab:22s} n={t:7d}  ' +
-              ' '.join(f'{L}:{100*c[L]/t:.1f}%' for L in range(8, 13)))
+        tot = sum(c.values())
+        lengths[e] = {'n': tot, 'pct': {str(L): 100*c[L]/tot for L in range(8, 13)}}
+        print(f'{lab:22s} n={tot:7d}  ' +
+              ' '.join(f'{L}:{100*c[L]/tot:.1f}%' for L in range(8, 13)))
+    report['length_distribution'] = lengths
+    report['donors_with_both_workflows'] = both
 
-    print('\nNOT DETERMINISTIC. Do not cite these numbers; see the docstring and '
-          'D054. Q1-002 supersedes this script.')
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(json.dumps(report, indent=1) + '\n')
+    print(f'\nwrote {OUT}')
+    print('Deterministic: identical output under any PYTHONHASHSEED. The '
+          'acquisition-workflow confound stands; see report["caveat"].')
 
 
 if __name__ == '__main__':

@@ -3177,14 +3177,15 @@ unrecoverable, in which case the procedure is D042's, applied to these paths.
 
 ## D046 — The workflow signature replicates in an independent cohort; the instrument-specific claim does not · RESOLVED
 
-> **Pointer, added 2026-10-12 by D054:** the code and provenance behind this
-> entry are now in the repository (`scripts/extract_px4023.py`,
-> `scripts/replicate_px4023.py`, `data/external/PXD004023/`, run-011). The
-> figures below — 0.6597, 0.5998, +0.0598 — are **one draw from a
-> distribution, not a reproducible value**: the classifier samples from a
-> hash-ordered list, so re-runs give 0.0579 to 0.0625 for the excess within the
-> 8–12 window. The direction and the 6-of-6 donor count hold in every run.
-> Q1-002 supersedes the numbers; this entry is not otherwise edited.
+> **Pointer, added 2026-10-12 by D054, completed by D055:** the code and
+> provenance behind this entry are in the repository
+> (`scripts/extract_px4023.py`, `scripts/replicate_px4023.py`,
+> `data/external/PXD004023/`, run-011). **The figures below are superseded.**
+> They were one draw from a hash-ordered procedure, not a reproducible value.
+> **D055 replaces them with 0.6604 held-out AUROC, 0.6135 control and an excess
+> of +0.0469, nominal-99% [+0.0194, +0.0699]**, deterministic across hash seeds
+> and recorded in `results/replication/px4023.json`. The direction and the
+> 6-of-6 donor count hold. This entry is not otherwise edited.
 
 **Opened:** 2026-10-12 · **Follows D044** · **Requested by the project owner**
 
@@ -4200,6 +4201,168 @@ within donor here. They share a feature space, not a design.
 analysis has a run record naming its environment. It is incomplete by one input,
 by decision, and that is visible in the gate rather than silent. Q1-002 is now
 unblocked.
+
+---
+
+
+## D055 — The replication is made deterministic and its control is given power · RESOLVED
+
+**Opened and resolved:** 2026-10-12 · **Stage 4 of the Q1 correction plan, task
+Q1-002** · **Supersedes the figures of D046**, which is not edited beyond its
+status pointer · **Follows D054**, which put the code in the repository so this
+could act on it · **Requested by the project owner**
+
+**Decision: fix the non-determinism in `replicate_px4023.py`, raise the control
+from 5 replicates to 200 and give every quantity an interval, decouple the two
+arms' random streams, and replace D046's figures with the result.**
+
+### 1. Three defects, not one
+
+**[FACT] Defect 1, determinism — and it was in two places.** Peptides were held
+in `set`s of strings, so the list handed to `balance()` came out in a different
+order in every process and `rng.choice` drew a different subsample despite a
+fixed seed. `units.json` already stores each value sorted, so holding them as
+lists is both the fix and the simpler code.
+
+Sorting the peptide collections was **not sufficient**. The control arm builds
+its halves as `h1, h2 = set(p[:n]), set(p[n:])` — sets of *donor names* — and
+iterating those is equally hash-ordered. After the first patch the per-donor
+arm reproduced exactly while the control still varied, which is how the second
+site was found: the three-seed test disagreed on control fields only. Both are
+now sorted lists, and no `set(` remains in the script.
+
+**[FACT] Defect 2, a control without power.** The control averaged **5**
+replicates and was reported to four decimals. At 200 replicates its standard
+error is **0.0034**; at 5 it was roughly 0.021, **larger than the effect it
+bounds**. A four-decimal control on five draws was never meaningful.
+
+**[FACT] Defect 3, coupled streams.** Both arms drew from one generator, so
+raising the replicate count would have silently reshuffled the per-donor draws
+as well. Each purpose now has its own stream through `scripts/seeds.py`, which
+exists for exactly this (D010).
+
+**[FACT] Determinism verified.** Three runs under `PYTHONHASHSEED` 1, 2 and 3
+produce byte-identical output, sha256 `a447aeaf5b98379b…`. Before the fix no two
+runs agreed.
+
+### 2. What replaces D046
+
+| | D046 | **D055** | change |
+|---|---|---|---|
+| 8–12 mean held-out AUROC | 0.6597 | **0.6604** | +0.0007 |
+| 8–12 control | 0.5998 | **0.6135** | **+0.0137** |
+| 8–12 excess over control | +0.0598 | **+0.0469** | **−0.0129** |
+| all-lengths mean | 0.6582 | 0.6592 | +0.0010 |
+| all-lengths control | 0.6039 | 0.6045 | +0.0006 |
+| all-lengths excess | +0.0544 | **+0.0547** | +0.0003 |
+
+**Intervals, which D046 had none of:**
+
+| window | mean AUROC | control | excess |
+|---|---|---|---|
+| 8–12 | 0.6604, nominal-99% [0.6348, 0.6816] | 0.6135, se 0.0034, 200 replicates | **+0.0469 [+0.0194, +0.0699]** |
+| all lengths | 0.6592, [0.6344, 0.6804] | 0.6045, se 0.0032, 200 replicates | **+0.0547 [+0.0294, +0.0778]** |
+
+Both excess intervals exclude zero. **6 of 6 donors** sit above the control mean
+in both windows, so the stop condition this stage set — a majority of donors
+failing to exceed the control — was not triggered.
+
+### 2a. What these intervals do and do not mean
+
+Two limitations, recorded because an interval is easy to read as more than it
+is. Neither is a defect in the computation; both bound its interpretation.
+
+**[FACT] "Nominal" is doing real work in the label.** R6 measured nominal-95%
+cluster-bootstrap intervals delivering **0.884–0.890** actual coverage at the
+frozen conditions, which is why this project reports nominal-99% throughout and
+never claims 99% confidence (D008, L5). **That measurement was made at ten
+units. This analysis has six.** Coverage at six donors is worse and has **not**
+been measured here. The intervals should be read as indicative width, not as
+calibrated coverage.
+
+**[FACT] The bootstrap itself is adequately resolved**, which is a separate
+question from coverage. Six donors admit 462 distinct resample multisets, and
+an independent 200,000-draw bootstrap reproduces the recorded 8–12 interval to
+[0.6348, 0.6810] against [0.6348, 0.6816], with tail masses 0.00563 and 0.00434
+against a nominal 0.005. The percentile estimate is not degenerate; it is the
+coverage of the method at this n that is unverified.
+
+**[FACT] The excess interval treats as independent two arms that are not.** The
+AUROC arm resamples the six donors; the control draws random halves **of those
+same six donors**, two hundred times. Resampling them independently ignores the
+shared pool, and the direction of that error is **anti-conservative — the
+excess interval is likely narrower than a correct one**. A joint procedure would
+resample donors once and recompute both arms on the resample, which means
+refitting the control inside every bootstrap draw; that was not run, and its
+absence is recorded rather than glossed.
+
+**What survives these caveats.** The point estimates and the 6-of-6 donor count
+do not depend on any interval. The excess exceeds zero by a margin large
+relative to the between-donor spread in both windows, and both windows agree.
+The claim this analysis supports is the direction and approximate size of a
+workflow signature, not a calibrated probability statement about it.
+
+### 3. What actually moved, and what it means
+
+**The per-donor arm barely moved: +0.0007 on the mean**, and no donor by more
+than 0.0025. **The entire correction is the control, and only in the 8–12
+window**, where it rose 0.5998 → 0.6135. Five draws had placed it low and the
+published +0.0598 inherited that error.
+
+The two windows now **agree**: +0.0469 and +0.0547. Under D046 they diverged,
++0.0598 against +0.0544, and **the divergent one was the window that got
+published**. That disagreement was the visible symptom of a control with no
+power, and it is gone.
+
+**The finding survives, better specified and about 22% smaller.** A
+composition-only classifier separates acquisition workflows in an independent
+cohort, in 6 of 6 donors under leave-one-donor-out, with an interval excluding
+zero. That is a stronger claim than the one it replaces, because it can be
+recomputed and it carries its uncertainty.
+
+### 4. What is unchanged
+
+**The confound.** Instrument, acquisition year and SCX fractionation remain
+perfectly confounded across all 160 runs, 95 against 65, with no exceptions.
+SCX separates peptides by charge, a direct function of composition. **This
+measures acquisition workflow and cannot attribute a signature to the
+instrument**, and `results/replication/px4023.json` carries that sentence in its
+own `caveat` field.
+
+**The comparison with PXD024871.** The excess, not the raw AUROC, is the
+comparable quantity, because donors are more separable in this cohort than
+participants are in ours. The honest comparison is now **+0.0469 against
++0.1234** (D053's corrected platform excess), not +0.0598 against +0.1301.
+Both terms of that comparison have changed since the manuscript was drafted.
+
+**The method.** Composition features, Fisher LDA, midrank AUROC, class balance
+by subsampling, leave-one-donor-out — all unchanged. `comp`, `lda`, `auroc` and
+`balance` are untouched apart from `balance` taking its generator explicitly.
+
+### 5. Why no single-cause delta is quoted
+
+The numbers differ from D046 for three reasons at once: determinism, decoupled
+streams and the replicate count. **No attribution to one of them is offered,
+because none would be honest.** D046's value was itself one draw from a
+distribution, so there is no stable figure to difference against. The
+replacement is stated as a replacement, not as a correction of a known
+quantity.
+
+### 6. What was written
+
+`scripts/replicate_px4023.py` (two `sorted()` fixes, `N_CONTROL = 200`,
+per-purpose streams, intervals, and a JSON report); **`results/replication/px4023.json`,
+the first tracked result for this analysis**. `SUPPLEMENTARY_METHODS.md` S6.5
+and S6.6 and the four citation sites in `MANUSCRIPT_MCP.md` carry the new
+figures; both documents are private and unpublished.
+
+**`units.json` remains uncommitted** under D054 §4, so this artifact cannot be
+regenerated from the repository alone — the same standing as the 25 model
+checkpoints, and stated in the script's own docstring.
+
+**RESOLVED.** The replication is deterministic, its control has power, every
+quantity carries an interval, and D046's figures are superseded rather than
+quietly amended.
 
 ---
 
