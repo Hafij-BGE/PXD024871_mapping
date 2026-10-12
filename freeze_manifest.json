@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T15:46:54Z",
+ "frozen_utc": "2026-10-12T16:45:09Z",
  "branch": "main",
- "parent_commit": "0265d05a045a0e62224a1318a2da84ccbe5881df",
- "n_files": 390,
- "total_bytes": 113746744,
+ "parent_commit": "ea12759617c4c3ea302541656f2892f0ffdd3c13",
+ "n_files": 392,
+ "total_bytes": 113782846,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 242687,
-   "sha256": "0c684938400ed98f7ee6fff2a22ca6d16492b52aac42012fd7fd6b308d41955f"
+   "bytes": 250601,
+   "sha256": "af814731ec23fd51eb8b7b8fdee3386454d77e48af13e9e10ebe6e63809838a7"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -1710,6 +1710,11 @@
    "sha256": "dfaa0594ab30d221dea3234c3b17ead33df095d15ceeb1b7391de3ae37cb0e94"
   },
   {
+   "path": "results/qc/decoy_exposure_bound.json",
+   "bytes": 7433,
+   "sha256": "ba51fe4f916eeae5302668bef6f2b3b019be4fd2d3ec746d46a445b5aaad66c9"
+  },
+  {
    "path": "results/qc/leakage_audit.json",
    "bytes": 730,
    "sha256": "c4dd22fcef5694511a010f8d9103f057bdde2e422bf8af5b992d68160922d53d"
@@ -1823,6 +1828,11 @@
    "path": "scripts/contamination_all.py",
    "bytes": 6333,
    "sha256": "e1d8cce9baeab0d8cefd83362b6314164f21f26dbc52baabde666f859bd82820"
+  },
+  {
+   "path": "scripts/decoy_exposure_bound.py",
+   "bytes": 20755,
+   "sha256": "91cde35436dcecc48128ddff13fcc4ad82ba65508f10dcd84e4eeca2389e52c9"
   },
   {
    "path": "scripts/endpoint_by_length.py",
