@@ -4965,6 +4965,51 @@ fail.
 
 ---
 
+## D061 — Correction to the commit message of `6719f50` · RESOLVED
+
+**Opened and resolved:** 2026-10-13 · **Erratum to D060, task Q1-009** ·
+**Corrects a commit message, not a result**
+
+**[CORRECTION]** The commit message of `6719f50` reads:
+
+> one flipped row moves E[AP] by 6e-09 less than the Monte Carlo's own 1e-04
+> noise
+
+**That phrase is wrong in two ways.** The magnitude is **approximately 6e-05**,
+not 6e-09 — a factor of 10,000 — and the relation is **"below"**, not "less
+than", which as written does not parse. The sentence should read: *one flipped
+row moves E[AP] by approximately 6e-05, below the Monte Carlo's own
+approximately 1e-04 noise.*
+
+The point the sentence was making is unaffected and is stated correctly in
+**D060 §3**: a single-row defect moves the expected AP by less than the noise
+carried by the artifact's 200-draw estimate, so no tolerance-based comparison
+against `recurrence_oracle.json` can detect it. That is why the **exact integer
+recomputation** of the oracle's conditional counts is the primary check in
+`tests/test_invariants.py` T08, with the closed-form expectation beside it as
+corroboration rather than as a substitute.
+
+**Nothing computed changes.** No scientific artifact, figure, result or
+preregistered file is touched by this entry, and no number reported anywhere
+moves. `6719f50` and `8238987` are preserved exactly; git history is **not**
+rewritten, because the record of what was written is worth more than a tidy
+message, and because an amend would invalidate `8238987`, whose
+`parent_commit` field names `6719f50`.
+
+**Consequence for the freeze.** This entry edits `DECISION_LOG.md`, a tracked
+file, so its recorded SHA-256 in `freeze_manifest.json` no longer matches the
+tree. **The manifest written at `8238987` is stale as of this commit** and the
+project's declared rule — the two-commit freeze — calls for a re-freeze. That
+re-freeze was **not** authorised here and has **not** been performed. The
+manifest itself is unmodified; `tests/test_invariants.py` T10 fails on the one
+changed digest until a re-freeze is run, and that failure is expected and
+correct rather than a defect.
+
+**RESOLVED.** The inaccurate phrase is identified and corrected in the
+append-only record.
+
+---
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites
