@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T14:30:17Z",
+ "frozen_utc": "2026-10-12T15:26:29Z",
  "branch": "main",
- "parent_commit": "4de6d811aae3e810f872f37aa5883eafa28582d8",
- "n_files": 385,
- "total_bytes": 113691373,
+ "parent_commit": "90776ece07ca040604dd42c0d3a16c7ad0eb2cb5",
+ "n_files": 386,
+ "total_bytes": 113708645,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 225729,
-   "sha256": "7971de1f44706ee4a44d7886e7cc54b5a5eced7637dd291bab136e48e53ad2d3"
+   "bytes": 234228,
+   "sha256": "069c5bde221c36fb993d22598c831374488d177b1bc9599ede622d40d48d997f"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -1750,6 +1750,11 @@
    "sha256": "6c47e610730b608bba5b3f121c3363dbda1891aafa5c5392b5d0a1f6dd4a5270"
   },
   {
+   "path": "results/replication/px4023.json",
+   "bytes": 3086,
+   "sha256": "8a80948f580378d1894074706f85018a4ee7c0ea15cabb1fd9f4157c8c8851ce"
+  },
+  {
    "path": "scripts/allele_leakfree.py",
    "bytes": 10694,
    "sha256": "7d9f3323d1b9a2df97ad2d914902a8d903c850091ceac9829cbbe45ea9aaec27"
@@ -1786,8 +1791,8 @@
   },
   {
    "path": "scripts/check_references.py",
-   "bytes": 14146,
-   "sha256": "52f9c913cf177418c39e8ebd4f34670a231da2021500030114390cf599c72653"
+   "bytes": 14530,
+   "sha256": "05bd11d07f20e55706790a1f63bfe6230ae45b4c6b77d422ceeffb496f50f0c8"
   },
   {
    "path": "scripts/commit_extracts.sh",
@@ -1901,8 +1906,8 @@
   },
   {
    "path": "scripts/replicate_px4023.py",
-   "bytes": 7702,
-   "sha256": "b9d43c31e586c6a027a5fc5d115efa43897dbad455b16e05e78a753b624eaf13"
+   "bytes": 13005,
+   "sha256": "53b66620013d3050d0c026a8a4278a34411e5063711ccb2b7cd4f8e4f6a95e8d"
   },
   {
    "path": "scripts/retrieve.py",
