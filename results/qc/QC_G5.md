@@ -1,5 +1,19 @@
 # QC_G5 — leakage and confound audit
 
+> **Supersession pointer, added 2026-10-12 by D053. The numbers below are not
+> edited.** This is the contemporaneous record of run-010 and it reports what
+> that run produced. Part 2 of `scripts/leakage_audit.py` was later found to be
+> non-deterministic: peptide sets were flattened to lists in hash-dependent
+> order, and `lda_auroc` splits its inputs by position, so every run trained on
+> a different half. **The platform pair recorded here — 0.6451 against 0.5150,
+> excess +0.1301 — could not be reproduced by any later run and is superseded
+> by the deterministic 0.6404 against 0.5170, excess +0.1234, in
+> `results/qc/leakage_audit_v2.json`.** The finding is unchanged in direction
+> and magnitude; the gate's verdict on it stands.
+>
+> Part 1 of the same run, the sequence-leakage distribution, reproduces
+> bit-for-bit and is not affected.
+
 run-010, on the frozen dataset, before the split exists. Measures what the split
 will have to handle rather than checking a split already made.
 

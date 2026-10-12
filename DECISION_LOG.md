@@ -3917,6 +3917,127 @@ version drift, which is what Stage 2 now acts on.
 ---
 
 
+## D053 — The platform pair is made deterministic; the published value could not be reproduced · RESOLVED
+
+**Opened and resolved:** 2026-10-12 · **Stage 2 of the Q1 correction plan, task
+Q1-001** · **Corrects the method of D005 and D025's platform measurement
+without disturbing their conclusions** · **Follows D052** · **Requested by the
+project owner**
+
+**Decision: fix the non-determinism in `leakage_audit.py` part 2, write the
+corrected result to a new artifact rather than over the published one, carry the
+corrected pair into `LIMITATIONS.md` L1 and figure F15, and leave the
+contemporaneous gate record `QC_G5.md` unedited behind a supersession
+pointer.**
+
+### 1. The defect, located exactly
+
+`results/qc/leakage_audit.json` recorded composition-only platform AUROC
+**0.6451** against a random-halves control of **0.5150**, an excess of
+**+0.1301**. D052 established that this pair does not reproduce and that the
+cause is inside the script rather than in the interpreter or the libraries.
+This entry identifies the mechanism.
+
+**[FACT]** Peptides are held in `by_unit`, a `defaultdict(set)` of strings.
+Three places flattened a set into a list — `groups[key] += list(by_unit[u])`
+for the platform arm, and the two comprehensions building `ga` and `gb` for the
+control. **Python randomises string hashing per process**, so each of those
+lists came out in a different order on every run.
+
+**[FACT]** `lda_auroc` splits its inputs **by position**:
+
+```python
+na, nb = len(XA)//2, len(XB)//2
+trA, teA, trB, teB = XA[:na], XA[na:], XB[:nb], XB[nb:]
+```
+
+The first half trains and the second half tests. **List order therefore chose
+the train/test split**, and a fixed `SEED` could not prevent it, because the
+seed governs `rng.sample`'s selection and not the order of the sequence it
+samples from. That is why one half of the script reproduced and the other did
+not.
+
+### 2. The fix, and why sorting does not bias it
+
+`sorted()` is now used at each of the three flattening points. **`rng.sample`
+still supplies the randomisation**, drawing a random subsample in random order
+from a now-deterministic starting list, so the train/test split remains random
+with respect to composition. Sorting fixes the starting point; it does not
+order the data fed to the classifier. Had the sort reached `lda_auroc` directly
+it would have been a serious defect, splitting peptides alphabetically and so
+by first residue — a composition feature.
+
+**[FACT] Determinism verified.** Three runs under `PYTHONHASHSEED` 1, 2 and 3
+produce byte-identical output, sha256 `f38c8745b840f033…` in all three. Before
+the fix no two runs agreed.
+
+**[FACT] Part 1 is bit-for-bit unchanged.** All nine of its fields are
+identical to the published artifact, `leakage_mean_pct` included at
+14.592737536340957, as are both length distributions. This is the evidence that
+the patch touched only the sampling path.
+
+### 3. The corrected pair
+
+| | published, v1 | **corrected, v2** | change |
+|---|---|---|---|
+| composition-only platform AUROC | 0.6451 | **0.6404** | −0.0047 |
+| random-halves control | 0.5150 | **0.5170** | +0.0021 |
+| excess over control | +0.1301 | **+0.1234** | −0.0067 |
+
+**The finding stands.** The excess remains large and positive: composition
+alone separates the two platforms far above a control that shuffles
+participants instead. D005's and D025's conclusion — that platform is learnable
+from peptide sequence, and that the endpoint is therefore a joint claim about
+unseen individuals and unseen instrument conditions — is unchanged. What
+changes is that the number supporting it can now be recomputed.
+
+All three corrected values fall **inside** the eleven-draw ranges D052
+recorded (0.6394–0.6433, 0.5150–0.5184, +0.1226–+0.1277). The published v1
+values fall outside them on all three. This entry still does not claim to know
+why; it records that the deterministic value is an ordinary member of the
+distribution the defective code sampled from, and that the published one was
+not.
+
+### 4. What the gate never checked
+
+**[FACT]** Freeze check 4 verifies 44 headline numbers against their artifacts.
+`leakage_audit.json` is **not among the artifacts it reads**, so 0.6451, 0.5150
+and +0.1301 appeared in `REPORT.md` without ever being gate-verified. Check 5
+regenerates the figures from the artifact but does not re-run the script that
+writes it. **Nothing in the nine checks would have failed at any point.** That
+is the gap Q1-008 exists to close, and it is why this defect survived from
+run-010 until an audit went looking.
+
+### 5. What was written, and what was deliberately not
+
+**Written.** `results/qc/leakage_audit_v2.json` (new, deterministic);
+`scripts/leakage_audit.py` (three `sorted()` calls, a new output name, and a
+docstring recording all of this); `scripts/make_figures.py` (reads v2; part 1's
+fields are identical in both files, so only the platform panel moves);
+`results/figures/F15_four_confounds.svg` (the three numbers);
+`results/figures/F14_study_design.svg` (**its source caption only** — one line,
+naming the file it read); `LIMITATIONS.md` L1 (the corrected pair, and a note
+that the superseded one stood there until today).
+
+**Not written, by decision.** `results/qc/leakage_audit.json` is **unmodified**.
+It is the record of what was published and it cannot be regenerated by any
+version of this code, which is itself the finding. `results/qc/QC_G5.md` keeps
+its numbers and gains a supersession pointer: it is the contemporaneous record
+of run-010 and reports what that run produced. **Rewriting a dated gate record
+to show numbers that run never produced would be the same class of error this
+project exists to catch.** `REPORT.md` is untouched under D041 and still states
+the superseded pair; it is withheld, and the correction is recorded here and in
+`LIMITATIONS.md`, which ships.
+
+Seven of the nine figures regenerate byte-identically, verified before and
+after.
+
+**RESOLVED.** The measurement is deterministic, the published value is on the
+record as irreproducible, and the conclusion it supported is unchanged.
+
+---
+
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites

@@ -412,7 +412,7 @@ def fig_design(path, F, SF, sel, fin, endp, leak, pc, n_acq, n_class1, n_test,
 
     s.append(txt(28, H - 34, 'Sources: data/derived/FREEZE.json, SPLIT.csv, FILE_MAP.csv; '
                  'results/model/selection.json, final.json, endpoint.json; '
-                 'results/qc/leakage_audit.json, predictor_comparison_all.json.',
+                 'results/qc/leakage_audit_v2.json, predictor_comparison_all.json.',
                  'note'))
     s.append(txt(28, H - 18, f'The realised split leaks {leak_real:.2f}%, near the top of the '
                  f'{leak["leakage_min_pct"]:.2f}–{leak["leakage_max_pct"]:.2f}% range; the '
@@ -523,7 +523,7 @@ def fig_confounds(path, leak, negd, mism, endp, leak_real):
     s.append(txt(dx, base + 38, 'Roughly one in nine. Each square is one per cent of the', 'note'))
     s.append(txt(dx, base + 54, 'negative class; shaded squares are mislabelled.', 'note'))
 
-    s.append(txt(28, H - 16, 'Sources: results/qc/leakage_audit.json, '
+    s.append(txt(28, H - 16, 'Sources: results/qc/leakage_audit_v2.json, '
                  'negative_diagnostic.json, predictor_task_mismatch.json, '
                  f'results/model/endpoint.json. Floor {FLOOR:.3f} is the preregistered '
                  'figure; recomputed on the frozen dataset it is 0.636.', 'note'))
@@ -704,7 +704,9 @@ def main():
     F = json.loads((D/'FREEZE.json').read_text())
     SF = json.loads((D/'SPLIT_FREEZE.json').read_text())
     sel, fin = J('model/selection.json'), J('model/final.json')
-    endp, leak = J('model/endpoint.json'), J('qc/leakage_audit.json')
+    # D053: the platform pair comes from the deterministic v2 artifact. Part 1
+    # (the leakage distribution) is bit-for-bit identical in both files.
+    endp, leak = J('model/endpoint.json'), J('qc/leakage_audit_v2.json')
     negd, mism = J('qc/negative_diagnostic.json'), J('qc/predictor_task_mismatch.json')
     fm = list(_csv.DictReader((D/'FILE_MAP.csv').open()))
     split = {r['unit_id']: r['primary_partition']
