@@ -2884,6 +2884,14 @@ recorded in this entry and carried into any manuscript drawn from it.
 ---
 ## D044 — Three construction defects measured; the preregistered result is unchanged and the margins are restated · RESOLVED as to measurement
 
+> **Pointer, added 2026-10-12 by D058:** defect B's **[ESTIMATE]** of −0.0030 AP
+> is **confirmed, not replaced**. D058 reproduces it at −0.0031 as the realistic
+> insertion case, shows the unique-versus-occurrence ambiguity this entry
+> flagged is worth 0.0009% of the negative pool, and adds an assumption-free
+> worst case of **−0.0301** that the preregistered decision survives. One
+> discrepancy against this entry's eligible-pool figures is **unresolved**. This
+> entry is not otherwise edited.
+
 **Opened:** 2026-10-12 · **Follows D043** · **Requested by the project owner**
 
 **Decision: record three defects with their measured effect, modify no frozen
@@ -4561,6 +4569,164 @@ nothing is retrained — the checkpoints are read.
 
 **RESOLVED.** The comparison is decomposed, the causal wording is gone, and what
 remains is reported as a residual rather than an effect.
+
+---
+
+
+## D058 — The decoy exposure is bounded, and D044's estimate survives it · RESOLVED as to the AP cost
+
+**Opened and resolved:** 2026-10-12 · **Stage 6 of the Q1 correction plan, task
+Q1-009b** · **Tests, and confirms, D044 defect B** · **Requested by the project
+owner**
+
+**Decision: replace the assumption D044 flagged with a measurement, bound the
+cost adversarially rather than estimating it, record what the bound does not
+cover, and leave one discrepancy unresolved rather than explaining it away.**
+
+### 1. What was open
+
+D044 defect B measured that `build_dataset.py` rejects candidate decoys found in
+`observed`, accumulated across all 52 participants including the ten held out.
+It estimated the cost at **−0.0030 AP**, under an explicit assumption — uniform
+sampling from the *unique* eligible pool — which it flagged as imperfect,
+because the code reservoir-samples k-mer *occurrences* and then deduplicates,
+with the direction of the bias unestablished.
+
+**That estimate is the entire basis for treating defect B as an extension rather
+than a release blocker.** An estimate resting on an unvalidated assumption is a
+weak basis for that decision.
+
+### 2. The flagged assumption is worth 0.0009%
+
+**[FACT]** The proteome was re-retrieved and its SHA-256 matches the S5
+provenance record exactly — `64299d01…`, 7,728,297 bytes — so the k-mer space is
+the one the frozen dataset was built from. The reconstruction reproduces D044's
+universe (**2,658,972**), its test-only total (**364,900**), and **all five
+per-length test-only counts and negatives-drawn counts exactly**.
+
+**[FACT]** Both weightings, computed rather than assumed:
+
+| | expected false negatives | of 520,000 |
+|---|---|---|
+| unique-weighted (D044's assumption) | **4264.0** | 0.820% |
+| occurrence-weighted (what the reservoir samples) | **4259.3** | 0.819% |
+| **difference** | **4.7** | **0.0009%** |
+
+**The ambiguity D044 could not resolve is numerically negligible.** This
+confirms D044's estimate; it does not overturn it.
+
+**[FACT]** The trivial assumption-free count bound — every eligible test-only
+peptide drawn — is **361,740, or 69.6% of the negative pool**. It is vacuous,
+and reported so the reader sees why the bound belongs on the AP cost at a
+bracketed count rather than on the count alone.
+
+### 3. The bound, and why it is a bound
+
+Writing average precision over positives *i* as
+
+```
+AP = (1/P) · Σ_i  t_i / (t_i + n_i)
+```
+
+where *t_i* counts positives ranked at or above *i* and is **invariant** under
+any change to the negatives, and *n_i* counts negatives above *i*: AP is
+strictly decreasing in every *n_i*. Deleting a negative ranked below *i* leaves
+*n_i* alone, while deleting one above it lowers *n_i* and **raises** AP — so the
+minimal-help deletion is the *k* lowest-scoring negatives. And no insertion
+raises every *n_i* by more than one placed above all positives.
+
+**The pair therefore minimises AP at that k.** It is a guaranteed upper bound on
+the loss, not an adverse scenario. An exhaustive search over removal strategies
+(lowest / random / highest) crossed with insertion strategies (top / median /
+bottom / random) confirms the claimed construction attains the minimum.
+
+Inserted scores are `max + 1.0`, strictly greater than every real score, so
+`kind='stable'` never interleaves them and no tie convention is engaged.
+
+**[FACT]** At **k = 82 false negatives per unit** — 4264 across 52 units, which
+is D044's 81.6 by the same arithmetic:
+
+| | mean per-participant AP | nominal-99% | delta |
+|---|---|---|---|
+| base | 0.755085 | [0.7373, 0.7718] | — |
+| **realistic insertion** | 0.751942 | [0.7342, 0.7685] | **−0.0031** |
+| **worst case** | **0.724961** | **[0.7078, 0.7411]** | **−0.0301** |
+
+**The realistic case reproduces D044's −0.0030 at −0.0031.** The two answer
+different questions and neither supersedes the other: D044 estimated what would
+happen, this bounds what could.
+
+### 4. The preregistered decision survives
+
+**[FACT]** The worst-case interval's lower end, **0.7078**, clears the
+preregistered threshold of **0.647** by **+0.0608**.
+
+**[FACT] That interval is a SENSITIVITY interval, not a calibrated confidence
+bound**, and the entry says so wherever it appears. It is a cluster bootstrap of
+the *perturbed* per-unit values, so it carries the bootstrap's own
+under-coverage at ten units — R6 measured nominal-95% delivering 0.884–0.890,
+which is why nominal-99% is used throughout — and it is **conditional on exactly
+82 false negatives in every unit**. The realised per-unit count is a random
+draw and units above 82 fare worse.
+
+**[CORRECTION]** A first draft of this work reported a worst-case lower bound of
+**0.7067**, obtained by subtracting the worst-case delta from the recorded CI
+lower bound. **That is not a valid bound on the perturbed estimand** and is
+withdrawn. Bootstrapping the perturbed per-unit values directly gives 0.7078.
+The withdrawn figure happened to be more conservative by 0.0011, but
+conservative by accident is not the same as correct, and it was labelled a
+confidence bound, which it was not.
+
+### 5. An unresolved discrepancy
+
+**[FACT]** This reconstruction's eligible pool is smaller than D044's at every
+length, by **49,589 to 50,015** — a near-constant offset:
+
+| L | D044 pool as built | this reconstruction |
+|---|---|---|
+| 8 | 9,905,950 | 9,856,225 |
+| 9 | 9,685,563 | 9,635,548 |
+| 10 | 9,783,092 | 9,733,122 |
+| 11 | 10,031,599 | 9,981,790 |
+| 12 | 10,249,119 | 10,199,530 |
+
+The constancy rules out the two obvious explanations. The expressed-protein
+count differs — **20,158 here against 20,152** elsewhere in this log — but six
+extra proteins would push the pool *up*, not down. Skipping k-mers with
+non-standard residues would scale with length, not stay flat.
+
+**D044's audit was run outside this repository and its script is not available,
+so the definitional difference cannot be settled from the evidence here.** It
+propagates to k as **+0.5%** (4264.0 against 4242.5), which changes no
+conclusion. It is recorded as **UNRESOLVED**, in the entry and in the artifact's
+`d044_comparison.status` field, rather than explained away.
+
+### 6. What this does and does not license
+
+**Supported.** The weighting ambiguity is numerically negligible under the
+reconstructed definitions. The worst case bounds the AP cost at a given k. The
+preregistered decision survives that worst case with margin.
+
+**Not supported.** That every assumption in D044 is harmless — one sensitivity
+analysis does not establish that. That the construction is acceptable in
+principle — **it remains non-test-blind, and a bounded cost is not no defect.**
+That the bound is unconditional — it is conditional on k per unit, and on the
+AP estimand alone.
+
+**Demoting defect B to an extension is justified on the AP cost**, now by a
+bound rather than an estimate. The defect itself is not closed, and L-entries
+for it stand.
+
+### 7. What was written
+
+`scripts/decoy_exposure_bound.py` and `results/qc/decoy_exposure_bound.json`,
+both new. **No frozen artifact is modified**, nothing is retrained, and the
+endpoint is unchanged. The proteome is retrieved on demand and not committed;
+its checksum is verified against S5 before use and the script refuses if the
+UniProt release has rotated.
+
+**RESOLVED as to the AP cost.** The estimate D044 could not validate is
+confirmed, bounded, and scoped.
 
 ---
 

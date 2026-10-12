@@ -1,0 +1,161 @@
+{
+ "decision": "D058",
+ "replaces": "the -0.0030 AP ESTIMATE in D044 defect B, which assumed uniform sampling from the unique eligible pool",
+ "proteome_sha256": "64299d01e8f41fb6ef03cdf7ec051d3d4e5f041003b6b0fa75b09d439af79dce",
+ "proteome_matches_s5_record": true,
+ "per_length": {
+  "8": {
+   "negatives_drawn": 81422,
+   "unique_eligible_excluding_testonly": 9856225,
+   "unique_testonly_in_proteome": 56568,
+   "occurrences_eligible_excluding_testonly": 10808107,
+   "occurrences_testonly_in_proteome": 62037,
+   "expected_false_negatives_unique_weighted": 464.63995525781684,
+   "expected_false_negatives_occurrence_weighted": 464.6835050207247,
+   "trivial_max_false_negatives": 56568
+  },
+  "9": {
+   "negatives_drawn": 160700,
+   "unique_eligible_excluding_testonly": 9635548,
+   "unique_testonly_in_proteome": 101711,
+   "occurrences_eligible_excluding_testonly": 10439751,
+   "occurrences_testonly_in_proteome": 110046,
+   "expected_false_negatives_unique_weighted": 1678.5994600739284,
+   "expected_false_negatives_occurrence_weighted": 1676.2779606090999,
+   "trivial_max_false_negatives": 101711
+  },
+  "10": {
+   "negatives_drawn": 132243,
+   "unique_eligible_excluding_testonly": 9733122,
+   "unique_testonly_in_proteome": 97071,
+   "occurrences_eligible_excluding_testonly": 10467279,
+   "occurrences_testonly_in_proteome": 104323,
+   "expected_false_negatives_unique_weighted": 1305.8706225808587,
+   "expected_false_negatives_occurrence_weighted": 1305.0043398342086,
+   "trivial_max_false_negatives": 97071
+  },
+  "11": {
+   "negatives_drawn": 89813,
+   "unique_eligible_excluding_testonly": 9981790,
+   "unique_testonly_in_proteome": 67375,
+   "occurrences_eligible_excluding_testonly": 10671981,
+   "occurrences_testonly_in_proteome": 71745,
+   "expected_false_negatives_unique_weighted": 602.1545944364532,
+   "expected_false_negatives_occurrence_weighted": 599.7578200523728,
+   "trivial_max_false_negatives": 67375
+  },
+  "12": {
+   "negatives_drawn": 55822,
+   "unique_eligible_excluding_testonly": 10199530,
+   "unique_testonly_in_proteome": 39015,
+   "occurrences_eligible_excluding_testonly": 10850502,
+   "occurrences_testonly_in_proteome": 41674,
+   "expected_false_negatives_unique_weighted": 212.71531550625602,
+   "expected_false_negatives_occurrence_weighted": 213.5777119282685,
+   "trivial_max_false_negatives": 39015
+  }
+ },
+ "total_negatives": 520000,
+ "k_unique_weighted": 4263.979947855313,
+ "k_occurrence_weighted": 4259.301337444675,
+ "k_bracket": [
+  4259.301337444675,
+  4263.979947855313
+ ],
+ "units_total": 52,
+ "k_per_unit_unique_weighted": 81.99961438183294,
+ "k_per_unit_occurrence_weighted": 81.90964110470529,
+ "k_per_unit_note": "Negatives are drawn 10,000 per unit across all 52 units, so the per-unit count is the total divided by 52. D044 reports 81.6 per test unit by the same arithmetic.",
+ "k_trivial_maximum": 361740,
+ "d044_comparison": {
+  "d044_pool_as_built": {
+   "8": 9905950,
+   "9": 9685563,
+   "10": 9783092,
+   "11": 10031599,
+   "12": 10249119
+  },
+  "d044_k_unique_weighted": 4242.5,
+  "d044_expressed_proteins": 20152,
+  "this_expressed_proteins": 20158,
+  "status": "UNRESOLVED",
+  "note": "Test-only counts and negatives drawn match D044 exactly at every length, and the universe (2,658,972) and test-only total (364,900) match. The eligible pool does not: this reconstruction is smaller by 49,589 to 50,015 at every length, a near-constant offset. That rules out the 6-protein difference in the expressed set, which would push the pool the other way, and it rules out non-standard-residue skipping, which would scale with length. D044's audit was run outside this repository and its script is not available, so the definitional difference CANNOT BE SETTLED from the evidence here. It propagates to k as +0.5% (4264.0 against 4242.5), which does not affect any conclusion drawn here. Recorded as unresolved rather than explained."
+ },
+ "k_trivial_maximum_note": "Every eligible test-only peptide drawn. Assumption-free and vacuous: it would make most of the negative pool false. Reported so the reader can see why the bound is placed on the AP cost at a bracketed count instead.",
+ "baseline_mean_ap": 0.7550853623153024,
+ "baseline_ci": [
+  0.7372578186109654,
+  0.7717721089123811
+ ],
+ "n_units": 10,
+ "k_evaluated_per_unit": 82,
+ "worst_case_mean_ap": 0.7249606605816974,
+ "worst_case_ci": [
+  0.7078380151565465,
+  0.7410541921051489
+ ],
+ "worst_case_delta": -0.03012470173360504,
+ "realistic_insertion_mean_ap": 0.7519420708258363,
+ "realistic_insertion_ci": [
+  0.7341717364206509,
+  0.7685299585851684
+ ],
+ "realistic_insertion_delta": -0.003143291489466127,
+ "realistic_insertion_note": "Replacement scores drawn from the unit's own score distribution. This is the realistic case and NOT a bound. It is what D044's -0.0030 estimate corresponds to, and it reproduces that figure.",
+ "preregistered_threshold": 0.647,
+ "worst_case_lower_bound_clears_threshold": true,
+ "worst_case_margin_above_threshold": 0.06083801515654652,
+ "interval_status": "SENSITIVITY INTERVAL, NOT A CALIBRATED CONFIDENCE BOUND. It is a cluster bootstrap of the perturbed per-unit values, so it carries the bootstrap's own under-coverage at ten units (R6: nominal-95% delivers 0.884-0.890, hence nominal-99%), and it is CONDITIONAL on exactly k false negatives in every unit. The realised per-unit count is a random draw; units above k fare worse. Subtracting the worst-case delta from the recorded CI lower bound, which an earlier draft did, is not valid and is not used.",
+ "naive_subtraction_not_used": 0.7067152889881273,
+ "worst_case_curve": {
+  "0": {
+   "mean_ap": 0.7550853623153024,
+   "delta_vs_base": 0.0
+  },
+  "1": {
+   "mean_ap": 0.7543542923288852,
+   "delta_vs_base": -0.0007310699864172543
+  },
+  "5": {
+   "mean_ap": 0.7520313859087958,
+   "delta_vs_base": -0.00305397640650662
+  },
+  "10": {
+   "mean_ap": 0.7495743440881742,
+   "delta_vs_base": -0.005511018227128184
+  },
+  "25": {
+   "mean_ap": 0.7433228616365398,
+   "delta_vs_base": -0.01176250067876261
+  },
+  "50": {
+   "mean_ap": 0.7345904055404103,
+   "delta_vs_base": -0.020494956774892104
+  },
+  "82": {
+   "mean_ap": 0.7249606605816974,
+   "delta_vs_base": -0.03012470173360504
+  },
+  "100": {
+   "mean_ap": 0.7200303310086319,
+   "delta_vs_base": -0.03505503130667054
+  },
+  "150": {
+   "mean_ap": 0.7075832175037202,
+   "delta_vs_base": -0.047502144811582214
+  },
+  "200": {
+   "mean_ap": 0.6964613129710192,
+   "delta_vs_base": -0.058624049344283224
+  },
+  "400": {
+   "mean_ap": 0.659765090977316,
+   "delta_vs_base": -0.09532027133798648
+  }
+ },
+ "bound_method": "For k false negatives per unit, the k lowest-scoring negatives are removed and k negatives inserted above the entire ranking. This is adversarial on both sides and makes no assumption about which peptides would have been drawn or how the network would score them. The true cost at that k cannot exceed it.",
+ "what_this_does_not_do": "It does not say which k is correct. The bracket is the range the flagged unique-versus-occurrence uncertainty admits; it is not a confidence interval, and it assumes the reservoir is otherwise unbiased. It bounds the AVERAGE-PRECISION cost only, conditional on k per unit. A bounded and tolerable cost is not the same as no defect: the construction remains non-test-blind in principle, and nothing here shows D044's other assumptions are harmless.",
+ "seeds": {
+  "bootstrap": 221243726
+ }
+}
