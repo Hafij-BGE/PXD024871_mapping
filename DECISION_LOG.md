@@ -4731,6 +4731,117 @@ confirmed, bounded, and scoped.
 ---
 
 
+## D059 — The gate learns to regenerate, not only to hash · RESOLVED
+
+**Opened and resolved:** 2026-10-12 · **Stage 7 of the Q1 correction plan, task
+Q1-008** · **Closes the gap that let D053's defect survive** · **Requested by
+the project owner**
+
+**Decision: add a tenth check that re-runs each classified script and compares
+its artifact, run it always on `--write` and on request otherwise, and require
+every script to be classified so a newcomer cannot slip in unexamined.**
+
+### 1. The gap, stated precisely
+
+**[FACT]** The nine checks hash outputs. Check 5 regenerates the figures *from
+stored JSON*; check 8 compares file hashes to a manifest *written from the same
+tree*. **No check re-ran the script that wrote the JSON.**
+
+**[FACT]** `leakage_audit.py` part 2 was non-deterministic from run-010
+(2026-10-06) until D053 (2026-10-12). **Every one of the nine checks passed on
+every day of that period.** The gate proved the artifact had not been tampered
+with, which was true and useless: the artifact had never been reproducible.
+
+A hash proves a file has not changed. It says nothing about whether the file
+could be produced again. Those are different properties and the gate only had
+the first.
+
+### 2. Three classes, and why the distinction is load-bearing
+
+**BYTES** — deterministic on tracked inputs, no model scoring. Must regenerate
+byte-identically. This is where the hash-ordering defect class lives and where
+the check has teeth. Four scripts: `union_analysis.py`,
+`negative_diagnostic.py`, `recurrence_oracle.py`, **`leakage_audit.py`**.
+
+**NUMERIC** — scores the 25 frozen checkpoints. torch accumulates in a
+non-associative order, so byte-identity is **not achievable**: the endpoint
+reproduces to −4.2e-09 and `endpoint_by_length` to **2.2e-08**, measured while
+building this check. Compared at a tolerance of 1e-6 instead — four orders of
+magnitude above the observed drift and far below any real change. Two scripts:
+`endpoint_by_length.py`, `prevalence_matched.py`.
+
+**Demanding byte-identity for the NUMERIC class would produce a gate that fails
+for a reason nobody can fix, which is worse than no gate.**
+
+**EXEMPT** — 31 scripts that cannot run from tracked inputs alone, or must never
+run. Each carries its reason in `scripts/regen_check.py`. `build_dataset.py` and
+`build_split.py` are exempt because they would **rebuild the preregistered
+artifacts** that check 2 exists to prove have not moved; `train_cnn.py` because
+the checkpoints are hash-verified inputs trained on hardware this environment
+does not have (D052); the predictor and PXD004023 scripts because their inputs
+are licensed, withheld, or gigabytes.
+
+**An exemption is a claim.** They are listed so a reader can dispute them,
+rather than being invisible by omission.
+
+### 3. The check must have been seen to fail
+
+**[FACT]** Three failure modes were exercised, each with its precondition
+proven first:
+
+| injected | result |
+|---|---|
+| D053's fix reverted — `sorted(by_unit[u])` → `list(by_unit[u])` | `FAIL leakage_audit.py NOT byte-identical (833 -> 832 bytes)`, exit 1 |
+| an unclassified script added to `scripts/` | `FAIL unclassified script(s): ['zz_newcomer.py']` |
+| an artifact deleted | `FAIL union_analysis.py artifact missing` |
+
+**The first is the exact defect that escaped for six days.** The gate now
+catches it in 93 seconds.
+
+**[FACT]** The classification is complete: 37 scripts, 6 regenerable, 31 exempt,
+0 unclassified. An unclassified script **fails** the check — the same discipline
+check 5 applies to figures, for the same reason: a count silently accepts a
+newcomer, a named set does not.
+
+### 4. Cost, and where it is paid
+
+**[FACT]** The full check is **208 seconds**, against 3–5 for the other nine.
+That cost is real and would not be paid on every invocation, so it is placed
+where the claim is made:
+
+- `--verify` runs the fast nine and **skips** check 10, saying so.
+- `--verify --regen` runs all ten.
+- **`--write` always runs all ten**, and refuses to freeze if any fail.
+
+Freezing is the moment the repository asserts a verified state. **That is the
+moment the assertion should be tested**, not three minutes earlier at the
+reader's discretion.
+
+### 5. Safety
+
+**[FACT]** Each script writes to its real artifact path, so the check snapshots
+the bytes before the run and restores them in a `finally`. For a healthy
+deterministic script the restore is a no-op; for a failing or interrupted one it
+guarantees the tree is not left modified. Verified: after the full run and after
+all three injected failures, `git status` showed no modified file.
+
+**No preregistered artifact can be touched**, because the two scripts that write
+them are exempt by name and the check never invokes them.
+
+### 6. What this does not do
+
+It does not prove the exempt scripts reproduce — **31 of 37 are outside it**,
+and the reasons are stated rather than the coverage overstated. It does not
+prove the NUMERIC pair is deterministic, only that it agrees within 1e-6. And it
+cannot catch a defect that is deterministic and wrong; it catches
+irreproducibility, which is a narrower thing.
+
+**RESOLVED.** The gate now tests that artifacts can be made, not only that they
+have not moved.
+
+---
+
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites

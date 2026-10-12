@@ -14,6 +14,13 @@ Checks:
   6  every gate in SECTIONS.md is PASSED or carries a recorded unavailability
   7  every decision D001..Dnnn has an entry and a resolved status
   8  the trainer's own selftest passes
+ 10  every classified artifact REGENERATES from its script (Q1-008, D059)
+
+Check 10 is the one that was missing. Checks 5 and 8 compare hashes; nothing
+re-ran the scripts that wrote them, so `leakage_audit.py` part 2 stayed
+non-deterministic from run-010 until D053 while every check passed. It costs
+about three minutes, so `--verify` runs the fast checks by default, `--regen`
+adds it, and `--write` ALWAYS runs it: freezing is the moment the claim is made.
 """
 
 import hashlib, json, re, subprocess, sys
@@ -44,7 +51,7 @@ def git(*a):
                           capture_output=True, text=True).stdout.strip()
 
 
-def verify(writing=False):
+def verify(writing=False, regen=False):
     print("1. working tree")
     ok(git('status', '--porcelain') == '', 'clean, nothing untracked')
 
@@ -191,6 +198,19 @@ def verify(writing=False):
                         '--mode', 'selftest'], capture_output=True, text=True)
     ok('ALL SELFTESTS PASS' in r.stdout, 'encoder, AP, gradients, overfit')
 
+    print("\n10. artifacts regenerate from their scripts")
+    if regen or writing:
+        r = subprocess.run([sys.executable, str(REPO/'scripts'/'regen_check.py')],
+                           capture_output=True, text=True)
+        for line in r.stdout.splitlines():
+            if line.strip().startswith(('PASS', 'FAIL', 'SKIP')):
+                print('  ' + line.strip())
+        ok(r.returncode == 0, 'every classified artifact regenerates',
+           '' if r.returncode == 0 else
+           (r.stdout.strip().splitlines() or [''])[-1])
+    else:
+        print('  SKIP  not requested; --regen runs it, --write always does')
+
     print()
     if FAIL:
         print(f"VERIFY FAILED: {len(FAIL)} check(s) -> {FAIL}")
@@ -247,8 +267,9 @@ def write_manifest():
 
 
 if __name__ == '__main__':
-    mode = sys.argv[1] if len(sys.argv) > 1 else '--verify'
-    good = verify(writing=(mode == '--write'))
+    args = sys.argv[1:]
+    mode = args[0] if args else '--verify'
+    good = verify(writing=(mode == '--write'), regen=('--regen' in args))
     if mode == '--write':
         if not good:
             sys.exit("\nREFUSING to freeze: verification failed. A checksum manifest "
