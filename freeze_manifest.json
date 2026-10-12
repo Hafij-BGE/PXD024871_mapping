@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T02:51:33Z",
+ "frozen_utc": "2026-10-12T03:25:11Z",
  "branch": "main",
- "parent_commit": "71e476f0a89897cc306acd5a7afb19cb9ef0e149",
- "n_files": 371,
- "total_bytes": 113513669,
+ "parent_commit": "2f33506535a1125ed3ebc426818d73a350f19090",
+ "n_files": 373,
+ "total_bytes": 113562566,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 187185,
-   "sha256": "22f0c264bd9414f5bc52da91657db5c53d3072a9f7174df894284d3e5007396a"
+   "bytes": 190854,
+   "sha256": "e5c1156f6cdaeeb2f14ab50340583f5967d4c275a946d889e0e6e5cfe9ca8540"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -823,6 +823,16 @@
    "path": "results/figures/F13_predictor_comparison.svg",
    "bytes": 7206,
    "sha256": "e8b87ed940cc60abd48c29a834b9dcabd3331581b05b001a80469c1a8168114f"
+  },
+  {
+   "path": "results/figures/F14_study_design.svg",
+   "bytes": 9101,
+   "sha256": "993c952a6422eb47eada46c67ae728be750303a0a7c5818107244c47c8581c50"
+  },
+  {
+   "path": "results/figures/F15_four_confounds.svg",
+   "bytes": 19788,
+   "sha256": "20447492f8f7202e7444f8d502b4e7eb2fe3d52cb68a399063340a651c0ebde0"
   },
   {
    "path": "results/figures/F7_endpoint.svg",
@@ -1771,8 +1781,8 @@
   },
   {
    "path": "scripts/freeze.py",
-   "bytes": 11766,
-   "sha256": "2bbb37688c28cc506f210387be81d22deb8b592aa53a0dd262b17c06b97e516e"
+   "bytes": 12453,
+   "sha256": "f12cd84f3361b2b04d5c370e5deb7e6578c14838667dfc29373ae55c8dcdd111"
   },
   {
    "path": "scripts/leakage_audit.py",
@@ -1781,8 +1791,8 @@
   },
   {
    "path": "scripts/make_figures.py",
-   "bytes": 22777,
-   "sha256": "f97aa762734ad595185795e495797104527569050b1e36317dfb4f20211da645"
+   "bytes": 38429,
+   "sha256": "bbee84893bc646b7ad53f1450111c02fa3562736a9a15db3c396b0e41d63b3c5"
   },
   {
    "path": "scripts/multi_allele.py",
