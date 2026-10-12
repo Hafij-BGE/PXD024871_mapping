@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T19:56:27Z",
+ "frozen_utc": "2026-10-12T21:12:43Z",
  "branch": "main",
- "parent_commit": "bfcf6c8630ba3c1fa4e8c15d3d3442fddf32260c",
- "n_files": 393,
- "total_bytes": 113799891,
+ "parent_commit": "6719f50d7fa4ea44456ec81be486951ef80474f4",
+ "n_files": 396,
+ "total_bytes": 113865888,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -18,6 +18,11 @@
    "path": ".github/README.md",
    "bytes": 7042,
    "sha256": "09bcfb4bb99ca0c5173ae3d39aca0993218ecac9ea2a03327bef113fb491e92d"
+  },
+  {
+   "path": ".github/workflows/invariants.yml",
+   "bytes": 1846,
+   "sha256": "d13e3a72aa4b0bdb04a8412035911238737642ffbe6cd3a0a6659098f2350bcf"
   },
   {
    "path": ".gitignore",
@@ -41,8 +46,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 255823,
-   "sha256": "9d35b5f7b748b86c8af7a6a269378c2a6cbcc9eea9dbea95210af5bf7db0c6dc"
+   "bytes": 262433,
+   "sha256": "e2be550001ffb444c8eee635d85bfbe59e4ef02a2f336be6aa7e089c97f1e4c3"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -71,8 +76,8 @@
   },
   {
    "path": "LIMITATIONS.md",
-   "bytes": 19592,
-   "sha256": "1c03d68386af503d635516565029d8663dd60aae0b57b3500fee8e67da5b9233"
+   "bytes": 20402,
+   "sha256": "b490e498d1603e55da733969cd23e6c293a5b0eea6d3d5b5fe8e83dd5e93a148"
   },
   {
    "path": "METHODOLOGY.md",
@@ -1968,6 +1973,16 @@
    "path": "scripts/union_analysis.py",
    "bytes": 4411,
    "sha256": "2946986076cf788e3eeef5783ea5fad442d2ba42c3dffcddef0c7ee98aeafb45"
+  },
+  {
+   "path": "tests/run.sh",
+   "bytes": 1785,
+   "sha256": "84aa25a8ec28dc563c4c42fa62e20177012aa86a1c2650757e40a1c944e17bd4"
+  },
+  {
+   "path": "tests/test_invariants.py",
+   "bytes": 54946,
+   "sha256": "bd6fd252456a725c35fc6926546d1a3c847e9a4a05af7697734999945dee3824"
   },
   {
    "path": "vocab/enrichment_class.tsv",
