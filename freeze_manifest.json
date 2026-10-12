@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T03:54:14Z",
+ "frozen_utc": "2026-10-12T07:38:41Z",
  "branch": "main",
- "parent_commit": "6f08ba95f908e7be0dc0c557f3d5053d6fa7801e",
+ "parent_commit": "e4c332f09fff1610cc5e13cb1273c3274a4b3fe1",
  "n_files": 373,
- "total_bytes": 113568652,
+ "total_bytes": 113573980,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -41,8 +41,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 196550,
-   "sha256": "fd82f465cbc5a38c69bcff438113045955be97b058557bcbdb77a49f6be87243"
+   "bytes": 201757,
+   "sha256": "793c86686647713c429ffdb57e6d97c7f70b1052e4413db8183c1de091d68755"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -56,8 +56,8 @@
   },
   {
    "path": "FREEZE_RECORD.md",
-   "bytes": 12348,
-   "sha256": "0f88454bfc6de52e657fd685e335ec7ebb9ce142e31c3fdbcce2923be0a19b3a"
+   "bytes": 12458,
+   "sha256": "30b5c64c7de28885115480116b989445078bf36e3a6628dd562328d3e029f415"
   },
   {
    "path": "LICENSE",
@@ -71,8 +71,8 @@
   },
   {
    "path": "LIMITATIONS.md",
-   "bytes": 16757,
-   "sha256": "303c7227345bfb05b4f09075c6ba374f5fb484d60226fb942c349fce47dfac51"
+   "bytes": 16768,
+   "sha256": "ecbc8ce68db070b00e5dbbf494ce2ec6f96de1bd792df9604d98cee82b5e63d0"
   },
   {
    "path": "METHODOLOGY.md",
