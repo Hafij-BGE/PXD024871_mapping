@@ -1,11 +1,28 @@
-# Pinned for reproducibility. These are the versions env-001 resolved to on
-# 2026-10-06; see ENVIRONMENT.md. Phase A (M1-M6) needs only the standard
-# library -- numpy and scipy are for the analysis stages, torch for training.
+# Dependency versions. Two files, two purposes.
+#
+#   requirements.txt   this file -- the minimum direct dependencies, pinned to
+#                      the versions env-001 resolved to on 2026-10-06.
+#   requirements.lock  the complete transitive set of the VERIFICATION
+#                      environment, env-004, as `pip freeze --all` emitted it on
+#                      2026-10-12. Use this to reproduce reported numbers.
+#
+# See ENVIRONMENT.md for all four environments and which produced what, and
+# DECISION_LOG.md D052 for what reproduces under the pin and what does not.
+#
+# Phase A (M1-M6) needs only the standard library. numpy and scipy are for the
+# analysis stages, torch for training and for scoring stored checkpoints.
 numpy==2.4.6
 scipy==1.17.1
-# Training only. Install the build matching the target accelerator:
+# Training and checkpoint scoring. Install the build matching the target
+# accelerator:
 #   CPU   : pip install torch --index-url https://download.pytorch.org/whl/cpu
 #   CUDA  : pip install torch           (default wheel carries CUDA)
 # Left unpinned deliberately: the correct build depends on the machine, and
 # pinning one here would silently install the wrong accelerator elsewhere.
+# requirements.lock pins the CPU build actually used for verification.
+#
+# The 25 checkpoints were TRAINED under torch 2.11.0+cu130 on a Tesla T4
+# (env-002/env-003). They are not regenerable from either file and are treated
+# as hash-verified inputs. Scoring them under torch 2.14.1+cpu reproduces the
+# endpoint to -4.2e-09, which is accumulation order, not a change in the model.
 # torch

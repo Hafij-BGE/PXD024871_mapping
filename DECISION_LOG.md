@@ -3761,6 +3761,162 @@ obstacle. It does not strengthen the comparison, and §18's wording is unchanged
 ---
 
 
+## D052 — The verification environment is pinned; the training environment cannot be · RESOLVED
+
+**Opened and resolved:** 2026-10-12 · **Stage 1 of the Q1 correction plan,
+task Q1-006** · **Opens L27** · **Requested by the project owner**
+
+**Decision: pin the environment that verifies results, record that the
+environment that trained the checkpoints cannot be pinned retroactively, and
+establish by measurement which of the two candidate causes of the
+platform-confound irreproducibility is actually responsible.**
+
+### 1. Why this came first
+
+An audit on 2026-10-12 found that the platform-confound pair in
+`results/qc/leakage_audit.json` — composition-only AUROC **0.6451** against a
+random-halves control of **0.5150** — does not reproduce. Two causes were
+candidates: hash-randomised set iteration order feeding a seeded sampler, and
+drift between the environment that produced the artifact and the one now
+present. **A corrected number computed under an unpinned environment would not
+be verifiable either**, so the pin precedes the fix.
+
+### 2. Four environments, not two
+
+The audit said two. `ENVIRONMENT.md` in fact records three, and this entry adds
+a fourth:
+
+| `env_id` | Role | Python | numpy | torch |
+|---|---|---|---|---|
+| env-001 | local analysis; `RUN_LOG.md` cites it for run-001 to run-005 and **run-010, the leakage and confound audit** | 3.11.15 | 2.4.6 | none |
+| env-002 | Colab; extraction for run-006, and training | 3.13.15 | 2.4.6 | 2.11.0+cu130, Tesla T4 |
+| env-003 | Colab; later | 3.13.15 | **2.1.3** | 2.11.0+cu130, Tesla T4 |
+| env-004 | verification, pinned by this entry | 3.14.4 | 2.4.6 | 2.14.1+cpu |
+
+env-002 and env-003 differ in numpy and scipy version, which `ENVIRONMENT.md`
+records without comment. **run-010 is the leakage and confound audit**, and it
+is cited to env-001 — so the irreproducible pair was computed under Python
+3.11.15 with numpy 2.4.6 and no torch.
+
+### 3. Which cause is responsible — measured
+
+Three quantities were recomputed under env-004, two of them deterministic by
+construction and one of them the artifact in question:
+
+| Quantity | Under env-004 | Verdict |
+|---|---|---|
+| primary endpoint, scored from the 25 stored checkpoints | 0.7550853623 against 0.7550853665 recorded | **−4.2e-09** — reproduced |
+| sequence leakage over 2,000 splits: mean, median, min, max, p5, p95 | 14.59 / 14.62 / 11.76 / 17.25 / 13.14 / 15.96 | **exact** |
+| predictor comparison on the common naive row set | 165,574 rows, prevalence to six decimals, four predictor intervals bit-for-bit, CNN 2.2e-09 | **exact** |
+
+**What this does and does not establish.** Three quantities produced under
+env-001/env-002/env-003 were reproduced under env-004: the primary endpoint
+within the stated tolerance, and the sequence-leakage distribution and the
+predictor comparison exactly. **These are cross-environment comparisons against
+stored artifacts, not a test of every analysis under Python 3.11.15 and
+3.13.15** — neither interpreter was executed here, and the remaining analysis
+scripts were not re-run. **No general claim of version independence is made.**
+
+What the evidence does support is narrower and sufficient for Stage 2's
+purpose. The leakage distribution reproducing *exactly* is the informative
+case: it is computed by the same script, in the same process, from the same
+data, as the platform pair that does not reproduce. One half of
+`leakage_audit.py` reproduces and the other does not, which locates the failure
+inside the script rather than in the interpreter or the libraries. **The
+platform-confound pair remains irreproducible and requires the deterministic
+correction planned as Q1-001.**
+
+**The remaining cause is the one the audit identified**: `by_unit` is a
+`defaultdict(set)` of sequence strings, flattened by
+`groups[key] += list(by_unit[u])` and sampled by `rng.sample(...)`. Python
+randomises string hashing per process, so the list order differs between runs
+and the fixed seed draws a different subsample. Part 1 is immune because its
+only randomness is `rng.sample(units, k_test)` over a **sorted** list of unit
+identifiers, and its result is a set-intersection size, which does not depend
+on order.
+
+Eleven draws were taken under env-004, running the unmodified script with only
+its output path redirected and varying only `PYTHONHASHSEED` over 1 to 11:
+
+| | frozen artifact | eleven draws |
+|---|---|---|
+| platform AUROC | **0.6451** | 0.6394 – 0.6433 |
+| random-halves control | **0.5150** | 0.5150 – 0.5184 |
+| excess over control | **+0.1301** | +0.1226 – +0.1277 |
+
+**The frozen control value is reachable**: 0.5150 occurs exactly once among the
+eleven draws, and is their minimum. The frozen AUROC and the frozen excess
+remain above all eleven.
+
+**Eleven draws do not characterise the distribution and do not establish
+selection bias**, and none is claimed. Two readings are available and this
+entry does not choose between them: the frozen values may be a tail draw from
+the same distribution, or they may have been produced by a code or environment
+state not reconstructed here. What is certain is narrower and sufficient — the
+pair is **not reproducible**, and the corrected value and its stability are
+Q1-001's business, under Stage 2, after which the question is moot because the
+computation will have one answer.
+
+### 4. What is pinned, and what is not
+
+**Pinned.** `requirements.lock` is the complete transitive dependency set of
+env-004 as `pip freeze --all` emitted it, 14 packages. `requirements.txt` keeps
+the direct dependencies and now points at the lockfile. `ENVIRONMENT.md`'s "Not
+yet pinned" section, which said a pin was deferred until the dependency set
+stopped changing, is superseded.
+
+**Not pinned, and not pinnable.** The 25 checkpoints were trained under
+env-002/env-003: `torch 2.11.0+cu130` on a Tesla T4. This machine has no GPU
+and no CUDA 13. **The checkpoints cannot be regenerated here and this entry
+does not claim they can.** They are treated as hash-verified inputs, which is
+what `freeze_manifest.json` already makes them. Scoring them under
+`torch 2.14.1+cpu` reproduces the endpoint to −4.2e-09, which is accumulation
+order across 25 models, not a change in any model.
+
+### 5. A gap this exposed, recorded as L27
+
+`RUN_LOG.md` carries run records for run-001 to run-006 and run-010 only.
+**Model selection, the final fit, the endpoint read and the predictor
+comparison have no run record at all**, and `final.json`, `endpoint.json` and
+`selection.json` carry no field naming the versions that wrote them. The
+checkpoints' environment is therefore *inferred* from env-002/env-003 rather
+than recorded.
+
+This changes no reported number — the endpoint and the predictor comparison
+both reproduce under the pin — but it means "reproduce this in the original
+environment" has no precise referent for the artifacts that matter most. It is
+recorded as L27 rather than closed, because a run record cannot be written
+retroactively for a run that was not logged. The forward fix is an environment
+field in each result JSON, which belongs with Q1-008.
+
+### 6. What did not work, recorded because it was tried
+
+A faster equivalent of the platform measurement was written, replaying part
+1's 2,000 `rng.sample` calls to advance the stream identically while skipping
+its set unions, which consume no randomness. **It failed its own validation**:
+at `PYTHONHASHSEED=1` it returned 0.6378 against the full script's 0.6396. The
+stream-position assumption is therefore wrong in some way not identified, and
+the shortcut was discarded rather than used. All draws quoted above come from
+the unmodified script with only its output path redirected.
+
+### 7. What changed in the tree
+
+`ENVIRONMENT.md` (env-004 appended, pinning section superseded, the four-way
+table and the run-record gap added), `requirements.txt` (rewritten to name both
+files and the training-environment caveat), `requirements.lock` (new),
+`LIMITATIONS.md` (L27 added). **No artifact, result, figure or score table is
+touched**, and nothing was recomputed into the tree — the verification runs
+wrote outside it.
+
+**RESOLVED.** The environment under which results are verified is pinned and
+its reproductions are recorded. The environment under which the model was
+trained is documented and explicitly not reproducible. The cause of the
+platform-confound irreproducibility is established as iteration order, not
+version drift, which is what Stage 2 now acts on.
+
+---
+
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites

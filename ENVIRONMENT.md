@@ -33,13 +33,15 @@ Outbound HTTPS is mediated by a policy that, as of 2026-10-06, **denies
 source in `DATA_SOURCES.md` has been retrieved, and why the only analyses
 possible so far are those that require no external data.
 
-### Not yet pinned
+### Pinning status
 
-No lockfile, container image, or environment specification exists. Until one
-does, the clean-environment reproduction required by the master prompt can be
-attempted from this table but is not guaranteed byte-identical. Creating a pin
-is deferred until the dependency set stops changing; recorded here so the gap
-is visible rather than assumed away.
+**Superseded 2026-10-12 by D052.** When this section was written no lockfile
+existed and the pin was deferred. `requirements.lock` now pins the
+**verification** environment, env-004, and records which quantities reproduce
+under it. The **training** environment, env-002/env-003, is not pinned and
+cannot be: it was a Colab Tesla T4 with `torch 2.11.0+cu130`, and the 25
+checkpoints it produced are treated as hash-verified inputs rather than
+regenerable outputs.
 
 ## env-002 — captured 2026-10-06
 
@@ -90,3 +92,68 @@ cite the `env_id` from the run record that used it.
 Captured by `scripts/capture_environment.py`. Append to `ENVIRONMENT.md` and
 cite the `env_id` from the run record that used it.
 
+
+
+## env-004 — verification environment, captured 2026-10-12
+
+| Item | Value |
+|---|---|
+| `env_id` | env-004 |
+| Captured | 2026-10-12T07:47:25.574416+00:00 |
+| Platform | Linux-7.0.0-38-generic-x86_64-with-glibc2.43 |
+| Processor | unknown (as `scripts/capture_environment.py` reports it) |
+| CPU count | 12 |
+| Memory | 14.8 GiB total |
+| GPU | none detected |
+| Python | 3.14.4 (`.venv/bin/python`) |
+| numpy | 2.4.6 |
+| scipy | 1.17.1 |
+| torch | 2.14.1+cpu; cuda_available=False; threads=8 |
+| git | git version 2.53.0 |
+| curl | curl 8.18.0 |
+| Disk free (cwd) | 20.2 GiB |
+| Hostname class | other |
+| Pinned by | `requirements.lock` (`pip freeze --all`, 15 packages) |
+
+Captured by `scripts/capture_environment.py`.
+
+### What reproduces under env-004
+
+Verified 2026-10-12, recorded in D052:
+
+| Quantity | Result |
+|---|---|
+| primary endpoint, from the 25 stored checkpoints | 0.7550853623 against 0.7550853665 recorded — **−4.2e-09** |
+| sequence leakage over 2,000 splits | mean 14.59%, median 14.62%, min 11.76%, max 17.25%, p5 13.14%, p95 15.96% — **exact** |
+| predictor comparison, common naive row set | 165,574 rows, prevalence to six decimals, all four predictor intervals — **exact**; CNN 2.2e-09 |
+
+**What this establishes, and what it does not.** The three quantities above
+were produced under env-001/env-002/env-003 and are reproduced under env-004 —
+the endpoint within the stated tolerance, the other two exactly. **These are
+cross-environment comparisons against stored artifacts. They are not a test of
+every analysis under Python 3.11.15 and 3.13.15**, neither of which was
+executed here, and the remaining analysis scripts were not re-run. **No general
+claim of version independence is established.**
+
+The platform-confound pair in `leakage_audit.json` remains **irreproducible**
+under env-004 and requires the deterministic correction planned as Q1-001. That
+part 1 of the same script reproduces exactly, in the same process and from the
+same data, locates the failure inside the script rather than in the interpreter
+or the libraries. D052 sets out the detail.
+
+### The four environments, and which produced what
+
+| `env_id` | Role | Python | numpy | torch |
+|---|---|---|---|---|
+| env-001 | local analysis; `RUN_LOG.md` cites it for run-001 to run-005 and **run-010, the leakage and confound audit** | 3.11.15 | 2.4.6 | none |
+| env-002 | Colab, extraction for run-006, and training | 3.13.15 | 2.4.6 | 2.11.0+cu130, Tesla T4 |
+| env-003 | Colab, later | 3.13.15 | **2.1.3** | 2.11.0+cu130, Tesla T4 |
+| env-004 | verification, pinned | 3.14.4 | 2.4.6 | 2.14.1+cpu |
+
+**Gap, disclosed rather than closed.** `RUN_LOG.md` carries run records for
+run-001 to run-006 and run-010 only. Model selection, the final fit, the
+endpoint read and the predictor comparison have **no run record**, so the
+environment that produced the 25 checkpoints and `endpoint.json` is inferred
+from env-002/env-003 rather than recorded. No model artifact carries its own
+environment: `final.json`, `endpoint.json` and `selection.json` have no field
+naming the Python, numpy or torch version that wrote them. See L27.
