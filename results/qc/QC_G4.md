@@ -1,5 +1,20 @@
 # QC_G4 — analysis dataset frozen
 
+> **Annotation added 2026-10-12 by D056. No number below is edited.** The check
+> "Negatives globally unique — 520,000 distinct" passes, and that global
+> uniqueness is also the mechanism of a construction defect. Because no decoy
+> sequence ever recurs while positives recur up to 15 times,
+> **P(label = 1 | sequence seen anywhere in training) = 1.000000** on the
+> held-out partition — 15,988 of 15,988, with zero negatives seen. A lookup
+> classifier using no sequence features scores mean per-participant
+> **AP 0.6426** (nominal-99% [0.6205, 0.6620]), above the preregistered
+> composition floor of 0.597.
+>
+> The check is not wrong and its verdict stands: the negatives are unique, as
+> intended, and uniqueness is what the gate was asked to confirm. What the gate
+> was not asked is what that uniqueness implies when the positives are not
+> unique. See `results/qc/recurrence_oracle.json` and D056.
+
 run-009. Built by `scripts/build_dataset.py` from the preregistered decisions,
 with no parameter chosen at build time.
 
@@ -8,7 +23,7 @@ with no parameter chosen at build time.
 | PASS | Positives are observed | all 520,000 drawn from the extracted universe |
 | PASS | No negative is observed | zero intersection with the 2,658,972 observed sequences |
 | PASS | Positive/negative disjoint | zero overlap |
-| PASS | Negatives globally unique | 520,000 distinct |
+| PASS | Negatives globally unique | 520,000 distinct — **see the pointer below** |
 | PASS | Class ratio | exactly 1:1 (D002) |
 | PASS | Length profiles match | per-length counts identical between classes |
 

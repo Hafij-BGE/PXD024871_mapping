@@ -1,0 +1,65 @@
+{
+ "decision": "D056",
+ "what_this_is": "A lookup classifier scoring 1 for \"sequence seen anywhere in training\" and 0 otherwise, using no sequence features. It measures what the dataset construction gives away, not what the network learns.",
+ "construction": {
+  "positives_rows": 520000,
+  "positives_unique": 466946,
+  "positives_max_multiplicity": 15,
+  "negatives_rows": 520000,
+  "negatives_unique": 520000,
+  "negatives_max_multiplicity": 1,
+  "positive_negative_sequence_overlap": 0
+ },
+ "conditional": {
+  "test_positives": 100000,
+  "test_negatives": 100000,
+  "positives_seen_in_training": 15988,
+  "negatives_seen_in_training": 0,
+  "P_label1_given_seen": 1.0,
+  "P_label1_given_unseen": 0.45655718105340953,
+  "prevalence": 0.5
+ },
+ "n_units": 10,
+ "per_unit_ap_file_order": {
+  "UPN01": 1.0,
+  "UPN08": 1.0,
+  "UPN14": 1.0,
+  "UPN22": 1.0,
+  "UPN24": 1.0,
+  "UPN27": 1.0,
+  "UPN31": 1.0,
+  "UPN38": 1.0,
+  "UPN46": 1.0,
+  "UPN51": 1.0
+ },
+ "per_unit_ap_random_tiebreak": {
+  "UPN01": 0.6341015718159934,
+  "UPN08": 0.6574053398969693,
+  "UPN14": 0.6341175868715786,
+  "UPN22": 0.6322887949702402,
+  "UPN24": 0.680558933590023,
+  "UPN27": 0.6433439906832159,
+  "UPN31": 0.6644823110149025,
+  "UPN38": 0.5865572636098062,
+  "UPN46": 0.6722365596490936,
+  "UPN51": 0.6212170335677455
+ },
+ "mean_ap_file_order": 1.0,
+ "mean_ap_file_order_ci": [
+  1.0,
+  1.0
+ ],
+ "mean_ap_random_tiebreak": 0.6426309385669567,
+ "mean_ap_random_tiebreak_ci": [
+  0.6205008673423024,
+  0.6620305934985553
+ ],
+ "tiebreak_draws": 200,
+ "tie_convention_note": "The score takes two values, so most test rows tie. train_cnn.average_precision sorts with kind=\"stable\", breaking that tie by file order: deterministic but arbitrary. The random-tiebreak figure is the convention-free quantity. Quote that one.",
+ "interval_note": "Nominal-99% cluster bootstrap over the 10 held-out participants (D008). R6 measured nominal-95% delivering 0.884-0.890 actual coverage at this unit count, which is why nominal-99% is used and why no 99% confidence is claimed.",
+ "what_this_does_not_show": "That the network exploits this shortcut. The oracle shows the shortcut exists and is exploitable; attributing any part of the endpoint to it would need an experiment this is not.",
+ "seeds": {
+  "tiebreak": 1218899495,
+  "bootstrap": 448504580
+ }
+}

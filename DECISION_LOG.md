@@ -4367,6 +4367,204 @@ quietly amended.
 ---
 
 
+## D056 — Recurrence is a perfect label oracle, and it is worth more than the floor · RESOLVED
+
+**Opened and resolved:** 2026-10-12 · **Stage 5 of the Q1 correction plan, task
+Q1-004** · **A fourth construction defect, of the family D044 recorded three
+of** · **Requested by the project owner**
+
+**Decision: quantify the oracle with the repository's own metric, report it
+under both tie conventions because it is tie-dependent, annotate the QC check
+that created it, and change no frozen artifact.**
+
+### 1. The construction
+
+**[FACT]** From `POSITIVES.csv` and `NEGATIVES.csv`:
+
+| | rows | unique sequences | max multiplicity |
+|---|---|---|---|
+| positives | 520,000 | 466,946 | **15** |
+| negatives | 520,000 | **520,000** | **1** |
+
+Positive/negative sequence overlap: **0**. Negatives were drawn without
+replacement across the whole 52-participant dataset, so **no decoy sequence
+occurs twice**; positives recur whenever two participants observed the same
+peptide.
+
+**[FACT]** On the held-out partition, 15,988 of 100,000 test positives have a
+sequence that occurs somewhere in training. **Of 100,000 test negatives, zero
+do.** Therefore
+
+```
+P(label = 1 | sequence seen anywhere in training) = 1.000000
+P(label = 1 | sequence seen nowhere in training)  = 0.456557
+```
+
+Not approximately one. Exactly one, with no counter-example in 520,000
+negatives. **`results/qc/QC_G4.md` records "Negatives globally unique —
+520,000 distinct" as a *passing* check**, and that pass is the mechanism.
+
+### 2. What the oracle is worth, and why two numbers are reported
+
+A classifier scoring 1 for "seen in training" and 0 otherwise, using **no
+sequence features at all**, evaluated per participant and averaged under D008:
+
+| tie convention | mean per-participant AP | nominal-99% |
+|---|---|---|
+| file order (`kind='stable'`, as `train_cnn.average_precision` sorts) | **1.0000** | [1.0000, 1.0000] |
+| **random tie-breaking, 200 draws per unit** | **0.6426** | **[0.6205, 0.6620]** |
+
+**The 1.0000 is an artefact and must not be quoted.** The score takes two
+values, so 184,012 test rows tie at zero, and a stable sort breaks that tie by
+file order. The test rows are assembled positives-first, so inside the tie block
+every positive precedes every negative and the ranking is perfect by
+construction of the file, not of the data. **0.6426 is the convention-free
+quantity.**
+
+**[CORRECTION]** An audit on 2026-10-12 put this figure at **0.5799** using an
+ad-hoc block-averaging tie rule. That was an underestimate and is withdrawn.
+The figure is 0.6426.
+
+### 3. Why it matters
+
+**0.6426 exceeds the preregistered composition floor of 0.597, and exceeds the
+0.636 floor recomputed on the endpoint's own population (D044 defect A).** A
+lookup table with no features, measuring only what the dataset construction
+gives away, scores above the baseline the endpoint is gated against.
+
+This does **not** mean the network relies on it. **The oracle shows the shortcut
+exists and is exploitable; it does not show it was exploited**, and attributing
+any part of 0.7551 to it would need an experiment this is not.
+
+What it does bound is the meaning of the floor. A floor is supposed to say what
+is achievable without learning the task. On this construction, something
+achievable without reading the peptide at all clears it.
+
+### 4. What is unaffected
+
+The leakage-free sensitivity arm already excludes every recurring test positive,
+so **that arm is untouched by this defect**. The primary endpoint is not: it
+scores all 100,000 test positives, including the 15,988 the oracle identifies
+for free.
+
+### 5. What was written
+
+`scripts/recurrence_oracle.py` and `results/qc/recurrence_oracle.json`, both
+new; an annotation on `results/qc/QC_G4.md`; limitation L28. **No frozen
+artifact is modified**, nothing is retrained, and the endpoint is unchanged.
+
+**RESOLVED as to measurement.** The conditional is exact and the AP is reported
+under the convention that does not depend on row order.
+
+---
+
+## D057 — The leakage comparison is 88% prevalence, and the trainer said otherwise · RESOLVED
+
+**Opened and resolved:** 2026-10-12 · **Stage 5 of the Q1 correction plan, task
+Q1-005** · **Corrects a causal attribution printed by `train_cnn.py`** ·
+**Requested by the project owner**
+
+**Decision: hold prevalence fixed and re-measure, report the decomposition,
+correct the trainer's wording, and claim no causal attribution for what
+remains.**
+
+### 1. The defect
+
+**[FACT]** The leakage-free subset is built by dropping the 15,988 test
+positives whose sequence occurs verbatim in training. **It drops positives
+only.** Prevalence therefore falls from **0.500000** to **0.456321**.
+
+**[FACT]** Average precision has the prevalence as its own floor: a random
+classifier scores AP equal to the positive fraction. So the **floor** moves by
+**0.0437** on its own, and the two arms are not comparable.
+
+**[FACT]** `scripts/train_cnn.py` printed that difference as
+`Inflation from leakage: +0.0495`. **Two things change between the arms and the
+difference was labelled as one of them.**
+
+### 2. The decomposition
+
+Rescored from the 25 frozen checkpoints, subsampling negatives per participant
+so the leakage-free arm carries the same positive fraction as the primary arm,
+50 independent subsamples per participant:
+
+| | mean per-participant AP | prevalence |
+|---|---|---|
+| primary | **0.7551** | 0.500000 |
+| leakage-free, as reported | **0.7056** | 0.456321 |
+| **leakage-free, prevalence-matched** | **0.7386** | 0.500000 |
+
+The observed drop decomposes exactly one way, and only one:
+
+```
+(P − L)  =  (P − M)  +  (M − L)
+ 0.0495  =   0.0165  +   0.0330
+```
+
+| | | share of the drop |
+|---|---|---|
+| observed drop, primary − leakage-free | **+0.0495** | |
+| **prevalence effect**, matched − leakage-free | **+0.0330** | **66.6%** |
+| **residual**, primary − matched | **+0.0165** | **33.4%** |
+
+**Two thirds of the reported "inflation from leakage" is prevalence.** One third
+survives at matched prevalence.
+
+### 2a. A correction to this entry's own first draft
+
+**[FACT]** The random-classifier floor shift — 0.500000 − 0.456321 = **0.0437**
+— is **not** a share of the observed drop, and an earlier draft of this entry
+divided it by the drop and reported **88.2%**. That is withdrawn.
+
+The two quantities are different. The floor shift says how far the **baseline**
+moves, because a random classifier scores AP equal to the positive fraction. The
+prevalence effect says how far **this model's** AP moves when prevalence is
+restored. They are not equal, because the CNN is not a random classifier and its
+AP does not track the floor one-for-one. The arithmetic is decisive:
+
+```
+floor shift + residual  =  0.0437 + 0.0165  =  0.0602   ≠  0.0495
+(M − L)     + residual  =  0.0330 + 0.0165  =  0.0495   =  0.0495
+```
+
+Only the second closes. **The floor shift explains why the arms are
+incomparable; it does not measure the effect**, and it is recorded in the
+artifact as `random_classifier_floor_shift` with a note saying so, rather than
+as a share.
+
+### 3. What this does and does not establish
+
+**Establishes:** a gap survives at equal prevalence. Removing recurring
+positives costs something beyond the arithmetic of the positive fraction.
+
+**Does not establish that the residual is caused by leakage.** The leakage-free
+subset is also a **different and plausibly harder set of peptides** — those
+unique to a single participant — so matching prevalence removes one confound,
+not all of them. **No causal attribution is made for the 0.0165**, and the
+artifact says so in its own `what_this_does_not_show` field.
+
+### 4. What was corrected
+
+`train_cnn.py`'s line now reads **"Primary − leakage-free"**, a difference
+rather than a cause, with a pointer to this entry. The number it prints is
+unchanged. `LIMITATIONS.md` L2 carries the decomposition.
+
+**[FACT] Neither arm's recorded value changed.** The rescoring reproduces
+0.7551 and 0.7056 from the frozen checkpoints; the matched arm is a third
+measurement placed beside them, not a replacement for either.
+
+### 5. What was written
+
+`scripts/prevalence_matched.py` and `results/qc/prevalence_matched.json`, both
+new; the trainer's print statement; L2. **No frozen artifact is modified**, and
+nothing is retrained — the checkpoints are read.
+
+**RESOLVED.** The comparison is decomposed, the causal wording is gone, and what
+remains is reported as a residual rather than an effect.
+
+---
+
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites

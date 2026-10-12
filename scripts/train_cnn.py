@@ -978,7 +978,13 @@ def main():
         print(f"  -> {'REJECT the null' if decision else 'DO NOT REJECT'}")
         if not decision:
             print("  Not evidence of absent signal: power is 0.42 at AUROC 0.70.")
-        print(f"  Inflation from leakage: {full['mean_ap'] - lf['mean_ap']:+.4f}")
+        # D057: a difference, not a cause. The leakage-free subset drops
+        # positives only, so its prevalence is 0.4563 against the primary's
+        # 0.5000. At matched prevalence the gap decomposes as 66.6% prevalence
+        # effect and 33.4% residual; the residual is not attributed to leakage.
+        # results/qc/prevalence_matched.json holds the decomposition.
+        print(f"  Primary - leakage-free: {full['mean_ap'] - lf['mean_ap']:+.4f}"
+              f"  (NOT an effect of leakage; see D057)")
         print('='*64)
 
         json.dump({'floor': FLOOR, 'threshold': THRESH, 'reject_null': bool(decision),
