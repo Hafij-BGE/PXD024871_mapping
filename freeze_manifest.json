@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T10:31:47Z",
+ "frozen_utc": "2026-10-12T14:30:17Z",
  "branch": "main",
- "parent_commit": "7db37e203f6c542a8e11b4ef596550f38b40148d",
- "n_files": 375,
- "total_bytes": 113599117,
+ "parent_commit": "4de6d811aae3e810f872f37aa5883eafa28582d8",
+ "n_files": 385,
+ "total_bytes": 113691373,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -21,8 +21,8 @@
   },
   {
    "path": ".gitignore",
-   "bytes": 4506,
-   "sha256": "bc94bf574e9d08a5be7f05fa188886343b2cf2ad92f6e011f1bb45121b82932c"
+   "bytes": 5572,
+   "sha256": "869890da33cca360727efa95082e1c504bc429e30d71be8a85069bf48242295a"
   },
   {
    "path": ".zenodo.json",
@@ -36,13 +36,13 @@
   },
   {
    "path": "DATA_SOURCES.md",
-   "bytes": 23396,
-   "sha256": "b545cd2764c5234dba06efa4fe2c6adc34269f7901aa597eae51058b80d91b7c"
+   "bytes": 28170,
+   "sha256": "2c264fdeb540c530c1382d4ff5e8fad19eed91ca58624be831bd7499cc502d44"
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 216316,
-   "sha256": "13b0157f2c9db4060ece58c835d7d5ad068ad1f583be9ad6a16acc138c4e6d10"
+   "bytes": 225729,
+   "sha256": "7971de1f44706ee4a44d7886e7cc54b5a5eced7637dd291bab136e48e53ad2d3"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -101,8 +101,8 @@
   },
   {
    "path": "RUN_LOG.md",
-   "bytes": 25127,
-   "sha256": "b411a262c72c676ea5aafafd052c1130a6a4c0d666bdaa06ce2075d9a0c5e4c4"
+   "bytes": 29260,
+   "sha256": "cc0b8f4df601b64c31c3a3f4fa5833728806231420f8071b3f9e67dae989ac25"
   },
   {
    "path": "SECTIONS.md",
@@ -718,6 +718,36 @@
    "path": "data/derived/peptides/UPN52.meta.json",
    "bytes": 579,
    "sha256": "0c22f25b40f08c4e680143d680090de9a309142fd7dd735af9275ac15f636164"
+  },
+  {
+   "path": "data/external/PXD004023/ANALYSIS_PLAN.md",
+   "bytes": 5404,
+   "sha256": "177eb1e37a87d4786166bf43fe2f9fe1781e0cb4bee266024f6040383a7716f2"
+  },
+  {
+   "path": "data/external/PXD004023/header_checksums.txt",
+   "bytes": 16223,
+   "sha256": "ad7e0ad0f50f81befc9c567b1719eedbd236c08c0e624268aa5b6b861e3376a3"
+  },
+  {
+   "path": "data/external/PXD004023/mzid_manifest.txt",
+   "bytes": 864,
+   "sha256": "8f2dc2474c0d57b3940797cced8652b328b070ac0e83c23b1a9120f470f714e1"
+  },
+  {
+   "path": "data/external/PXD004023/perfile.json",
+   "bytes": 3209,
+   "sha256": "3555f096520d9cb7c40c2b30e7d5a766d8fb8ae51ecaea8679620c395f3b042c"
+  },
+  {
+   "path": "data/external/PXD004023/raw_manifest.txt",
+   "bytes": 4178,
+   "sha256": "a91c2633bf6a3a970f7bd548e81bbf170f4c83a71a9761b829b541eca111770c"
+  },
+  {
+   "path": "data/external/PXD004023/runmap.csv",
+   "bytes": 18514,
+   "sha256": "bf5510faab5c3c9fcd716ad725d92a22c129e6a28a60eac0c72e708ff35961e0"
   },
   {
    "path": "data/raw/S1/PXD024871_files_v3.json",
@@ -1756,8 +1786,8 @@
   },
   {
    "path": "scripts/check_references.py",
-   "bytes": 13156,
-   "sha256": "df96b1f8c336a4c6aa6b92c1391fd101f52e22dba7382ebba3bdf53a743e4dda"
+   "bytes": 14146,
+   "sha256": "52f9c913cf177418c39e8ebd4f34670a231da2021500030114390cf599c72653"
   },
   {
    "path": "scripts/commit_extracts.sh",
@@ -1790,9 +1820,24 @@
    "sha256": "382e6429325a12e60e064c1024152dfe6736b8d9c12711ea6b99d34d345073d8"
   },
   {
+   "path": "scripts/extract_px4023.py",
+   "bytes": 5100,
+   "sha256": "4c3e38d037ffdc7c2e1b7487f68847cab93d1303ae1610c188e5e5c718f73c10"
+  },
+  {
+   "path": "scripts/fetch_px4023.sh",
+   "bytes": 2279,
+   "sha256": "cf6ed574a47eebb85c6d4fd387a2ab1e1a9584cad8bd4c00d4996dee0bd06b98"
+  },
+  {
    "path": "scripts/freeze.py",
    "bytes": 12453,
    "sha256": "f12cd84f3361b2b04d5c370e5deb7e6578c14838667dfc29373ae55c8dcdd111"
+  },
+  {
+   "path": "scripts/label_px4023_runs.py",
+   "bytes": 8407,
+   "sha256": "7abf83862836e032a2244ef12274e5bf6e2d7d3d528fd76784c4bffeb24cccba"
   },
   {
    "path": "scripts/leakage_audit.py",
@@ -1853,6 +1898,11 @@
    "path": "scripts/reconcile_provenance.py",
    "bytes": 4698,
    "sha256": "67257da41adfe93e778ce8f10c394ab84f1585e9eb8edd57a72b63cd8c85d7d7"
+  },
+  {
+   "path": "scripts/replicate_px4023.py",
+   "bytes": 7702,
+   "sha256": "b9d43c31e586c6a027a5fc5d115efa43897dbad455b16e05e78a753b624eaf13"
   },
   {
    "path": "scripts/retrieve.py",
