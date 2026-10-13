@@ -5194,6 +5194,113 @@ closed.
 
 ---
 
+## D063 — τ was assumed at 0.25 and is measurably 0.097 · RESOLVED
+
+**Opened and resolved:** 2026-10-13 · **From the audit of 2026-10-13, item
+A-16** · **Adds a sensitivity beside D008; revises nothing**
+
+### 1. What the audit got wrong first, recorded because it was wrong
+
+**[CORRECTION]** The audit's original item A-03 claimed the power figures quoted
+in the manuscript — 0.98 at a true AUROC of 0.75, 0.42 at 0.70 — were stale,
+resting on the reconstructed per-participant counts of 120–600 recorded in
+`results/power/power_params.json` rather than on the realised 10,000.
+
+**That claim was wrong, and is withdrawn.** It traced the figures to
+`power_grid.csv` without opening `results/power/decision_rule.json`, which is
+the artifact that produced them and closed D008. That artifact is correctly
+specified for the preregistered rule: `ratio: 1`, `floor: 0.597`, and
+`adopted_rule` reading *"reject if the lower bound of the nominal-99% cluster
+bootstrap interval > 0.647"*, with `power_at_nominal_99` giving 0.42 at AUROC
+0.70 and 0.978 at 0.75. The `ratio=10` and prevalence-floor rejection the audit
+objected to belong to `power_grid.csv` grid 2, a supporting resolution analysis
+the manuscript does not quote.
+
+Recomputed independently at ratio 1, prevalence 0.5, nominal 99%, 10,000
+positives per participant and τ = 0.25, rejecting on `lo > 0.647`: **0.420 at
+AUROC 0.70 and 0.976 at 0.75**, against the artifact's 0.42 and 0.978. The
+record reproduces. The residual count difference — `npos_sim: 1500` against the
+realised 10,000 — is immaterial, which confirms rather than assumes the
+project's standing argument that the between-participant term dominates.
+
+### 2. What survives: τ is now measurable, and it is 2.6× smaller than assumed
+
+**[FACT]** `POWER_ANALYSIS.md` states that τ, the between-participant SD of
+latent discrimination, is *"unknown and unmeasurable before data exist"* and
+sweeps it at 0.10 / 0.25 / 0.50, with every figure conditional on the choice.
+D008 adopted 0.25.
+
+Inverting the binormal model on the ten realised per-participant average
+precisions in `results/model/endpoint.json`:
+
+| quantity | value |
+|---|---|
+| realised per-participant AP | mean 0.7551, sd 0.0225 |
+| implied per-participant *d* | mean 1.0110 |
+| **τ realised** | **0.0965** |
+| τ assumed by D008 | 0.25 |
+
+**[FACT]** Power against the **unchanged** preregistered threshold of 0.647,
+recomputed at both values:
+
+| τ | AUROC | true AP | power vs 0.647 | CI half-width |
+|---|---|---|---|---|
+| 0.0965 (realised) | 0.70 | 0.6891 | **0.980** | 0.0183 |
+| 0.0965 (realised) | 0.75 | 0.7416 | 1.000 | 0.0173 |
+| 0.25 (assumed) | 0.70 | 0.6875 | **0.420** | 0.0472 |
+| 0.25 (assumed) | 0.75 | 0.7390 | 0.976 | 0.0426 |
+
+At the effect size the manuscript singles out to argue that failure to reject
+would not be evidence of absent signal, **power is 0.98 rather than 0.42**, and
+the interval is 2.6× narrower than the planning value. The study is better
+resolved than its own figures claim, and the direction of the error is
+conservative: a reader told power is 0.42 cannot over-read a rejection.
+
+### 3. What this does not do
+
+**D008 is not revised.** The threshold stays 0.647, the rule stays the rule of
+record, and the 0.42 / 0.978 figures remain the preregistered power statement.
+`calibrate_decision_rule.py` is untouched and remains EXEMPT in
+`regen_check.py` for the reason already recorded there: re-running it cannot
+change a threshold already frozen. The endpoint is not recomputed. Nothing in
+this entry moves a preregistered number.
+
+**Two limits travel with the estimate**, and are written into the artifact
+rather than left to a reader to infer. τ is estimated from ten held-out
+participants and carries its own uncertainty, so it is an estimate and not a
+constant. And the inversion assumes the binormal model, which
+`POWER_ANALYSIS.md` already flags as *"a convenience"* rather than a prediction;
+these figures inherit that caveat. Both are stated in the manuscript paragraph
+as well.
+
+### 4. The artifact and its gate
+
+`scripts/tau_realised.py` writes `results/power/tau_realised.json`, holding τ,
+the per-participant APs and their implied *d*, the four power cells, both
+caveats, and an explicit statement of what it does not revise. The script reads
+only tracked inputs and is deterministic at a fixed seed: two consecutive runs
+produce byte-identical output.
+
+It is classified **BYTES** in `scripts/regen_check.py`, so the freeze gate
+regenerates it and compares byte-for-byte. Adding it required editing
+`regen_check.py`, which is the discipline that file describes — *"a count
+silently accepts a newcomer, a named set does not"* — and the reason an
+unclassified script fails the check rather than being skipped.
+
+This was done because the manuscript now quotes τ = 0.097 and a power of 0.98.
+A number in the manuscript with no artifact behind it is the defect this project
+has already recorded once, and it is not repeated here.
+
+**RESOLVED.** A-03 withdrawn as not an error; τ measured, with power against the
+unchanged threshold recomputed beside the preregistered figures.
+
+**Consequence for the freeze.** This entry edits `DECISION_LOG.md`, adds
+`scripts/tau_realised.py` and `results/power/tau_realised.json`, and edits
+`scripts/regen_check.py` — all tracked. The manifest written at `56dd11f` is
+stale as of this commit and a re-freeze follows under the two-commit rule.
+
+---
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites

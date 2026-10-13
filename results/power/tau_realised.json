@@ -1,0 +1,100 @@
+{
+ "decision": "D063",
+ "what_this_is": "tau estimated from the realised per-participant average precisions, with power against the preregistered threshold recomputed at both the assumed and the realised value. Reported beside D008, not instead of it.",
+ "threshold": 0.647,
+ "threshold_source": "D008, composition floor 0.597 plus a lift of 0.05",
+ "nominal": 0.99,
+ "tau_assumed_by_D008": 0.25,
+ "tau_realised": 0.09654792614980301,
+ "per_unit": {
+  "UPN01": {
+   "ap": 0.7362117653775576,
+   "implied_d": 0.9291720121304068
+  },
+  "UPN08": {
+   "ap": 0.7783989854106151,
+   "implied_d": 1.1121254711623336
+  },
+  "UPN14": {
+   "ap": 0.7451798811527908,
+   "implied_d": 0.9667323035197719
+  },
+  "UPN22": {
+   "ap": 0.759450612588706,
+   "implied_d": 1.0278797739895091
+  },
+  "UPN24": {
+   "ap": 0.7910740393164666,
+   "implied_d": 1.1707735270877755
+  },
+  "UPN27": {
+   "ap": 0.7512167090906816,
+   "implied_d": 0.9923808052983432
+  },
+  "UPN31": {
+   "ap": 0.767346766701004,
+   "implied_d": 1.062528606290998
+  },
+  "UPN38": {
+   "ap": 0.7102026120888236,
+   "implied_d": 0.8233829774963672
+  },
+  "UPN46": {
+   "ap": 0.750725807530446,
+   "implied_d": 0.9902835539989493
+  },
+  "UPN51": {
+   "ap": 0.761046485936616,
+   "implied_d": 1.0348330254049538
+  }
+ },
+ "realised_mean_ap": 0.7550853665193707,
+ "realised_sd_ap": 0.022475683201649825,
+ "implied_d_mean": 1.0110092056379407,
+ "cells": [
+  {
+   "power_vs_prereg_threshold": 0.98,
+   "mean_ci_halfwidth": 0.018269967202854318,
+   "tau": 0.09654792614980301,
+   "tau_source": "realised",
+   "auroc": 0.7,
+   "estimand_ap": 0.6891346386285476
+  },
+  {
+   "power_vs_prereg_threshold": 1.0,
+   "mean_ci_halfwidth": 0.017297737182058456,
+   "tau": 0.09654792614980301,
+   "tau_source": "realised",
+   "auroc": 0.75,
+   "estimand_ap": 0.7416351179255473
+  },
+  {
+   "power_vs_prereg_threshold": 0.42,
+   "mean_ci_halfwidth": 0.04721333440930018,
+   "tau": 0.25,
+   "tau_source": "assumed",
+   "auroc": 0.7,
+   "estimand_ap": 0.6875341869622825
+  },
+  {
+   "power_vs_prereg_threshold": 0.976,
+   "mean_ci_halfwidth": 0.04256989011042721,
+   "tau": 0.25,
+   "tau_source": "assumed",
+   "auroc": 0.75,
+   "estimand_ap": 0.7389900809342314
+  }
+ ],
+ "config": {
+  "K": 10,
+  "n_pos_per_participant": 10000,
+  "ratio": 1,
+  "prevalence": 0.5,
+  "n_sim": 250,
+  "B": 2000,
+  "seed": 20261013
+ },
+ "caveat_sample_size": "tau is estimated from ten held-out participants and carries its own uncertainty. It is an estimate, not a constant.",
+ "caveat_model": "The inversion assumes the binormal model, which POWER_ANALYSIS.md flags as a convenience rather than a prediction. These figures inherit that caveat.",
+ "what_this_does_not_do": "Revise the preregistered threshold, the endpoint, or D008. The 0.647 rule and its recorded power stand."
+}
