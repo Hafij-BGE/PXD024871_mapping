@@ -1,0 +1,31 @@
+{
+ "decision": "D064",
+ "what_this_is": "the interval D002 did not report on the margin that selected the negative set. The choice is preregistered and is not revised.",
+ "protocol": "negative_diagnostic.py's: uniform 60,000-peptide sample of the union as positives, length-matched unobserved decoys, closed-form LDA on 20-dim composition, first half fits and second half scores, midrank AUROC",
+ "n_per_class": 60000,
+ "seed": 20261006,
+ "B": 10000,
+ "nominal": 0.99,
+ "bootstrap": "paired on positives, which are the same peptides in both arms; each arm resamples its own negatives independently",
+ "n_source_proteins_setC": 1908,
+ "reproduces_negative_diagnostic": true,
+ "arms": {
+  "A": {
+   "auroc_composition_only": 0.6120064144444445,
+   "total_abs_divergence_pp": 10.045635223388672
+  },
+  "C": {
+   "auroc_composition_only": 0.6084513361111111,
+   "total_abs_divergence_pp": 10.25847339630127
+  }
+ },
+ "margin_A_minus_C": {
+  "point": 0.00355507833333335,
+  "ci99": [
+   -0.002409832452777783,
+   0.009246840908333366
+  ],
+  "crosses_zero": true
+ },
+ "reading": "A margin whose interval crosses zero does not establish that set C is the harder set. D002 is sound on its stated rationale -- same expression context -- and that rationale, not this margin, is what the choice rests on."
+}

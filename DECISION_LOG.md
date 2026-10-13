@@ -5301,6 +5301,131 @@ stale as of this commit and a re-freeze follows under the two-commit rule.
 
 ---
 
+## D064 — The margin that chose the decoy set supports no ranking · RESOLVED
+
+**Opened and resolved:** 2026-10-13 · **From the audit of 2026-10-13, items
+A-04 and A-05** · **Adds an interval D002 did not report; revises nothing**
+
+D002 selected negative set C over set A on composition-only AUROC **0.6085
+against 0.6120**, a margin of 0.0036 reported as a point estimate with no
+interval, and with the diagnostic's second metric pointing the other way:
+`total_abs_divergence_pp` is 10.258 for C against 10.046 for A. The audit raised
+two questions and a structural concern. One question is answered against the
+original reporting, the concern is refuted by measurement.
+
+### 1. The margin is not distinguishable from zero
+
+**[FACT]** Paired bootstrap over the held-out diagnostic rows, B = 10,000,
+nominal 99%, positives shared between arms because they are literally the same
+60,000 peptides, each arm's negatives resampled independently:
+
+| contrast | point | nominal-99% interval | |
+|---|---|---|---|
+| set A − set C | **+0.0036** | **[−0.0024, +0.0092]** | **crosses zero** |
+
+**The 0.0036 that selected the negative construction supports no ranking of the
+two candidates.** D002's choice is not thereby wrong: its stated rationale is
+that decoys drawn from the same expression context as the positives are the
+harder and more honest set, and that argument stands on its own. What cannot be
+claimed is that the diagnostic's numbers established it. The manuscript now says
+so, and quotes the interval.
+
+**The preregistered construction is not revised.** Set C remains the negative
+set. Nothing in this entry changes the frozen dataset, the split, or the
+endpoint.
+
+### 2. The structural concern is refuted
+
+**[CORRECTION]** The audit observed that `negative_diagnostic.py` builds set C
+from a restricted source set — `if len(src) > 4000: break`, probed with only
+`obs_sample[:2000]` — while `build_dataset.py` builds the real negative pool
+from every protein yielding at least one observed 8–12mer, which is 20,152 of
+20,652. It inferred that the diagnostic may have tested a population the
+pipeline did not build, and that since the implemented pool covers 97.6% of the
+proteome it might behave like the **rejected** set A.
+
+**Measured, and it does not.** A fourth set, C′, was drawn from the
+20,152-protein population using the same draw procedure, so source population is
+the only thing that differs from C:
+
+| set | source proteins | AUROC | divergence |
+|---|---|---|---|
+| A | all proteins ≥13 aa | 0.6120 | 10.046 pp |
+| C (the tested set) | **1,908** | 0.6081–0.6085 | 10.243–10.258 pp |
+| C′ (the built population) | **20,152** | **0.6078** | **9.831 pp** |
+
+C′ − C is **−0.0004**, nominal-99% [−0.0064, +0.0055]. The source population
+barely matters, and C′ carries the **lowest** compositional divergence of the
+three, so on the diagnostic's second metric the pool actually built is the best
+of the three rather than the worst. That also dissolves the audit's secondary
+observation that the two metrics disagreed: they disagree for the tested proxy,
+not for the thing that was built.
+
+**Two figures in the audit's own text were wrong and are corrected here.** It
+read the `len(src) > 4000` cap as binding and reported "~4,001 source proteins".
+The cap never binds: only **1,908** of roughly 20,000 proteins of length ≥13
+contain one of the 2,000 probe peptides, so the proxy is more restricted than
+the audit claimed, and the measured irrelevance of that restriction is
+correspondingly stronger. An intermediate run reported 1,925, which was a draw
+that did not reproduce the frozen set C; see §4.
+
+### 3. The expression restriction is weak, and is now described as weak (A-05)
+
+**[FACT]** `FREEZE.json` records `expressed_proteins: 20152` of
+`proteome_sequences: 20652`. The restriction to proteins that yielded at least
+one observed peptide therefore excludes **500 proteins, 2.42%**. With 2,658,972
+peptides observed across 52 participants, nearly every protein contributes at
+least one 8–12mer, so a constraint described as confining decoys to expressed
+protein in practice confines them to almost the whole proteome.
+
+The counts were already in the manuscript; the consequence was not. It is now
+stated there, and it explains §1: two candidate sets drawn from populations that
+overlap almost completely should not be expected to differ measurably, and they
+do not.
+
+### 4. The artifact, and what it took to make it honest
+
+`scripts/negset_margin.py` writes `results/qc/negset_margin.json` and is
+classified **BYTES** in `scripts/regen_check.py`.
+
+**An interval on the wrong draw is worse than no interval.** The first version of
+the script rebuilt sets A and C without building set B. `negative_diagnostic.py`
+builds B between them and consumes the `random.Random` stream doing so, so
+skipping it shifted the probe sample and produced a set C at AUROC 0.6081 from
+1,925 source proteins — a valid draw from the same construction, but **not the
+preregistered one**. The margin it gave, +0.0039 [−0.0020, +0.0096], was an
+interval on a fresh draw rather than on D002's comparison.
+
+The script now reproduces that stream consumption and **asserts** that both arms
+match `results/qc/negative_diagnostic.json` to within 1e-12 before the bootstrap
+is allowed to run. With that in place set C returns 0.6084513 and divergence
+10.258 pp, identical to the frozen diagnostic, from 1,908 source proteins. The
+assertion is the difference between an interval on the preregistered margin and
+an interval on something adjacent to it.
+
+The estimator was also checked rather than swapped on faith: the bootstrap uses
+scipy's C `rankdata` for speed, and the script asserts it agrees with
+`negative_diagnostic.auroc`, which computes the same midranks in a Python loop,
+to within 1e-12 on every point estimate. Measured agreement on the benchmark was
+exactly 0.0, at 5.04 ms against 72.4 ms per call.
+
+C′ is deliberately **not** in the gated artifact. It needs a four-minute
+proteome scan that would nearly double the freeze's runtime, and it answers a
+one-off audit question rather than anything the manuscript states. It is recorded
+here with its method, as D062 recorded the uniform redraw.
+
+**RESOLVED.** The margin is reported with its interval and described as
+supporting no ranking; the expression restriction is described as weak; the
+concern that the diagnostic tested the wrong population is measured and refuted;
+D002 and the frozen dataset are unchanged.
+
+**Consequence for the freeze.** This entry edits `DECISION_LOG.md`, adds
+`scripts/negset_margin.py` and `results/qc/negset_margin.json`, and edits
+`scripts/regen_check.py` — all tracked. The manifest written at `ec814a0` is
+stale as of this commit and a re-freeze follows under the two-commit rule.
+
+---
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites

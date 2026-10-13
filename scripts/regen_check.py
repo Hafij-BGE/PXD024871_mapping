@@ -53,6 +53,7 @@ REGENERABLE = {
     'recurrence_oracle.py':   ('results/qc/recurrence_oracle.json',    'BYTES'),
     'leakage_audit.py':       ('results/qc/leakage_audit_v2.json',     'BYTES'),
     'tau_realised.py':        ('results/power/tau_realised.json',      'BYTES'),
+    'negset_margin.py':       ('results/qc/negset_margin.json',        'BYTES'),
     'endpoint_by_length.py':  ('results/model/endpoint_by_length.json', 'NUMERIC'),
     'prevalence_matched.py':  ('results/qc/prevalence_matched.json',   'NUMERIC'),
 }
