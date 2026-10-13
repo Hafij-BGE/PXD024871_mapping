@@ -5010,6 +5010,190 @@ append-only record.
 
 ---
 
+## D062 — The negative pool is size-biased, and it does not matter · RESOLVED
+
+**Opened and resolved:** 2026-10-13 · **From the independent methodology audit
+of 2026-10-13** · **Two reporting corrections and one measured null result**
+
+An end-to-end audit re-derived the pipeline from first principles rather than
+from its own description. It produced two reporting corrections, one confirmed
+implementation defect whose consequence turned out to be immeasurably small, and
+one open concern closed by measurement. Everything below was recomputed from the
+frozen artifacts during the audit.
+
+### 1. The cross-participant recurrence figure was understated by 1.73×
+
+**[CORRECTION]** `build_dataset.py:131` computes `shared = npos - len(allpos)`
+and prints it as *"53,054 of 520,000 rows (10.20%) are sequences also positive
+in another unit"*. `FREEZE.json` records the same number under the accurate key
+`cross_unit_duplicate_rows`, and the manuscript carried the printed wording.
+
+For a sequence present in *k* participants, `npos - len(allpos)` contributes
+*k−1*. It is the count of **excess occurrences**, not of rows. Recomputed from
+`data/derived/POSITIVES.csv`:
+
+| quantity | value | share of 520,000 rows |
+|---|---|---|
+| positive rows | 520,000 | — |
+| distinct positive sequences | 466,946 | — |
+| excess occurrences (the 53,054 figure) | 53,054 | 10.203% |
+| sequences present in >1 participant | 38,767 | — |
+| **rows whose sequence is in >1 participant** | **91,821** | **17.658%** |
+
+The published sentence described the 91,821 quantity and quoted the 53,054 one.
+A third figure is also correct and must not be confused with either: **20.1%**
+of the observed *union* occurs in more than one participant
+(`union_stats.json`: 2,124,276 of 2,658,972 occur in exactly one), which is the
+figure `build_dataset.py`'s own comment cites from run-006.
+
+**Corrected in the manuscript**, which now leads with 91,821 rows (17.66%) in
+both the Methods and Results passages and retains 53,054 (10.20%) explicitly
+labelled as the excess over one occurrence each, stating which question each
+answers. **`FREEZE.json` is not touched**: its key name was already accurate and
+it is a preregistered artifact.
+
+**Why it matters.** Cross-participant recurrence is one of the four confounds the
+study is about, and the stated justification for the D003 leakage-free subset.
+The figure of record understated the exposure by a factor of 1.73. No computed
+result consumed 10.20% as an input, so nothing downstream moves.
+
+### 2. The matched threshold is an interval, and the decision clears all of it
+
+**[FACT]** D008's threshold of 0.647 is the preregistered rule and is not
+revised. The matched floor on the frozen dataset is 0.636, and §2 of the D057
+entry already recorded that a floor-plus-0.05 threshold built from it is
+**0.6860 point, nominal-99% [0.6557, 0.7173]** — an interval, because the floor
+is itself an estimate over ten participants.
+
+The manuscript reported both floors and the preregistered threshold but never
+stated the consequence: the primary nominal-99% lower bound of **0.7368 exceeds
+0.6860 and also exceeds 0.7173**, the upper end of the matched threshold's own
+interval. The decision is therefore invariant to which floor is used, including
+against the least favourable reading of the matched one.
+
+**Added to the manuscript.** This strengthens the primary result and costs
+nothing, since it revises no threshold and introduces no new analysis.
+
+### 3. The negative pool is size-biased over distinct sequences
+
+**[CORRECTION]** `build_dataset.py`'s docstring states that *"Reservoir sampling
+gives the same uniform draw in bounded memory."* It does not. Lines 104–127 run
+Algorithm R over the stream of eligible k-mer **occurrences**, so the reservoir
+is uniform over occurrences; lines 129–136 then deduplicate with
+`dict.fromkeys`. Uniform-over-occurrences followed by deduplication is
+**size-biased sampling over distinct sequences**: a k-mer occurring *m* times in
+the proteome has roughly *m* times the chance of entering the pool.
+
+**[FACT]** Measured. Proteome multiplicity of the frozen negatives against the
+multiplicity of a uniform draw over distinct eligible k-mers, all five lengths:
+
+| L | frozen mean | frozen frac >1 | frozen max | uniform-over-distinct baseline |
+|---|---|---|---|---|
+| 8 | **1.8474** | 12.99% | 1181 | 1.0966 |
+| 9 | **1.5561** | 11.22% | 787 | 1.0835 |
+| 10 | **1.5243** | 10.45% | 700 | 1.0755 |
+| 11 | **1.4954** | 9.65% | 621 | 1.0692 |
+| 12 | **1.4668** | 9.09% | 557 | 1.0638 |
+
+The bias is confirmed at every length, running 1.38× to 1.68× above baseline and
+worst at length 8. Negatives are therefore enriched for repeated, paralogous and
+low-complexity sequence, whose amino-acid composition is atypical.
+
+**[FACT] It changes nothing measurable.** A replacement pool was drawn uniformly
+over distinct eligible k-mers with everything else held identical — the same
+per-participant length profile taken from the frozen positives, 1:1 ratio, global
+uniqueness, exclusion of every observed peptide, and the same expressed-protein
+restriction — under seed 20261013 so it cannot be confused with the frozen draw.
+All five of `build_dataset.py`'s integrity checks pass on it, and its own
+multiplicity matches baseline at every length, which is what makes it a valid
+comparator.
+
+| arm | negatives | mean per-unit AP | nominal-99% CI |
+|---|---|---|---|
+| composition-only floor | frozen (control) | **0.6361** | [0.6042, 0.6669] |
+| composition-only floor | uniform redraw | **0.6350** | [0.6041, 0.6666] |
+| endpoint, 25 frozen checkpoints | frozen (control) | **0.7551** | [0.7368, 0.7721] |
+| endpoint, 25 frozen checkpoints | uniform redraw | **0.7558** | [0.7378, 0.7735] |
+
+**Floor delta −0.0011. Endpoint delta +0.0007**, the latter in the opposite
+direction to the inflation the audit anticipated. Both are roughly a fiftieth of
+their own interval widths. Both controls reproduce the record: the floor returns
+0.6361 against the 0.6360 in D057 §2, and the endpoint returns 0.7551 with its
+published interval exactly — on `torch 2.14.1+cpu` against the original
+`2.11.0+cu130`, which makes the control an incidental independent reproduction of
+the headline endpoint in a different environment.
+
+**Why the bias is inert.** Multiplicity-enriched sequences are 9–13% of the pool,
+and amino-acid composition averaged over 8–12 residues is not shifted enough by
+that minority to move the 20-dimensional LDA direction. The network, which reads
+positional structure rather than composition alone, is equally unaffected.
+
+**The audit's own expectation is withdrawn.** It reasoned that the floor and the
+endpoint "may both be inflated by a shared cause". Measurement does not support
+that, and it must not reach the manuscript. What remains is a docstring that
+misdescribes a sampling property, recorded as **L30**.
+
+**Scoring was inference only.** The 25 checkpoints were loaded read-only; nothing
+was retrained, no split was rebuilt, and the preregistered endpoint was neither
+recomputed nor replaced. The redraw is a sensitivity beside it.
+
+### 4. File-order tie-breaking is negligible on the endpoint
+
+**[FACT]** `train_cnn.average_precision` sorts with `kind='stable'`, and `load()`
+reads `POSITIVES.csv` before `NEGATIVES.csv`, so exact score ties resolve in
+favour of positives. D056 established that this convention is fatal for the
+recurrence oracle, whose score takes two values and whose file-order AP is
+therefore 1.0.
+
+Counted on the endpoint: **41 exact score ties across all ten held-out
+participants in 200,000 rows** for the first of the 25 models, 42 on the redraw.
+That is 2×10⁻⁴ of rows, and only a tie straddling the label boundary can bias AP
+at all, so the worst-case effect is below 10⁻⁴ AP. The concern is closed; the
+oracle's exposure to the same convention is unaffected and remains as recorded in
+D056.
+
+### 5. What was examined and found sound
+
+Recorded because the audit was asked to be balanced, and because these were
+checked rather than assumed. All six preregistered checksums in
+`PREREGISTRATION.md` recomputed and matched. Leakage recomputed from the frozen
+artifacts at 15,988 of 100,000 test positive rows, 15.988%, with 84,012
+leakage-free — matching `SPLIT_FREEZE.json` and the manuscript. The D057
+decomposition verified additive to the last digit: 0.0165222843 + 0.0329844561 =
+0.0495067404. Configuration E=16/C=32/k=3/p=0.0 confirmed as the grid maximum in
+`cv_results.json`. The power analysis's use of AUROC to parameterise a binormal
+effect size for an AP endpoint confirmed as a legitimate parameterisation, not a
+metric mismatch. The apparent conflict between the manuscript's 165,574 rows and
+`predictor_comparison.json`'s 175,524 resolved as two genuinely different row
+sets, the five-system and three-system naive intersections, with no error.
+
+### 6. What was deliberately not changed
+
+- **`build_dataset.py` is untouched.** Its docstring misdescribes the draw, but
+  the file is frozen and checksummed, and editing it to fix prose would change a
+  preregistered artifact's digest. The misstatement is recorded in **L30** and in
+  this entry instead. Correcting the docstring is a separate decision.
+- **No frozen artifact, figure or preregistered file is modified.** `FREEZE.json`,
+  `SPLIT_FREEZE.json`, `POSITIVES.csv`, `NEGATIVES.csv`, `SPLIT.csv`,
+  `TEST_LEAKFREE.csv` and every file under `results/` are as they were.
+- **The preregistered endpoint stands at 0.7551 [0.7368, 0.7721]** against the
+  threshold of 0.647. Nothing in this entry revises it.
+
+**Consequence for the freeze.** This entry edits `DECISION_LOG.md` and adds a row
+to `LIMITATIONS.md`, both tracked files, so their recorded SHA-256 values in
+`freeze_manifest.json` no longer match the tree. **The manifest written at
+`e94225c` is stale as of this commit**, and the project's two-commit freeze rule
+calls for a re-freeze. That re-freeze is **not** authorised here and has **not**
+been performed. The manifest itself is unmodified;
+`tests/test_invariants.py` T10 fails on the two changed digests until a re-freeze
+is run, and that failure is expected and correct rather than a defect.
+
+**RESOLVED.** Two reporting corrections applied to the manuscript, one
+implementation defect recorded with its consequence measured as null, one concern
+closed.
+
+---
+
 ## Conventions
 
 - Entries are append-only. A superseded decision gets a new entry that cites
