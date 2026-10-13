@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-13T09:32:35Z",
+ "frozen_utc": "2026-10-13T09:49:43Z",
  "branch": "main",
- "parent_commit": "1a2eead9cf601c7a706a6d87ddfea042ee0697a1",
- "n_files": 398,
- "total_bytes": 113902004,
+ "parent_commit": "739d6bfb3167876482fd2409b0472c3216e46d8f",
+ "n_files": 400,
+ "total_bytes": 113916499,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -46,8 +46,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 275070,
-   "sha256": "73384c02f07bb1e82cb618412dbbc54ef858bee132f94436500b3501dcb5b948"
+   "bytes": 280514,
+   "sha256": "39253d8f0281e8395241f8f054cca6ac4603f462bdb5905d3f9e0ed1167fcd13"
   },
   {
    "path": "DOME_CHECKLIST.md",
@@ -1600,6 +1600,11 @@
    "sha256": "19cb9b720c0ebcdec0f9348d05e16367a0bf8df8e7119d8ce1fdf0a5e10d2da4"
   },
   {
+   "path": "results/power/tau_realised.json",
+   "bytes": 2791,
+   "sha256": "4b1200ff3b42e09b321f00330079dce03e5678e10a09bbd86e641711942b5b80"
+  },
+  {
    "path": "results/predictors/ambiguity_skipped.csv",
    "bytes": 464,
    "sha256": "64fa02cf5d30c1844fc5e09365abaafe00a3d1865a2081ba58d70c2f0767d4c7"
@@ -1951,8 +1956,8 @@
   },
   {
    "path": "scripts/regen_check.py",
-   "bytes": 10683,
-   "sha256": "f5705361e8e378ad32b7a33869cb25130bc352f2d7de651f19b8bf16fb8facb5"
+   "bytes": 10764,
+   "sha256": "e7df7d2202ea48d4985fef261dc487115395f913ca3639ebc500e34c31514ee0"
   },
   {
    "path": "scripts/replicate_px4023.py",
@@ -1973,6 +1978,11 @@
    "path": "scripts/subsample_curve.py",
    "bytes": 3677,
    "sha256": "f64d1dce458e2d94dc3da97a22e265221ff10749603893fc08cda7ebe428085f"
+  },
+  {
+   "path": "scripts/tau_realised.py",
+   "bytes": 6179,
+   "sha256": "c481be6ae28474743c83d2e9e5c75a675969cbf89fa2750cf29ee0fde67529a5"
   },
   {
    "path": "scripts/train_cnn.py",
