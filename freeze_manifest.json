@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-12T21:23:55Z",
+ "frozen_utc": "2026-10-13T09:32:35Z",
  "branch": "main",
- "parent_commit": "39a7fb57db618d7779c91c0ce49caa8edf7ad538",
- "n_files": 396,
- "total_bytes": 113868145,
+ "parent_commit": "1a2eead9cf601c7a706a6d87ddfea042ee0697a1",
+ "n_files": 398,
+ "total_bytes": 113902004,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -46,8 +46,13 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 264690,
-   "sha256": "43e746cc3bddda7d25dadd9d9360821e8877bb2a6c5f8dacea7c7f9bd84d64b7"
+   "bytes": 275070,
+   "sha256": "73384c02f07bb1e82cb618412dbbc54ef858bee132f94436500b3501dcb5b948"
+  },
+  {
+   "path": "DOME_CHECKLIST.md",
+   "bytes": 8996,
+   "sha256": "d4c0679381de084b351f7a2b74b80719242540501fe5ab712890d780b1369c9b"
   },
   {
    "path": "ENVIRONMENT.md",
@@ -76,8 +81,8 @@
   },
   {
    "path": "LIMITATIONS.md",
-   "bytes": 20402,
-   "sha256": "b490e498d1603e55da733969cd23e6c293a5b0eea6d3d5b5fe8e83dd5e93a148"
+   "bytes": 22013,
+   "sha256": "1ccd7ec009f744d6c0372a5f1622b4302e466511fd5a8481e3132767a0fcb3c1"
   },
   {
    "path": "METHODOLOGY.md",
@@ -103,6 +108,11 @@
    "path": "README.md",
    "bytes": 9600,
    "sha256": "574804dd0e82e01403da19b19f39dda2e28d8198cc0327b4394debb5c12d1c07"
+  },
+  {
+   "path": "REFORMS_CHECKLIST.md",
+   "bytes": 12872,
+   "sha256": "73db89b966cc8ba9deca52c354996199287a45fca3cd28bd9b5b19d291518da5"
   },
   {
    "path": "RUN_LOG.md",
