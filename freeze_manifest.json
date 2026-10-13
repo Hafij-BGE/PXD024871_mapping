@@ -1,9 +1,9 @@
 {
- "frozen_utc": "2026-10-13T09:49:43Z",
+ "frozen_utc": "2026-10-13T10:37:07Z",
  "branch": "main",
- "parent_commit": "739d6bfb3167876482fd2409b0472c3216e46d8f",
- "n_files": 400,
- "total_bytes": 113916499,
+ "parent_commit": "cadd07772ae3e8d41c022a62b7937bd9d04d9a30",
+ "n_files": 402,
+ "total_bytes": 113932091,
  "excludes": [
   "freeze_manifest.json"
  ],
@@ -46,8 +46,8 @@
   },
   {
    "path": "DECISION_LOG.md",
-   "bytes": 280514,
-   "sha256": "39253d8f0281e8395241f8f054cca6ac4603f462bdb5905d3f9e0ed1167fcd13"
+   "bytes": 287336,
+   "sha256": "090c493fc349c954154bfe981aae43675cf447580f2d1f2a455b068dc85f3e71"
   },
   {
    "path": "DOME_CHECKLIST.md",
@@ -1750,6 +1750,11 @@
    "sha256": "b61916592082bb9774f994b2fe40ad885607594ddf626953e3cc18861bb40feb"
   },
   {
+   "path": "results/qc/negset_margin.json",
+   "bytes": 1296,
+   "sha256": "4a1d72639f13b851a177b88a4716f01d8ef3953972387cc3443ad01b18a6271e"
+  },
+  {
    "path": "results/qc/predictor_comparison.json",
    "bytes": 7186,
    "sha256": "3bcb6710b9fec5d1ffb0358e1b13e8f3e6415c2a67bff64afc63ffee527ca4f7"
@@ -1905,6 +1910,11 @@
    "sha256": "e1009a241a7b78e90775ac144a1da7da8203c2c6d4b71d2a42a7465991a3461d"
   },
   {
+   "path": "scripts/negset_margin.py",
+   "bytes": 7393,
+   "sha256": "d7d039eebde1d898dddbd28dd0b5188c5756d6d85be6680fa584c1c0804e4d66"
+  },
+  {
    "path": "scripts/phase_a_mapping.py",
    "bytes": 13438,
    "sha256": "a3ebf72e26f7b48fcd9b36c994f2d140177715b825f4004ff712f7dffbd9b7d3"
@@ -1956,8 +1966,8 @@
   },
   {
    "path": "scripts/regen_check.py",
-   "bytes": 10764,
-   "sha256": "e7df7d2202ea48d4985fef261dc487115395f913ca3639ebc500e34c31514ee0"
+   "bytes": 10845,
+   "sha256": "71e8433f650d5d2a8c5b372a1f8c0938bc20359d35831547755213caaf55ece5"
   },
   {
    "path": "scripts/replicate_px4023.py",
